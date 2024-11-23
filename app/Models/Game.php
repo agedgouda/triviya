@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Game extends Model
+{
+    use HasFactory;
+
+    public function players()
+    {
+        return $this->belongsToMany(User::class, 'game_user')
+                    ->wherePivot('is_host',false);
+    }
+
+    public function host()
+    {
+        return $this->belongsToMany(User::class, 'game_user')
+                    ->wherePivot('is_host', true);
+    }
+
+}
