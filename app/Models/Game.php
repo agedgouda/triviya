@@ -21,4 +21,14 @@ class Game extends Model
                     ->wherePivot('is_host', true);
     }
 
+    public function mode()
+    {
+        return $this->belongsTo(Mode::class);
+    }
+
+    public function invitees()
+    {
+        return $this->hasMany(Invitee::class);
+    }
+
 }

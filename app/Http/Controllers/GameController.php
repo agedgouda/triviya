@@ -52,6 +52,8 @@ class GameController extends Controller
     public function show(Game $game)
     {
         $game->load('players');
+        $game->load('mode');
+        $game->load('invitees');
 
         return Inertia::render('Games/Index', [
             'game' => $game,
