@@ -4,7 +4,7 @@
        LOGO
     </p>
     
-    <p>Dear {{ $invitee->name }},</p>
+    <p>Dear {{ $invitee->first_name }},</p>
         
     <p>
    
