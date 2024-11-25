@@ -16,8 +16,10 @@ class CreateModeQuestionTable extends Migration
         Schema::create('mode_question', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mode_id')->constrained()->onDelete('cascade');
-            $table->foreignId('question_id')->constrained()->onDelete('cascade');
+            $table->uuid('question_id');
             $table->timestamps();
+
+            $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
         });
     }
 
