@@ -12,6 +12,7 @@ class Game extends Model
     public function players()
     {
         return $this->belongsToMany(User::class, 'game_user')
+                    ->withPivot('status', 'is_host')
                     ->wherePivot('is_host',false);
     }
 
@@ -28,7 +29,7 @@ class Game extends Model
 
     public function invitees()
     {
-        return $this->hasMany(Invitee::class);
+        return $this->hasMany(Invite::class);
     }
 
 }

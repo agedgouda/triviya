@@ -75,4 +75,10 @@ class User extends Authenticatable
                     ->wherePivot('is_host', true);
     }
 
+    public function games()
+    {
+        return $this->belongsToMany(Game::class, 'game_user')
+                    ->wherePivot('is_host', false);
+    }
+
 }

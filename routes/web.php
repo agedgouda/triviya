@@ -25,7 +25,10 @@ Route::middleware([
     // Games Routes Group
     Route::prefix('games')->group(function () {
         Route::get('/', [GameController::class, 'index'])->name('games');
+        Route::get('/create', [GameController::class, 'create'])->name('games.create');
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
+        Route::post('/', [GameController::class, 'store'])->name('games.store');
+        Route::post('/{game}/invite', [GameController::class, 'createUserAndInvite'])->name('games.invite');
     });
 
 });
