@@ -7,8 +7,10 @@ use App\Models\User;
 use App\Models\Mode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Mail\InvitePlayer;
 
 
 class GameController extends Controller
@@ -74,7 +76,7 @@ class GameController extends Controller
                 'status' => 'host',
                 'is_host' => true,
             ]);
-    
+            
             // Return a JSON response with the new game's ID
             return Redirect::route('games.show', $game->id)->with('flash', [
                 'message' => 'Game created successfully!',
@@ -191,14 +193,67 @@ class GameController extends Controller
         // Check if the user is already attached to the game
         if ($game->players()->where('user_id', $user->id)->exists()) {
             // Redirect to the 'games.show' route with an error message
+            
             return redirect()->route('games.show', $game->id)->with('error', 'An invitation to '.$validated['email']. ' has already been sent.');
         }
 
+        $message = "Invitation Created";
+        $game->players()->attach($user->id, ['status' => 'invitation created']);
 
-        // Attach the user to the game in the `game_user` pivot table with the status 'invitation sent'
-        $game->players()->attach($user->id, ['status' => 'invitation sent']);
+        $emailStatus = $this->sendInvite($user, $game);
+        if ($emailStatus['status'] === 'success') {
+            $message = "Invitation Sent";
+        } else {
+            $message = "Error sending invitation";
+        }
+       
+        $game->players()->syncWithoutDetaching([
+            $user->id => ['status' => $message]
+        ]);
+
 
         // Return a JSON response
-        return redirect()->route('games.show', $game->id)->with('success', 'Invitation created.');
+        return redirect()->route('games.show', $game->id)->with('success', $message);
+    }
+
+    public function resendInvite(Game $game, User $user)
+    {
+        $emailStatus = $this->sendInvite($user, $game);
+    
+        // Determine the status message
+        $message = $emailStatus['status'] === 'success' ? "Invitation Resent" : "Error sending invitation";
+    
+        // Update the `status` in the pivot table
+        $game->players()->updateExistingPivot($user->id, ['status' => $message]);
+    
+        return response()->json([
+            'status' => $emailStatus['status'],
+            'message' => $message,
+        ]);
+    }
+    
+
+
+    private function sendInvite($user, $game)
+    {
+        try {
+            Mail::to($user->email)->send(new InvitePlayer($user, $game));
+    
+            // Return success response
+            return [
+                'status' => 'success',
+                'message' => 'Invite email queued successfully.',
+            ];
+        } catch (\Throwable $e) {
+            // Log the error
+            \Log::error('Failed to queue invite email: ' . $e->getMessage());
+    
+            // Return failure response
+            return [
+                'status' => 'error',
+                'message' => 'Failed to queue invite email.',
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 }

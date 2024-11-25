@@ -10,7 +10,7 @@ class Game extends Model
 {
     use HasFactory;
     use HasUuids;
-    
+
     protected $fillable = [
         'name',
         'last_name',

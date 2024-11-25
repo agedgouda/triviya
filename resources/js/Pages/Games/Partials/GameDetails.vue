@@ -1,7 +1,9 @@
 <script setup>
 import { formatDate } from '@/utils';
 import { router } from '@inertiajs/vue3';
+import axios from 'axios';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     game: Object,
@@ -10,6 +12,25 @@ const props = defineProps({
 
 const goToEditPage = () => {
     router.visit(route('games.edit', props.game.id)); 
+};
+
+const resendInvitation = async (player) => {
+    try {
+        // Make the POST request to resend the invitation
+        const response = await axios.post(`/games/${props.game.id}/resend-invite/${player.id}`);
+
+        // Handle success response
+        if (response.data.status === 'success') {
+            // Update the player's status in the UI
+            player.status = response.data.message;
+        } else {
+            // Handle a failure response
+            console.error(response.data.message);
+        }
+    } catch (error) {
+        // Handle any errors from the API call
+        console.error('Error resending invitation:', error);
+    }
 };
 
 </script>
@@ -37,7 +58,8 @@ const goToEditPage = () => {
                 <table class="min-w-full table-auto ">
                     <thead>
                         <tr class="border bg-teal-700 text-white">
-                            <th class="px-4 py-2 text-left">Player Name</th>
+                            <th class="px-4 py-2 text-left">Name</th>
+                            <th class="px-4 py-2 text-center">Email</th>
                             <th class="px-4 py-2 text-center">Status</th>
                             <th class="px-4 py-2 text-center"></th>
                         </tr>
@@ -45,11 +67,19 @@ const goToEditPage = () => {
                     <tbody>
                         <tr v-for="player in players" 
                             :key="player.id" 
-                            class="border cursor-pointer hover:bg-teal-700 hover:text-white"
+                            class="border"
                         >
                         <td class="px-4 py-2">{{ player.first_name }} {{ player.last_name }}</td>
+                        <td class="px-4 py-2 text-left">{{ player.email }}</td>
                         <td class="px-4 py-2 text-center">{{ player.status }}</td>
-                        <td class="px-4 py-2 text-center"></td>
+                        <td class="px-4 py-2 text-center">
+                            <SecondaryButton @click="resendInvitation(player)" >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                                </svg>
+                                &nbsp;Resend Invitation
+                            </SecondaryButton>
+                        </td>
                         </tr>
                     </tbody>
                 </table>

@@ -22,7 +22,7 @@ const form = useForm({
 });
 
 const props = defineProps({
-    gameId: Number,
+    gameId: String,
     invtees: Object,
 });
 const page = usePage();
