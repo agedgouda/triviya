@@ -15,10 +15,13 @@ class CreateGameUserTable extends Migration
     {
         Schema::create('game_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_id')->constrained()->onDelete('cascade');
+            $table->uuid('game_id');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_host');
+            $table->boolean('is_host')->default(0);
+            $table->string('status')->nullable();
             $table->timestamps();
+
+            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
         });
     }
 
