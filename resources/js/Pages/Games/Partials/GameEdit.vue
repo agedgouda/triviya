@@ -56,7 +56,7 @@ const submit = async () => {
 
 
 <template>
-    <div class="m-10"> {{ routeName }}
+    <div class="m-10">
         <form @submit.prevent="submit">
             <div class="flex">
                 <div class="mr-3">

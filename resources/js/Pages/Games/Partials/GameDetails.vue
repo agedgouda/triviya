@@ -1,17 +1,16 @@
 <script setup>
 import { formatDate } from '@/utils';
-import { ref } from 'vue';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
+import { router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     game: Object,
     players: Array,
 });
+
+const goToEditPage = () => {
+    router.visit(route('games.edit', props.game.id)); 
+};
 
 </script>
 
@@ -22,6 +21,18 @@ const props = defineProps({
             <div class="font-bold">{{ game.name }}</div>
             <div>{{ game.mode.name }}</div>
             <div>{{ formatDate(game.date_time) }}</div>
+            <div class="flex items-center justify-end mt-4">
+                <PrimaryButton class="ml-10 mb-5"  @click="goToEditPage" >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                    </svg>
+
+                    &nbsp;Edit
+                </PrimaryButton>
+            </div>
+
+
+
             <div class="mt-5">
                 <table class="min-w-full table-auto ">
                     <thead>
