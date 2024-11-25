@@ -58,7 +58,10 @@ const createGame = () => {
                         </DangerButton>
                     </template>
                     <template v-if="routeName === 'games.create'">
-                        <GameEdit :modes="modes" />
+                        <GameEdit :modes="modes" :routeName="routeName" />
+                    </template>
+                    <template v-if="routeName === 'games.edit'">
+                        <GameEdit :modes="modes" :game="game" :routeName="routeName"  />
                     </template>
                 </div>
             </div>

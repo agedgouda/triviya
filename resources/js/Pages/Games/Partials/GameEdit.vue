@@ -11,44 +11,52 @@ import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 
 const props = defineProps({
-    game: Object,
+    game: {
+        type: Object,
+        default: () => null, // Defaults to null for create mode
+    },
     players: Array,
-    modes: Array
+    modes: Array,
+    routeName: String,
 });
 
 const form = useForm({
-    name: '',
-    date: '',
-    time: '',
-    date_time: '',
-    mode_id: null,
+    name: props.game?.name || '',
+    date: props.game ? props.game.date_time.split(' ')[0] : '',
+    time: props.game ? props.game.date_time.split(' ')[1] : '',
+    date_time: props.game?.date_time || '',
+    mode_id: props.game?.mode_id || null,
 });
 
 const submit = async () => {
-    // Combine the date and time into a single date_time field
-
+    // Combine the date and time into a single field
     form.date_time = `${form.date}T${form.time}`;
 
-    try {
-        const response = await form.post(route('games.store'), {
-            preserveScroll: true, // Prevent scroll reset
-            onSuccess: ({ props }) => {
-                const gameId = props.flash?.gameId;
-                if (gameId) {
-                    router.visit(route('games.show', gameId));
-                }
-            },
-        });
-    } catch (error) {
-        console.error('Error submitting form:', error);
-    }
+    
+        try {
+            // Submit the form
+            if(props.routeName == 'games.create') {
+                await form.post(route('games.store'), {
+                    preserveScroll: true, // Prevent scroll reset
+                });
+            } else {
+
+                await form.put(route('games.update',props.game), {
+                    preserveScroll: true, // Prevent scroll reset
+                });
+            }
+            // No further action needed; the server will redirect to games.show
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+
 };
 
 </script>
 
 
 <template>
-    <div class="m-10">
+    <div class="m-10"> {{ routeName }}
         <form @submit.prevent="submit">
             <div class="flex">
                 <div class="mr-3">
@@ -113,7 +121,7 @@ const submit = async () => {
                 </div>
                 <div class="flex items-center mt-6">
                     <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Add Game
+                        {{ routeName == 'games.create' ? 'Add' : 'Update'  }} Game
                     </PrimaryButton>
                 </div>
             </div>
