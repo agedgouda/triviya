@@ -13,47 +13,69 @@ class RegisterController extends Controller
     /**
      * Show the prepopulated registration form for a user.
      */
-    public function show($userId)
+    public function show($userId = null)
     {
-        $user = User::findOrFail($userId);
-
-        if ($user->password) {
-            return redirect()->route('login')->with('error', 'This user has already registered.');
+        $user = null;
+    
+        if ($userId) {
+            $user = User::findOrFail($userId);
+    
+            if ($user->password) {
+                return redirect()->route('login')->with('error', 'This user has already registered.');
+            }
         }
-
+    
         return Inertia::render('Auth/Register', [
-            'user' => $user,
+            'user' => $user ?? (object) [], // Pass an empty object if user is null
         ]);
     }
 
     /**
      * Handle the registration process.
      */
-    public function store(Request $request, $userId)
+    public function store(Request $request, $userId = null)
     {
-
-        $user = User::findOrFail($userId);
-
-        if ($user->password) {
-            return redirect()->route('login')->with('error', 'This user has already registered.');
+        if ($userId) {
+            // Case 1: Update an existing user
+            $user = User::findOrFail($userId);
+    
+            if ($user->password) {
+                return redirect()->route('login')->with('error', 'This user has already registered.');
+            }
+    
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:users,email,' . $user->id, // Unique except current user
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+    
+            $user->update([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
+        } else {
+            // Case 2: Register a new user
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:users,email', // Ensure email is unique
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+    
+            $user = User::create([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
         }
-
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user->update([
-            'first_name' => $validated['first_name'],
-            'last_name' => $validated['last_name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-
+    
+        // Log the user in
         auth()->login($user);
-
+    
         return redirect()->route('games')->with('success', 'Registration successful!');
     }
 }

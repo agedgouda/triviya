@@ -10,7 +10,10 @@ import TextInput from '@/Components/TextInput.vue';
 
 
 const props = defineProps({
-    user: Object,
+    user: {
+        type: Object,
+        default: () => ({}), // Ensure a default empty object
+    },
 });
 
 const form = useForm({
