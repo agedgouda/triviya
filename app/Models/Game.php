@@ -30,6 +30,12 @@ class Game extends Model
         return $this->belongsToMany(User::class, 'game_user')
                     ->wherePivot('is_host', true);
     }
+    
+
+    public function getHostAttribute()
+    {
+        return $this->host()->first();
+    }
 
     public function mode()
     {

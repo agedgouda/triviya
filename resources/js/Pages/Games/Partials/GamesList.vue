@@ -31,11 +31,11 @@ const fetchPage = (url) => {
 </script>
 
 <template>
-  <div>
+  <div class="mx-5">
       <table class="min-w-full table-auto">
-          <thead>
+          <thead class="bg-amber-100">
               <tr class="border">
-                  <th class="px-4 py-2 text-left">Game Name</th>
+                  <th class="px-4 py-2 text-left ">Game Name</th>
                   <th class="px-4 py-2 text-center">Date and Time</th>
                   <th class="px-4 py-2 text-center">Players Count</th>
               </tr>
@@ -85,7 +85,5 @@ table {
 th, td {
   padding: 8px 12px;
 }
-th {
-  background-color: #f4f4f4;
-}
+
 </style>

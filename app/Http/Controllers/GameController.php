@@ -40,6 +40,7 @@ class GameController extends Controller
 
         return Inertia::render('Games/Index', [
             'games' => $games,
+            'gamesHosted' => $gamesHosted,
             'routeName' => request()->route()->getName(),
         ]);
 
@@ -119,6 +120,7 @@ class GameController extends Controller
                     'status' => $player->pivot->status, 
                 ];
             }),
+            'host' => $game->host,
             'routeName' => request()->route()->getName(),
             'error' => session('error'), 
         ]);

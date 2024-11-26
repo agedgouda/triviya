@@ -9,7 +9,9 @@ import DangerButton from '@/Components/DangerButton.vue';
 
 const props = defineProps({
     games: Object,
+    gamesHosted: Object,
     game: Object,
+    host: Object,
     players: Array,
     routeName: String,
     modes: Array
@@ -38,7 +40,14 @@ const createGame = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <template v-if="routeName === 'games'">
-                        <GamesList :games="games" />
+                        <div v-if="gamesHosted.data.length" class="mb-5"> 
+                            <div class="mx-5 mt-2 font-bold pb-3">Games You Are Hosting</div>
+                            <GamesList :games="gamesHosted" />
+                        </div>
+                        <div v-if="games.data.length"> 
+                            <div class="mx-5 font-bold pb-3">Games You are Playing</div>
+                            <GamesList :games="games " />
+                        </div>
                         <div class="flex items-center justify-end mt-4">
                         <DangerButton class="ml-10 m-5"  @click="createGame" >
                             New Game
@@ -46,9 +55,10 @@ const createGame = () => {
                     </div>
                     </template>
                     <template v-if="routeName === 'games.show'">
+
                         <GameDetails :game="game" :players="players"/>
 
-                        <Invite :gameId="game.id" :invtees="game.invitees" />
+                        <Invite :gameId="game.id" :invtees="game.invitees"   v-if="$page.props.auth.user.id === $page.props.host.id" />
 
                         <DangerButton class="ml-10 mb-5"  @click="goBack" >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
