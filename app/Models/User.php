@@ -18,7 +18,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
-    use HasTeams;
+    //use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -78,7 +78,7 @@ class User extends Authenticatable
     public function games()
     {
         return $this->belongsToMany(Game::class, 'game_user')
-                    ->wherePivot('is_host', false);
+                    ->withPivot('is_host');
     }
 
 }

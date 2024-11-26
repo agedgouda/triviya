@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\Auth\RegisterController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -13,6 +14,9 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/register/{userId}', [RegisterController::class, 'show'])->name('register.prepopulated');
+Route::post('register/{userId}', [RegisterController::class, 'store'])->name('register.submit');
 
 Route::middleware([
     'auth:sanctum',

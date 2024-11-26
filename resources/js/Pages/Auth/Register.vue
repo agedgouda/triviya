@@ -8,19 +8,34 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
+
+const props = defineProps({
+    user: Object,
+});
+
 const form = useForm({
-    first_name: '',
-    last_name: '',
-    email: '',
+    first_name: props.user.first_name || '',
+    last_name: props.user.last_name || '',
+    email: props.user.email || '',
     password: '',
     password_confirmation: '',
     terms: false,
 });
 
 const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
+   
+    if(props.user) {
+        form.post(route('register.submit', props.user.id), {
+                onSuccess: () => {
+                    console.log('Registration successful!');
+                },
+            });
+    }
+    else {
+        form.post(route('register'), {
+            onFinish: () => form.reset('password', 'password_confirmation'),
+        });
+    }
 };
 </script>
 
@@ -41,7 +56,6 @@ const submit = () => {
                     type="text"
                     class="mt-1 block w-full"
                     required
-                    autofocus
                     autocomplete="first_name"
                 />
                 <InputError class="mt-2" :message="form.errors.first_name" />

@@ -20,12 +20,21 @@ class GameController extends Controller
      */
     public function index()
     {
-        $games = Game::withCount(['players' => function ($query) {
+        $gamesHosted = Game::withCount(['players' => function ($query) {
             // Exclude the host by filtering the pivot table on 'is_host' field
             $query->where('game_user.is_host', false); // 'game_user' is the pivot table name
         }])
         ->whereHas('host', function ($query) {
             $query->where('user_id', auth()->id()); // Ensure the authenticated user is the host
+        })
+        ->paginate(10);
+
+        $games = Game::withCount(['players' => function ($query) {
+            // Exclude the host by filtering the pivot table on 'is_host' field
+            $query->where('game_user.is_host', false); // 'game_user' is the pivot table name
+        }])
+        ->whereHas('players', function ($query) {
+            $query->where('user_id', auth()->id()); // Check if the authenticated user is in the players relation
         })
         ->paginate(10);
 
