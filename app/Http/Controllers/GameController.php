@@ -26,7 +26,7 @@ class GameController extends Controller
                 $query->where('game_user.is_host', false);
             },
             'players as attending' => function ($query) {
-                $query->where('game_user.status', 'Attending');
+                $query->where('game_user.status', 'Questions Sent');
             },
             'players as not_attending' => function ($query) {
                 $query->where('game_user.status', 'Can\'t Make It');
