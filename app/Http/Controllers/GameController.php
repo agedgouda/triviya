@@ -12,6 +12,8 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\InvitePlayer;
 
+use Carbon\Carbon;
+
 class GameController extends Controller
 {
     /**
@@ -149,7 +151,7 @@ class GameController extends Controller
      */
     public function update(Request $request, Game $game)
     {
-     
+
         $validated = $this->validateGame($request);
 
         try {
@@ -172,14 +174,27 @@ class GameController extends Controller
      */
     private function validateGame(Request $request): array
     {
-        return $request->validate([
-            'name' => 'required|string|max:255',
-            'date_time' => 'required|date', // Valid datetime
-            'mode_id' => 'required|exists:modes,id', // Ensure mode_id exists in the modes table
-            'location' => 'required|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'date_time' => 'required|date', // Valid datetime
+                'mode_id' => 'required|exists:modes,id', // Ensure mode_id exists in the modes table
+                'location' => 'required|string|max:255',
+            ]);
+        
+            // Ensure the 'date_time' field is in the correct format (YYYY-MM-DD HH:MM:SS)
+            if (isset($validated['date_time'])) {
+                // Convert to MySQL format if necessary
+                $validated['date_time'] = Carbon::parse($validated['date_time'])->format('Y-m-d H:i:s');
+            }
+        
+            return $validated;
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Throw the exception to be handled by Laravel automatically
+            throw $e;
+        }
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
