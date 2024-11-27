@@ -41,11 +41,11 @@ const createGame = () => {
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <template v-if="routeName === 'games'">
                         <div v-if="gamesHosted.data.length" class="mb-5"> 
-                            <div class="mx-5 mt-2 font-bold pb-3">Games You Are Hosting</div>
+                            <div class="mx-5 mt-3 font-bold pb-3">Games You Are Hosting</div>
                             <GamesList :games="gamesHosted" />
                         </div>
                         <div v-if="games.data.length"> 
-                            <div class="mx-5 font-bold pb-3">Games You are Playing</div>
+                            <div class="mx-5 mt-3 font-bold pb-3">Games You are Playing</div>
                             <GamesList :games="games " />
                         </div>
                         <div class="flex items-center justify-end mt-4">

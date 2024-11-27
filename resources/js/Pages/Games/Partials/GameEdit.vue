@@ -22,6 +22,7 @@ const props = defineProps({
 
 const form = useForm({
     name: props.game?.name || '',
+    location: props.game?.location || '',
     date: props.game ? props.game.date_time.split(' ')[0] : '',
     time: props.game ? props.game.date_time.split(' ')[1] : '',
     date_time: props.game?.date_time || '',
@@ -31,7 +32,7 @@ const form = useForm({
 const submit = async () => {
     // Combine the date and time into a single field
     form.date_time = `${form.date}T${form.time}`;
-
+    
     
         try {
             // Submit the form
@@ -40,7 +41,6 @@ const submit = async () => {
                     preserveScroll: true, // Prevent scroll reset
                 });
             } else {
-
                 await form.put(route('games.update',props.game), {
                     preserveScroll: true, // Prevent scroll reset
                 });
@@ -93,6 +93,20 @@ const submit = async () => {
                     </select>
 
                     <InputError class="mt-2" :message="form.errors.mode_id" />
+                </div>
+            </div>
+
+            <div class="flex mt-3">
+                <div class="mr-3">
+                    <InputLabel for="location" value="Location" />
+                    <TextInput
+                        id="location"
+                        v-model="form.location"
+                        type="text"
+                        class="mt-1 block w-96"
+                        required
+                    />
+                    <InputError class="mt-2" :message="form.errors.location" />
                 </div>
             </div>
             <div class="flex mt-3">

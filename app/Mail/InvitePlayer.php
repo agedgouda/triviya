@@ -22,7 +22,8 @@ class InvitePlayer extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        $invitee, $game
+        $invitee, 
+        $game
     ) {
         $this->invitee = $invitee;
         $this->game = $game;
@@ -48,7 +49,7 @@ class InvitePlayer extends Mailable
     {
         return new Content(
             view: 'emails.invitation',
-            with: ['invitee' => $this->invitee,'game' => $this->game,],
+            with: ['invitee' => $this->invitee,'game' => $this->game,'host' => $this->game->host,],
         );
     }
 

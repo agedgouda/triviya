@@ -24,7 +24,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return redirect()->route('games');
     })->name('dashboard');
     // Games Routes Group
     Route::prefix('games')->group(function () {
@@ -37,6 +37,8 @@ Route::middleware([
         Route::post('/{game}/resend-invite/{user}', [GameController::class, 'resendInvite'])
             ->name('games.resend-invite');
         Route::post('/{game}/invite', [GameController::class, 'createUserAndInvite'])->name('games.invite');
+        Route::put('/{game}/{user}/send-questions', [GameController::class, 'sendQuestions'])->name('games.sendQuestions');
+        Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
     });
 
 });

@@ -11,10 +11,10 @@ class GameSeeder extends Seeder
     public function run()
     {
         // Ensure a user with id = 1 exists (optional safety check)
-        $host = User::find(1);
+        $host = User::find('9d957658-b52b-49a8-9b15-d28dcf3aecb7');
 
         if (!$host) {
-            $host = User::factory()->create(['id' => 1]); // Create the user if it doesn't exist
+            $host = User::factory()->create(['id' => '9d957658-b52b-49a8-9b15-d28dcf3aecb7']); // Create the user if it doesn't exist
         }
 
         // Create 5 games and associate them with the host

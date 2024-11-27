@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('team_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('team_id');
-            $table->foreignId('user_id');
+            $table->uuid('user_id');
             $table->string('role')->nullable();
             $table->timestamps();
 
             $table->unique(['team_id', 'user_id']);
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

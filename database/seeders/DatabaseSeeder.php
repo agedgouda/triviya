@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
         //User::factory(100)->withPersonalTeam()->create();
 
        $this->call([
-            ModeSeeder::class,
-            QuestionSeeder::class,
-            ModeQuestionSeeder::class,
+            //ModeSeeder::class,
+            //QuestionSeeder::class,
+            //ModeQuestionSeeder::class,
             GameSeeder::class,
         ]);
 

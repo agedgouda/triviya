@@ -18,13 +18,21 @@ class RegisterController extends Controller
         $user = null;
     
         if ($userId) {
-            $user = User::findOrFail($userId);
+            // Use find() to prevent the 404 exception from being thrown
+            $user = User::find($userId);
     
+            // If no user is found, throw a 422 error
+            if (!$user) {
+                abort(422, 'No user found with the given ID.');
+            }
+    
+            // If user exists but already has a password, redirect to login
             if ($user->password) {
                 return redirect()->route('login')->with('error', 'This user has already registered.');
             }
         }
     
+        // Pass an empty object if no user is found
         return Inertia::render('Auth/Register', [
             'user' => $user ?? (object) [], // Pass an empty object if user is null
         ]);

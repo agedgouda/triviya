@@ -37,7 +37,9 @@ const fetchPage = (url) => {
               <tr class="border">
                   <th class="px-4 py-2 text-left ">Game Name</th>
                   <th class="px-4 py-2 text-center">Date and Time</th>
-                  <th class="px-4 py-2 text-center">Players Count</th>
+                  <th class="px-4 py-2 text-center"># Invited</th>
+                  <th class="px-4 py-2 text-center"># Playing</th>
+                  <th class="px-4 py-2 text-center"># Not Playing</th>
               </tr>
           </thead>
           <tbody>
@@ -48,7 +50,9 @@ const fetchPage = (url) => {
               >
                   <td class="px-4 py-2">{{ game.name }}</td>
                   <td class="px-4 py-2 text-center">{{ formatDate(game.date_time) }}</td>
-                  <td class="px-4 py-2 text-center">{{ game.players_count }}</td>
+                  <td class="px-4 py-2 text-center">{{ game.total }}</td>
+                  <td class="px-4 py-2 text-center">{{ game.attending }}</td>
+                  <td class="px-4 py-2 text-center">{{ game.not_attending }}</td>
               </tr>
           </tbody>
       </table>
