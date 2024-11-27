@@ -245,7 +245,6 @@ class GameController extends Controller
     {
         $emailStatus = $this->sendInvite($user, $game);
     
-
         $status = $emailStatus['status'] === 'success' ? 'Invitation Resent' : 'Error sending invitation';
         
         $currentStatus = $game->players()
