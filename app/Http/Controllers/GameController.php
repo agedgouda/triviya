@@ -264,8 +264,7 @@ class GameController extends Controller
     }
     
     protected function updatePlayerStatus(Game $game, User $user, string $status)
-    {
-        
+    {   
         try {
             if (!$game->players()->where('user_id', $user->id)->exists()) {
                 throw new \Exception('User is not associated with the game.');
