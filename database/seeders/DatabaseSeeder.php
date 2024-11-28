@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
        $this->call([
             ModeSeeder::class,
             //QuestionSeeder::class,
-            ModeQuestionSeeder::class,
+            //ModeQuestionSeeder::class,
             GameSeeder::class,
         ]);
 
