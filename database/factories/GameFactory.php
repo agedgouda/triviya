@@ -14,6 +14,7 @@ class GameFactory extends Factory
             'name' => $this->faker->sentence(3),
             'date_time' => $this->faker->dateTimeBetween('+1 days', '+1 month'),
             'mode_id' => $this->faker->numberBetween(1, 3),
+            'location' => $faker->city . ', ' . $faker->state . ', ' . $faker->country,
             'created_at' => now(),
             'updated_at' => now(),
         ];
