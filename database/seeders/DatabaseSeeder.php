@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             ModeSeeder::class,
             //QuestionSeeder::class,
             //ModeQuestionSeeder::class,
-            GameSeeder::class,
+            //GameSeeder::class,
         ]);
 
     }
