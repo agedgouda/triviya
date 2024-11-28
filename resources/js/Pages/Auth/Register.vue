@@ -63,7 +63,7 @@ const submit = () => {
                 />
                 <InputError class="mt-2" :message="form.errors.first_name" />
             </div>
-            <div>
+            <div class="mt-4">
                 <InputLabel for="last_name" value="Last Name" />
                 <TextInput
                     id="last_name"
