@@ -53,7 +53,7 @@ const submit = () => {
                         type="text"
                         class="mt-1 block w-full"
                         required
-                        autocomplete="first_name"
+                        
                     />
                     <InputError class="mt-2" :message="form.errors.first_name" />
                 </div>
@@ -65,7 +65,7 @@ const submit = () => {
                         type="text"
                         class="mt-1 block w-full"
                         required
-                        autocomplete="last_name"
+                        
                     />
                     <InputError class="mt-2" :message="form.errors.first_name" />
                 </div>
@@ -77,7 +77,7 @@ const submit = () => {
                         type="email"
                         class="mt-1 block w-96"
                         required
-                        autocomplete="username"
+                        
                     />
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
@@ -90,7 +90,7 @@ const submit = () => {
                         type="tel"
                         class="mt-1 block w-full"
                         required
-                        autocomplete="tel"
+                        
                     />
                     <InputError :message="form.errors.phone_number" class="mt-2" />
                 </div>
