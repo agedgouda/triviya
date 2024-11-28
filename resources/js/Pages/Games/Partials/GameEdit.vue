@@ -1,17 +1,15 @@
 <script setup>
 import { formatDate } from '@/utils';
-import { ref,watch } from 'vue';
+import { ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import FormSection from '@/Components/FormSection.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
-import { DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
+
 
 const props = defineProps({
     game: {
@@ -23,48 +21,36 @@ const props = defineProps({
     routeName: String,
 });
 
-const changeDate = ref(false);
-const changeForm = ref(false);
-
-
-
 const form = useForm({
     name: props.game?.name || '',
     location: props.game?.location || '',
+    date: props.game ? props.game.date_time.split(' ')[0] : '',
+    time: props.game ? props.game.date_time.split(' ')[1] : '',
     date_time: props.game?.date_time || '',
     mode_id: props.game?.mode_id || null,
 });
 
-
 const submit = async () => {
-    try {
-        if (props.routeName === 'games.create') {
-            await form.post(route('games.store'), {
-                preserveScroll: true, // Prevent scroll reset
-            });
-        } else {
-            await form.put(route('games.update', props.game), {
-                preserveScroll: true, // Prevent scroll reset
-            });
-        }
-    } catch (error) {
-        if (error.response?.status === 422) {
-            // Extract and assign validation errors to form.errors
-            form.errors = error.response.data.errors;
-
-            // Log each error to the console for visibility
-            Object.entries(error.response.data.errors).forEach(([field, messages]) => {
-                console.error(`${field}: ${messages.join(', ')}`);
-            });
-        } else {
+    // Combine the date and time into a single field
+    form.date_time = `${form.date}T${form.time}`;
+    
+    
+        try {
+            // Submit the form
+            if(props.routeName == 'games.create') {
+                await form.post(route('games.store'), {
+                    preserveScroll: true, // Prevent scroll reset
+                });
+            } else {
+                await form.put(route('games.update',props.game), {
+                    preserveScroll: true, // Prevent scroll reset
+                });
+            }
+            // No further action needed; the server will redirect to games.show
+        } catch (error) {
             console.error('Error submitting form:', error);
         }
-    }
-};
 
-const toggleChangeDate = () => {
-    console.log("freem")
-    changeDate.value = !changeDate.value;
 };
 
 </script>
@@ -123,19 +109,38 @@ const toggleChangeDate = () => {
                     />
                     <InputError class="mt-2" :message="form.errors.location" />
                 </div>
-                <div class="mt-6">
-                    <DatePicker v-model="form.date_time" mode="dateTime" hide-time-header :time-accuracy="2"/>
-                    <InputError class="mt-2" :message="form.errors.date_time" />
+                <div class="mr-3">
+                    <InputLabel for="date" value="Game Date" />
+                    <TextInput
+                        id="date"
+                        v-model="form.date"
+                        type="date"
+                        class="mt-1 block w-full"
+                        required
+                    />
+                    <InputError class="mt-2" :message="form.errors.date" />
                 </div>
 
-                <div class=" mt-6 ml-5">
-                <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    {{ routeName == 'games.create' ? 'Add Game' : 'Save Changes'  }}
-                </PrimaryButton>
+                <div class="mr-3">
+                    <InputLabel for="time" value="Game Time" />
+                    <TextInput
+                        id="time"
+                        v-model="form.time"
+                        type="time"
+                        class="mt-1 block w-full"
+                        min="00:00"
+                        max="23:30"
+                        step="1800"
+                        required
+                    />
+                    <InputError class="mt-2" :message="form.errors.time" />
                 </div>
-
+                <div class="flex items-center mt-6">
+                    <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        {{ routeName == 'games.create' ? 'Add' : 'Update'  }} Game
+                    </PrimaryButton>
+                </div>
             </div>
-
         </form>
 
 
