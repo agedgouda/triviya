@@ -42,11 +42,11 @@ const submit = () => {
 
 <template>
     <div class="mt-10 ml-10">
-        <div class="mb-3 font-bold">Invite Players</div>
+        <div class="mb-3 text-amber-400 font-bold">Invite Players</div>
         <form @submit.prevent="submit">
             <div class="flex">
                 <div class="mr-3">
-                    <InputLabel for="first_name" value="First Name" />
+                    <InputLabel for="first_name" value="First Name"/>
                     <TextInput
                         id="first_name"
                         v-model="form.first_name"
@@ -90,7 +90,6 @@ const submit = () => {
                         type="tel"
                         class="mt-1 block w-full"
                         required
-                        
                     />
                     <InputError :message="form.errors.phone_number" class="mt-2" />
                 </div>

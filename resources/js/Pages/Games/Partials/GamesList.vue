@@ -3,13 +3,7 @@
 import { formatDate } from '@/utils';
 import { ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import Table from '@/Components/Table.vue';
 
 
 const props = defineProps({
@@ -32,30 +26,26 @@ const fetchPage = (url) => {
 
 <template>
   <div class="mx-5">
-      <table class="min-w-full table-auto">
-          <thead class="bg-amber-100">
-              <tr class="border">
-                  <th class="px-4 py-2 text-left ">Game Name</th>
-                  <th class="px-4 py-2 text-center">Date and Time</th>
-                  <th class="px-4 py-2 text-center"># Invited</th>
-                  <th class="px-4 py-2 text-center"># Playing</th>
-                  <th class="px-4 py-2 text-center"># Not Playing</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr v-for="game in gamesList" 
-                  :key="game.id" 
-                  class="border-b cursor-pointer hover:bg-teal-700 hover:text-white"
-                  @click="goToGame(game.id)"
-              >
-                  <td class="px-4 py-2">{{ game.name }}</td>
-                  <td class="px-4 py-2 text-center">{{ formatDate(game.date_time) }}</td>
-                  <td class="px-4 py-2 text-center">{{ game.total }}</td>
-                  <td class="px-4 py-2 text-center">{{ game.attending }}</td>
-                  <td class="px-4 py-2 text-center">{{ game.not_attending }}</td>
-              </tr>
-          </tbody>
-      </table>
+    <Table :hasHover="true">
+        <template #header>
+            <th class="px-4 py-2 text-left">Game Name</th>
+            <th class="px-4 py-2 text-center">Date and Time</th>
+            <th class="px-4 py-2 text-center"># Invited</th>
+        </template>
+        <!-- Use v-slot to access the slot props -->
+        <template #default="{ rowClass }">
+            <tr
+                v-for="game in gamesList"
+                :key="game.id"
+                :class="rowClass"
+                @click="goToGame(game.id)"
+            >
+                <td class="px-4 py-2">{{ game.name }}</td>
+                <td class="px-4 py-2 text-center">{{ formatDate(game.date_time) }}</td>
+                <td class="px-4 py-2 text-center">{{ game.total }}</td>
+            </tr>
+        </template>
+    </Table>
 
       <div v-if="links.length > 3">
       <!-- Pagination Links -->
