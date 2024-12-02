@@ -11,10 +11,15 @@ class Question extends Model
     use HasFactory;
     use HasUuids;
 
-    protected $fillable = ['question_text'];
+    protected $fillable = ['question_text','question_type'];
 
     public function modes()
     {
         return $this->belongsToMany(Mode::class, 'mode_question');
+    }
+
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
     }
 }
