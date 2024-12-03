@@ -31,7 +31,7 @@ class Game extends Model
         return $this->belongsToMany(User::class, 'game_user')
                     ->wherePivot('is_host', true);
     }
-    
+
 
     public function getHostAttribute()
     {
@@ -46,6 +46,11 @@ class Game extends Model
     public function invitees()
     {
         return $this->hasMany(Invite::class);
+    }
+
+    public function questions()
+    {
+        return $this->belongsToMany(Question::class);
     }
 
 }

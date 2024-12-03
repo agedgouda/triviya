@@ -10,9 +10,9 @@ class Answer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'game_user_id',  // Links to the GameUser model
-        'question_id',   // Links to the Question model
-        'answer',        // The actual answer (string or date)
+        'game_user_id',
+        'question_id',
+        'answer',
     ];
 
     public function gameUser()

@@ -1,17 +1,10 @@
 <script setup>
-import { formatDate } from '@/utils';
-import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
+import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import CustomMaskInput from '@/Components/CustomMaskInput.vue';
-import Invitees from './Invite.vue';
-import { MaskInput } from "vue-mask-next";
 import { usePage } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -53,7 +46,7 @@ const submit = () => {
                         type="text"
                         class="mt-1 block w-full"
                         required
-                        
+
                     />
                     <InputError class="mt-2" :message="form.errors.first_name" />
                 </div>
@@ -65,7 +58,7 @@ const submit = () => {
                         type="text"
                         class="mt-1 block w-full"
                         required
-                        
+
                     />
                     <InputError class="mt-2" :message="form.errors.first_name" />
                 </div>
@@ -77,7 +70,7 @@ const submit = () => {
                         type="email"
                         class="mt-1 block w-96"
                         required
-                        
+
                     />
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
@@ -106,6 +99,6 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
-        
+
     </div>
 </template>

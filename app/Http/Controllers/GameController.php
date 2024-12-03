@@ -31,7 +31,7 @@ class GameController extends Controller
             'players as not_attending' => function ($query) {
                 $query->where('game_user.status', 'Can\'t Make It');
             },
-        ]) 
+        ])
         ->whereHas('host', function ($query) {
             $query->where('user_id', auth()->id());
         })
@@ -47,7 +47,7 @@ class GameController extends Controller
             'players as not_attending' => function ($query) {
                 $query->where('game_user.status', 'Can\'t Make It');
             },
-        ]) 
+        ])
         ->whereHas('players', function ($query) {
             $query->where('user_id', auth()->id());
         })
@@ -73,7 +73,7 @@ class GameController extends Controller
             'error' => session('error'),
         ]);
     }
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -81,30 +81,30 @@ class GameController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validateGame($request);
-    
+
         try {
             // Use array_intersect_key to only include fillable fields
             $game = Game::create(
                 array_intersect_key($validated, array_flip((new Game)->getFillable()))
             );
-        
+
             $game->players()->attach(auth()->id(), [
                 'status' => 'host',
                 'is_host' => true,
             ]);
-            
+
             return Redirect::route('games.show', $game->id)->with('flash', [
                 'message' => 'Game created successfully!',
             ]);
         } catch (\Exception $e) {
             \Log::error('Error creating game: ' . $e->getMessage());
-        
+
             return Redirect::back()->withErrors([
                 'message' => 'There was a problem creating the game. Please try again.',
             ]);
         }
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -128,6 +128,45 @@ class GameController extends Controller
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
+    }
+
+        /**
+     * Display the specified resource.
+     */
+    public function showQuestions(Game $game)
+    {
+
+
+        // Check if the user is part of the game
+        $isPartOfGame = $game->players()->where('user_id', auth()->id())->exists();
+
+        if (!$isPartOfGame) {
+            return response()->json([
+                'message' => 'You are not part of this game.',
+            ], 403);
+        }
+
+        // Fetch all questions for the game
+        $questions = $game->questions;
+
+        dd($questions);
+
+
+        /*return Inertia::render('Games/Index', [
+            'game' => $game,
+            'players' => $game->players->map(function ($player) {
+                return [
+                    'id' => $player->id,
+                    'first_name' => $player->first_name,
+                    'last_name' => $player->last_name,
+                    'email' => $player->email,
+                    'status' => $player->pivot->status,
+                ];
+            }),
+            'host' => $game->host,
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);*/
     }
 
     /**
@@ -181,20 +220,20 @@ class GameController extends Controller
                 'mode_id' => 'required|exists:modes,id', // Ensure mode_id exists in the modes table
                 'location' => 'required|string|max:255',
             ]);
-        
+
             // Ensure the 'date_time' field is in the correct format (YYYY-MM-DD HH:MM:SS)
             if (isset($validated['date_time'])) {
                 // Convert to MySQL format if necessary
                 $validated['date_time'] = Carbon::parse($validated['date_time'])->format('Y-m-d H:i:s');
             }
-        
+
             return $validated;
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Throw the exception to be handled by Laravel automatically
             throw $e;
         }
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
@@ -247,25 +286,25 @@ class GameController extends Controller
         $status = $attending ? 'Ready for Questions' : 'Can\'t Make It';
         return $this->updatePlayerStatus($game, $user, $status);
     }
-    
+
 
     public function sendQuestions(Game $game, User $user)
     {
         $status = 'Questions Sent';
         return $this->updatePlayerStatus($game, $user, $status);
-    } 
+    }
 
 
     public function resendInvite(Game $game, User $user)
     {
         $emailStatus = $this->sendInvite($user, $game);
-    
+
         $status = $emailStatus['status'] === 'success' ? 'Invitation Resent' : 'Error sending invitation';
-        
+
         $currentStatus = $game->players()
                         ->wherePivot('user_id', $user->id)
                         ->first()?->pivot->status;
-    
+
         if ($currentStatus === $status) {
             // If the status hasn't changed, skip the update
             return response()->json([
@@ -273,31 +312,31 @@ class GameController extends Controller
                 'message' => $status,
             ], 200);
         }
-    
+
         return $this->updatePlayerStatus($game, $user, $status);
-        
+
     }
-    
+
     protected function updatePlayerStatus(Game $game, User $user, string $status)
-    {   
+    {
         try {
             if (!$game->players()->where('user_id', $user->id)->exists()) {
                 throw new \Exception('User is not associated with the game.');
             }
-    
+
             $updated = $game->players()->updateExistingPivot($user->id, ['status' => $status]);
-    
+
             if (!$updated ) {
                 throw new \Exception('Failed to update the player status in the database.');
             }
-    
+
             return response()->json([
                 'status' => 'success',
                 'message' => $status,
             ], 200);
         } catch (\Throwable $e) {
             \Log::error("Error updating player status: {$e->getMessage()} - Game ID: {$game->id}, User ID: {$user->id}, Status: {$status}");
-    
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while updating the status.',

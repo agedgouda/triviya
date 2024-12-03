@@ -31,6 +31,7 @@ Route::middleware([
         Route::get('/', [GameController::class, 'index'])->name('games');
         Route::get('/create', [GameController::class, 'create'])->name('games.create');
         Route::get('/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
+        Route::get('/{game}/questions', [GameController::class, 'showQuestions'])->name('games.questions');
         Route::put('/{game}', [GameController::class, 'update'])->name('games.update');
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
