@@ -112,6 +112,18 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
+        $hasQuestions = GameUser::where('game_id',$game->id)
+                        ->where('user_id',auth()->id())
+                        ->where('status','Questions Sent')
+                        ->first();
+
+        if($hasQuestions) {
+            return redirect()->route('games.showQuestions', [
+                'game' => $game->id,
+                'user' => auth()->id(),
+            ]);
+        }
+
         $game->load(['players', 'mode']);
 
         return Inertia::render('Games/Index', [

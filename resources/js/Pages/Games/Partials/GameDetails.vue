@@ -39,8 +39,7 @@ const handlePlayerAction = async (player, action, method = 'put', additionalPara
             // Update the player's status in the UI
             player.status = response.data.message;
             if(response.data.message === 'Questions Sent') {
-
-                router.visit(route('games.showQuestions', props.game.id));
+                router.visit(route('games.showQuestions', { game: props.game.id, user: player.id }));
             }
         } else {
             // Handle a failure response
