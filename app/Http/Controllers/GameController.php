@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\User;
 use App\Models\Mode;
+use App\Models\Answer;
+use App\Models\GameUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Mail;
@@ -105,7 +107,6 @@ class GameController extends Controller
         }
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -128,45 +129,6 @@ class GameController extends Controller
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
-    }
-
-        /**
-     * Display the specified resource.
-     */
-    public function showQuestions(Game $game)
-    {
-
-
-        // Check if the user is part of the game
-        $isPartOfGame = $game->players()->where('user_id', auth()->id())->exists();
-
-        if (!$isPartOfGame) {
-            return response()->json([
-                'message' => 'You are not part of this game.',
-            ], 403);
-        }
-
-        // Fetch all questions for the game
-        $questions = $game->questions;
-
-        dd($questions);
-
-
-        /*return Inertia::render('Games/Index', [
-            'game' => $game,
-            'players' => $game->players->map(function ($player) {
-                return [
-                    'id' => $player->id,
-                    'first_name' => $player->first_name,
-                    'last_name' => $player->last_name,
-                    'email' => $player->email,
-                    'status' => $player->pivot->status,
-                ];
-            }),
-            'host' => $game->host,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);*/
     }
 
     /**
@@ -283,15 +245,82 @@ class GameController extends Controller
 
     public function updateAttendance(Game $game, User $user, bool $attending)
     {
-        $status = $attending ? 'Ready for Questions' : 'Can\'t Make It';
+        $status = $attending ? 'Questions Sent' : 'Can\'t Make It';
         return $this->updatePlayerStatus($game, $user, $status);
+
+
     }
 
-
-    public function sendQuestions(Game $game, User $user)
+        /**
+     * Display the specified resource.
+     */
+    public function showQuestions(Game $game, User $user)
     {
-        $status = 'Questions Sent';
-        return $this->updatePlayerStatus($game, $user, $status);
+        $isHost = false;
+        // Check if the user is part of the game
+        if($game->host->id === auth()->id()) {
+            $isHost = true;
+            $game->load('host');
+        }
+        $gameUser = $game->players()->where('user_id', $user->id )->first();
+
+        if (auth()->id() !== $user->id && !$isHost) {
+            return redirect()->route('games.show', ['game' => $game->id])
+                ->withErrors(['msg' => 'No peeking!']);
+        }
+
+        $gameUser = $game->players()->where('user_id', $user->id)->first();
+        $answers = Answer::where('game_user_id',$gameUser->pivot->id)->get();
+
+
+        return Inertia::render('Games/Index', [
+            'game' => $game,
+            'answers' => $answers,
+            'questions' => $game->questions,
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);
+    }
+
+    public function storeAnswers(Request $request, Game $game)
+    {
+        // Validate the incoming data
+        $validated = $request->validate([
+            'answers' => 'required|array',
+        ]);
+
+
+        // Find the game_user entry for the current user and the specified game
+        $gameUser = $game->players()->where('user_id', auth()->id())->first();
+
+        if (!$gameUser) {
+            return response()->json([
+                'message' => 'You are not a participant in this game.',
+            ], 403);
+        }
+
+        // Loop through the answers and create records in the database
+        foreach ($validated['answers'] as $questionId => $answerText) {
+            Answer::updateOrCreate(
+                [
+                    'game_user_id' => $gameUser->pivot->id,
+                    'question_id' => $questionId,
+                ],
+                [
+                    'answer' => $answerText,
+                ]
+            );
+        }
+
+
+        if(count($validated['answers']) < count($game->questions)) {
+            $status = count($validated['answers']).' of '.count($game->questions). ' Questions Answered';
+        } else {
+            $status = 'All Questions Answered';
+        }
+        $updated = $game->players()->updateExistingPivot(auth()->id(), ['status' => $status]);
+
+        return redirect()->route('games.show', $game->id);
     }
 
 

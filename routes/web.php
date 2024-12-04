@@ -31,14 +31,14 @@ Route::middleware([
         Route::get('/', [GameController::class, 'index'])->name('games');
         Route::get('/create', [GameController::class, 'create'])->name('games.create');
         Route::get('/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
-        Route::get('/{game}/questions', [GameController::class, 'showQuestions'])->name('games.questions');
+        Route::get('/{game}/{user}/questions', [GameController::class, 'showQuestions'])->name('games.showQuestions');
         Route::put('/{game}', [GameController::class, 'update'])->name('games.update');
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
         Route::post('/{game}/resend-invite/{user}', [GameController::class, 'resendInvite'])
             ->name('games.resend-invite');
         Route::post('/{game}/invite', [GameController::class, 'createUserAndInvite'])->name('games.invite');
-        Route::put('/{game}/{user}/send-questions', [GameController::class, 'sendQuestions'])->name('games.sendQuestions');
+        Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
     });
 

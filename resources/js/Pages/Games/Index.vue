@@ -4,6 +4,8 @@ import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
+import PlayerQuestions from './Partials/PlayerQuestions.vue';
+import PlayerAnswers from './Partials/PlayerAnswers.vue';
 import Invite from './Partials/Invite.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
@@ -11,10 +13,13 @@ const props = defineProps({
     games: Object,
     gamesHosted: Object,
     game: Object,
+    questions: Object,
+    answers: Object,
     host: Object,
     players: Array,
     routeName: String,
-    modes: Array
+    modes: Array,
+    error: String
 });
 
 const goBack = () => {
@@ -31,18 +36,19 @@ const createGame = () => {
 <template>
     <AppLayout title="Games">
         <template #header>
-            
+
                 Games
-                
+
         </template>
 
         <div class="p-5">
+
             <template v-if="routeName === 'games'">
-                <div v-if="gamesHosted.data.length" class="mb-5"> 
+                <div v-if="gamesHosted.data.length" class="mb-5">
                     <div class="mx-5 mt-3 font-bold pb-3">Games You Are Hosting</div>
                     <GamesList :games="gamesHosted" />
                 </div>
-                <div v-if="games.data.length"> 
+                <div v-if="games.data.length">
                     <div class="mx-5 mt-3 font-bold pb-3">Games You are Playing</div>
                     <GamesList :games="games " />
                 </div>
@@ -70,7 +76,11 @@ const createGame = () => {
             </template>
             <template v-if="routeName === 'games.edit'">
                 <GameEdit :modes="modes" :game="game" :routeName="routeName"  />
-            </template> 
+            </template>
+            <template v-if="routeName === 'games.showQuestions'">
+                <PlayerAnswers :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-if="game.host && game.host[0].id===$page.props.auth.user.id"/>
+                <PlayerQuestions :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-else />
+            </template>
         </div>
     </AppLayout>
 </template>
