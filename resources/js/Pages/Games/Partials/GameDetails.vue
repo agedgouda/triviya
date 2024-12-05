@@ -66,7 +66,7 @@ const goToQuestions = (userId) => {
 <template>
     <div class="m-10">
 
-        <div class="mb-2">
+       <div class="mb-2">
             <div class="font-bold">{{ game.name }}</div>
             <div><span class="font-bold">Mode: </span>{{ game.mode.name }}</div>
             <div><span class="font-bold">Location: </span>{{ game.location }}</div>

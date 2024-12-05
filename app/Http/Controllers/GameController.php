@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Game;
@@ -13,11 +12,21 @@ use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\InvitePlayer;
-
+use App\Services\GameService;
+use App\Services\InviteService;
 use Carbon\Carbon;
 
 class GameController extends Controller
 {
+    protected $gameService;
+    protected $inviteService;
+
+    public function __construct(GameService $gameService, InviteService $inviteService)
+    {
+        $this->gameService = $gameService;
+        $this->inviteService = $inviteService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +37,7 @@ class GameController extends Controller
                 $query->where('game_user.is_host', false);
             },
             'players as attending' => function ($query) {
-                $query->where('game_user.status', 'Questions Sent');
+                $query->whereIn('game_user.status', [ 'Questions Answered','Questions Sent']);
             },
             'players as not_attending' => function ($query) {
                 $query->where('game_user.status', 'Can\'t Make It');
@@ -44,7 +53,7 @@ class GameController extends Controller
                 $query->where('game_user.is_host', false);
             },
             'players as attending' => function ($query) {
-                $query->where('game_user.status', 'Attending');
+                $query->whereIn('game_user.status', [ 'Questions Answered','Questions Sent']);
             },
             'players as not_attending' => function ($query) {
                 $query->where('game_user.status', 'Can\'t Make It');
@@ -76,7 +85,6 @@ class GameController extends Controller
         ]);
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
@@ -85,7 +93,6 @@ class GameController extends Controller
         $validated = $this->validateGame($request);
 
         try {
-            // Use array_intersect_key to only include fillable fields
             $game = Game::create(
                 array_intersect_key($validated, array_flip((new Game)->getFillable()))
             );
@@ -112,32 +119,39 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-        $hasQuestions = GameUser::where('game_id',$game->id)
-                        ->where('user_id',auth()->id())
-                        ->where('status','Questions Sent')
-                        ->first();
+        // Check if the user has questions sent
+        $hasQuestions = GameUser::where('game_id', $game->id)
+            ->where('user_id', auth()->id())
+            ->where('status', 'Questions Sent')
+            ->first();
 
-        if($hasQuestions) {
+        if ($hasQuestions) {
             return redirect()->route('games.showQuestions', [
                 'game' => $game->id,
                 'user' => auth()->id(),
             ]);
         }
 
-        $game->load(['players', 'mode']);
+        // Fetch game details using the service
+        $gameDetails = $this->gameService->getGameDetails($game, auth()->id());
+
+        if (!$gameDetails['game']) {
+            return redirect()->route('games.index')->with('error', 'Game not found.');
+        }
 
         return Inertia::render('Games/Index', [
-            'game' => $game,
-            'players' => $game->players->map(function ($player) {
+            'game' => $gameDetails['game'],
+            'players' => $gameDetails['players']->map(function ($player) {
                 return [
                     'id' => $player->id,
                     'first_name' => $player->first_name,
                     'last_name' => $player->last_name,
                     'email' => $player->email,
-                    'status' => $player->pivot->status,
+                    'status' => $player->pivot->status,  // Ensures the 'status' is passed
                 ];
             }),
-            'host' => $game->host,
+            'host' => $gameDetails['host'],
+            'questions' => $gameDetails['questions'],
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
@@ -164,7 +178,6 @@ class GameController extends Controller
      */
     public function update(Request $request, Game $game)
     {
-
         $validated = $this->validateGame($request);
 
         try {
@@ -190,20 +203,17 @@ class GameController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'date_time' => 'required|date', // Valid datetime
-                'mode_id' => 'required|exists:modes,id', // Ensure mode_id exists in the modes table
+                'date_time' => 'required|date',
+                'mode_id' => 'required|exists:modes,id',
                 'location' => 'required|string|max:255',
             ]);
 
-            // Ensure the 'date_time' field is in the correct format (YYYY-MM-DD HH:MM:SS)
             if (isset($validated['date_time'])) {
-                // Convert to MySQL format if necessary
                 $validated['date_time'] = Carbon::parse($validated['date_time'])->format('Y-m-d H:i:s');
             }
 
             return $validated;
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Throw the exception to be handled by Laravel automatically
             throw $e;
         }
     }
@@ -225,65 +235,45 @@ class GameController extends Controller
             'phone_number' => 'required|string|max:255',
         ]);
 
-        $user = User::firstOrCreate(
-            ['email' => $validated['email']],
-            [
-                'first_name' => $validated['first_name'],
-                'last_name' => $validated['last_name'],
-                'phone_number' => $validated['phone_number'],
-            ]
-        );
+        $emailStatus = $this->inviteService->invitePlayer($game,$validated);
 
-        if ($game->players()->where('user_id', $user->id)->exists()) {
-            return redirect()->route('games.show', $game->id)->with('error', 'An invitation to '.$validated['email']. ' has already been sent.');
-        }
-
-        $message = "Invitation Created";
-        $game->players()->attach($user->id, ['status' => 'invitation created']);
-
-        $emailStatus = $this->sendInvite($user, $game);
-        if ($emailStatus['status'] === 'success') {
-            $message = "Invitation Sent";
-        } else {
-            $message = "Error sending invitation";
-        }
-
-        $game->players()->syncWithoutDetaching([
-            $user->id => ['status' => $message]
-        ]);
-
-        return redirect()->route('games.show', $game->id)->with('success', $message);
+        return redirect()->route('games.show', $game->id)->with($emailStatus['status'], $emailStatus['message']);
     }
 
     public function updateAttendance(Game $game, User $user, bool $attending)
     {
         $status = $attending ? 'Questions Sent' : 'Can\'t Make It';
-        return $this->updatePlayerStatus($game, $user, $status);
-
-
+        return $this->gameService->updatePlayerStatus($game, $user, $status);
     }
 
-        /**
+    /**
      * Display the specified resource.
      */
     public function showQuestions(Game $game, User $user)
     {
+        // Check if the current user is either the player or the host
         $isHost = false;
-        // Check if the user is part of the game
-        if($game->host->id === auth()->id()) {
+        if ($game->host->id === auth()->id()) {
             $isHost = true;
             $game->load('host');
         }
-        $gameUser = $game->players()->where('user_id', $user->id )->first();
 
+        // Ensure that only the player or host can view the answers
         if (auth()->id() !== $user->id && !$isHost) {
             return redirect()->route('games.show', ['game' => $game->id])
                 ->withErrors(['msg' => 'No peeking!']);
         }
 
+        // Retrieve the game user and the associated answers
         $gameUser = $game->players()->where('user_id', $user->id)->first();
-        $answers = Answer::where('game_user_id',$gameUser->pivot->id)->get();
 
+        if (!$gameUser) {
+            return redirect()->route('games.show', ['game' => $game->id])
+                ->withErrors(['msg' => 'Player not found in this game.']);
+        }
+
+        // Get the answers related to this player's game entry
+        $answers = Answer::where('game_user_id', $gameUser->pivot->id)->get();
 
         return Inertia::render('Games/Index', [
             'game' => $game,
@@ -328,72 +318,10 @@ class GameController extends Controller
         if(count($validated['answers']) < count($game->questions)) {
             $status = count($validated['answers']).' of '.count($game->questions). ' Questions Answered';
         } else {
-            $status = 'All Questions Answered';
+            $status = 'Questions Answered';
         }
         $updated = $game->players()->updateExistingPivot(auth()->id(), ['status' => $status]);
 
         return redirect()->route('games.show', $game->id);
-    }
-
-
-    public function resendInvite(Game $game, User $user)
-    {
-        $emailStatus = $this->sendInvite($user, $game);
-
-        $status = $emailStatus['status'] === 'success' ? 'Invitation Resent' : 'Error sending invitation';
-
-        $currentStatus = $game->players()
-                        ->wherePivot('user_id', $user->id)
-                        ->first()?->pivot->status;
-
-        if ($currentStatus === $status) {
-            // If the status hasn't changed, skip the update
-            return response()->json([
-                'status' => 'success',
-                'message' => $status,
-            ], 200);
-        }
-
-        return $this->updatePlayerStatus($game, $user, $status);
-
-    }
-
-    protected function updatePlayerStatus(Game $game, User $user, string $status)
-    {
-        try {
-            if (!$game->players()->where('user_id', $user->id)->exists()) {
-                throw new \Exception('User is not associated with the game.');
-            }
-
-            $updated = $game->players()->updateExistingPivot($user->id, ['status' => $status]);
-
-            if (!$updated ) {
-                throw new \Exception('Failed to update the player status in the database.');
-            }
-
-            return response()->json([
-                'status' => 'success',
-                'message' => $status,
-            ], 200);
-        } catch (\Throwable $e) {
-            \Log::error("Error updating player status: {$e->getMessage()} - Game ID: {$game->id}, User ID: {$user->id}, Status: {$status}");
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An error occurred while updating the status.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    protected function sendInvite($user, $game)
-    {
-        try {
-            Mail::to($user->email)->send(new InvitePlayer($user, $game));
-            return ['status' => 'success', 'message' => 'Invite email queued successfully.'];
-        } catch (\Throwable $e) {
-            \Log::error('Failed to queue invite email: ' . $e->getMessage());
-            return ['status' => 'error', 'message' => 'Failed to queue invite email.', 'error' => $e->getMessage()];
-        }
     }
 }

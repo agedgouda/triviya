@@ -60,16 +60,17 @@ const createGame = () => {
             </template>
             <template v-if="routeName === 'games.show'">
 
-                <GameDetails :game="game" :players="players"/>
+            <GameDetails :game="game" :players="players"/>
 
-                <Invite :gameId="game.id" :invtees="game.invitees"   v-if="$page.props.auth.user.id === $page.props.host.id" />
+            <Invite :gameId="game.id" :invtees="game.invitees"   v-if="$page.props.auth.user.id === $page.props.host.id" />
 
-                <DangerButton class="ml-10 mb-5"  @click="goBack" >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                    </svg>
-                    &nbsp;Back
-                </DangerButton>
+            <DangerButton class="ml-10 mb-5"  @click="goBack" >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                &nbsp;Back
+            </DangerButton>
+
             </template>
             <template v-if="routeName === 'games.create'">
                 <GameEdit :modes="modes" :routeName="routeName" />
