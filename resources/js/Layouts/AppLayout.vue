@@ -6,6 +6,7 @@ import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
+import NavDropdown from '@/Components/NavDropdown.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 defineProps({
@@ -50,6 +51,11 @@ const logout = () => {
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('games')" :active="route().current('games*')">
                                     Games
+                                    <template #subnav>
+                                        <!-- Subnav content like links -->
+                                        <Link :href="route('games.create')" class="hover:text-amber-700" >New Games</Link>
+                                        <Link :href="route('games.create')" >new Games</Link>
+                                    </template>
                                 </NavLink>
                             </div>
                         </div>
@@ -163,7 +169,7 @@ const logout = () => {
                                 <ResponsiveNavLink as="button">
                                     Log Out
                                 </ResponsiveNavLink>
-                            </form>         
+                            </form>
                         </div>
                     </div>
                 </div>

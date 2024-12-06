@@ -1,11 +1,13 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     href: String,
     active: Boolean,
 });
+
+const isHovered = ref(false);
 
 const classes = computed(() => {
     return props.active
@@ -15,7 +17,24 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <Link :href="href" :class="classes">
-        <slot />
-    </Link>
+    <div
+        @mouseover="isHovered = true"
+        @mouseleave="isHovered = false"
+        :class="classes"
+        class="relative"
+    >
+        <!-- Main Navigation Link -->
+        <Link :href="href">
+            <slot />
+        </Link>
+
+        <!-- Subnav Dropdown -->
+        <div
+            v-if="isHovered"
+            class="absolute w-48 bg-teal-700 pl-1 pt-1 flex flex-col z-50 border-t border-amber-400 "
+            style="transform: translateY(75%) translateX(-8%);"
+        >
+            <slot name="subnav" />
+        </div>
+    </div>
 </template>
