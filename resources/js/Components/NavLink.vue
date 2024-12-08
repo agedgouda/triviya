@@ -5,6 +5,10 @@ import { Link } from '@inertiajs/vue3';
 const props = defineProps({
     href: String,
     active: Boolean,
+    hasSubnav: {
+        type:Boolean,
+        default: false
+    }
 });
 
 const isHovered = ref(false);
@@ -30,7 +34,7 @@ const classes = computed(() => {
 
         <!-- Subnav Dropdown -->
         <div
-            v-if="isHovered"
+            v-if="isHovered && hasSubnav"
             class="absolute w-48 bg-teal-700 pl-1 pt-1 flex flex-col z-50 border-t border-amber-400 "
             style="transform: translateY(75%) translateX(-8%);"
         >

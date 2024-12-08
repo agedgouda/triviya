@@ -3,7 +3,10 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Middleware\EnsureIsAdmin;
+
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -44,4 +47,14 @@ Route::middleware([
 
 });
 
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    EnsureIsAdmin::class, // Custom middleware to check if the user is an admin
+])->group(function () {
+    Route::prefix('questions')->group(function () {
+        Route::get('/', [QuestionController::class, 'index'])->name('questions');
+    });
 
+});

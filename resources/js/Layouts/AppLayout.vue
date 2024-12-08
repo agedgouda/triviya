@@ -49,13 +49,14 @@ const logout = () => {
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('games')" :active="route().current('games*')">
+                                <NavLink :href="route('games')" :active="route().current('games*')" :hasSubnav="false">
                                     Games
                                     <template #subnav>
-                                        <!-- Subnav content like links -->
-                                        <Link :href="route('games.create')" class="hover:text-amber-700" >New Games</Link>
-                                        <Link :href="route('games.create')" >new Games</Link>
+                                        <Link :href="route('games.create')" class="hover:text-amber-700" >Add Game</Link>
                                     </template>
+                                </NavLink>
+                                <NavLink :href="route('questions')" :active="route().current('questions*')" :hasSubnav="false" v-if="$page.props.auth.user.is_admin">
+                                    Questions
                                 </NavLink>
                             </div>
                         </div>
