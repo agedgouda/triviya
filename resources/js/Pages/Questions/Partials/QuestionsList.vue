@@ -23,14 +23,9 @@ const editQuestion = (index, question) => {
 }
 
 const saveEdit = async (question) => {
-    console.log(`Saving changes for row ${question.id}`);
-
     try {
-        // Send the entire question object in the PUT request
         const response = await axios.put(route('questions.update', question.id), question);
-
-        console.log('Response:', response.data);
-        console.log(`Changes saved for row ${question.id}`);
+        console.log(response.data.message);
     } catch (error) {
         console.error(`Failed to save changes for row ${question.id}:`, error.response?.data || error.message);
     }
