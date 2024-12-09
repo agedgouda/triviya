@@ -55,6 +55,7 @@ Route::middleware([
 ])->group(function () {
     Route::prefix('questions')->group(function () {
         Route::get('/', [QuestionController::class, 'index'])->name('questions');
+        Route::put('/{question}', [QuestionController::class, 'update'])->name('questions.update');
     });
 
 });

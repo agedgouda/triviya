@@ -63,7 +63,24 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Question $question)
     {
-        //
+        $validated = $request->validate([
+            'question_text' => 'required|string',
+            'question_type' => 'required|string',
+            'modes' => 'array', // Ensure modes is an array
+        ]);
+
+        $question = Question::findOrFail($id);
+        $question->update([
+            'question_text' => $validated['question_text'],
+            'question_type' => $validated['question_type'],
+        ]);
+
+        // Sync modes if provided
+        if (isset($validated['modes'])) {
+            $question->modes()->sync($validated['modes']);
+        }
+
+        return response()->json(['message' => 'Question updated successfully.']);
     }
 
     /**
