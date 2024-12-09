@@ -1,5 +1,5 @@
 <script setup>
-import { formatDate } from '@/utils';
+import { capitalizeFirstLetter } from '@/utils';
 import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -138,8 +138,7 @@ function toggleMode(mode, question) {
                 <template v-else>
                     <!-- Normal row -->
                     <td>{{ question.question_text }}</td>
-                    <td>{{ question.question_type.charAt(0).toUpperCase() + question.question_type.slice(1) }}</td>
-
+                    <td>{{ capitalizeFirstLetter(question.question_type) }}</td>
                     <td >
                         <ul>
                             <li v-for="mode in question.modes" :key="mode.id" class="text-center">{{ mode.name }}</li>

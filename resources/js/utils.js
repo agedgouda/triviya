@@ -1,3 +1,9 @@
+
+export const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
 // Utility function to format the date and time
 export const formatDate = (dateTime) => {
     // Check if the input contains time (T or space)
