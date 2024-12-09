@@ -77,9 +77,9 @@ function toggleMode(mode, question) {
     <Table>
         <template #header>
             <th class="text-left">Question</th>
-            <th class="text-left">Type</th>
-            <th class="text-center">Mode</th>
-            <th class="text-left"></th>
+            <th class="text-center w-32">Type</th>
+            <th class="text-center w-96">Mode</th>
+            <th class="text-left w-52"></th>
         </template>
         <!-- Use v-slot to access the slot props -->
         <template #default="{ rowClass }">
@@ -103,22 +103,25 @@ function toggleMode(mode, question) {
                     <td>
                         <select
                             v-model="question.question_type"
-                            class="border p-2 w-full text-black"
+                            class="border p-2 w-full text-black text-center"
                         >
                             <option value="text">Text</option>
                             <option value="date">Date</option>
                         </select>
                     </td>
                     <td>
-                        <div v-for="mode in $page.props.modes" :key="mode.id" class="flex items-center space-x-2">
-                            <input
-                                type="checkbox"
-                                :value="mode.id"
-                                :checked="isModeSelected(mode.id, question)"
-                                @change="toggleMode(mode, question)"
-                            />
-                            <span>{{ mode.name }}</span>
+                        <div class="flex items-center space-x-4">
+                            <div v-for="mode in $page.props.modes" :key="mode.id" class="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    :value="mode.id"
+                                    :checked="isModeSelected(mode.id, question)"
+                                    @change="toggleMode(mode, question)"
+                                />
+                                <span class="ml-2">{{ mode.name }}</span>
+                            </div>
                         </div>
+
                     </td>
                     <td class="text-right">
                         <!-- Add a save button or other interactive elements -->
@@ -133,13 +136,13 @@ function toggleMode(mode, question) {
                 <template v-else>
                     <!-- Normal row -->
                     <td>{{ question.question_text }}</td>
-                    <td>{{ capitalizeFirstLetter(question.question_type) }}</td>
+                    <td class="text-center">{{ capitalizeFirstLetter(question.question_type) }}</td>
                     <td >
-                        <ul>
-                            <li v-for="mode in question.modes" :key="mode.id" class="text-center">{{ mode.name }}</li>
-                        </ul>
+                        <span v-for="(mode, index) in question.modes" :key="mode.id" class="text-center">
+                            {{ mode.name }}<span v-if="index < question.modes.length - 1">, </span>
+                        </span>
                     </td>
-                    <td class="text-center">
+                    <td class="text-right">
                         <SecondaryButton type="button" @click="editQuestion(index,question)">
                             Edit
                         </SecondaryButton>
