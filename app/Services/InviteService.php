@@ -18,7 +18,6 @@ class InviteService
             [
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
-                'phone_number' => $data['phone_number'],
             ]
         );
 

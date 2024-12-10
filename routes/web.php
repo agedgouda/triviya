@@ -2,12 +2,23 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Laravel\Jetstream\Http\Controllers\Inertia\PrivacyPolicyController;
+use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
+
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Middleware\EnsureIsAdmin;
-
 use Inertia\Inertia;
+
+
+
+// Terms of Service Route
+Route::get('/terms-of-service', [TermsOfServiceController::class, 'show'])->name('terms.show');
+
+// Privacy Policy Route
+Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('policy.show');
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
