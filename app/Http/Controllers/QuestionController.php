@@ -16,7 +16,7 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::with('modes')->get();
+        $questions = Question::with('modes')->paginate(10);
         $modes = Mode::all();
 
         return Inertia::render('Questions/Show', [
@@ -39,7 +39,28 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'question_text' => 'required|string',
+            'question_type' => 'required|string',
+            'modes' => 'required|array|min:1', // Ensure modes is an array with at least one item
+        ], [
+            'question_text.required' => 'You must enter a question', // Custom message for question_text
+            'modes.required' => 'Choose a mode', // Custom message for modes being empty
+            'modes.min' => 'Choose at least one mode', // Custom message for modes array with fewer than one item
+        ]);
+
+        $question = Question::create(
+            array_intersect_key($validated, array_flip((new Question)->getFillable()))
+        );
+
+        if (isset($validated['modes'])) {
+            $mode_ids = collect($validated['modes'])->pluck('id')->sort()->values()->toArray();
+            $question->modes()->sync($mode_ids);
+        }
+
+        session()->flash('message', 'Question added successfully!');
+
+        return redirect()->back();
     }
 
     /**
@@ -69,14 +90,10 @@ class QuestionController extends Controller
             'modes' => 'array', // Ensure modes is an array
         ]);
 
-
-
         $question->update([
             'question_text' => $validated['question_text'],
             'question_type' => $validated['question_type'],
         ]);
-
-
 
         // Sync modes if provided
         if (isset($validated['modes'])) {

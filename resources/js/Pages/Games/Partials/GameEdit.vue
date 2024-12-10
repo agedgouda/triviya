@@ -3,13 +3,10 @@ import { formatDate } from '@/utils';
 import { ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
-
 
 const props = defineProps({
     game: {
@@ -33,8 +30,8 @@ const form = useForm({
 const submit = async () => {
     // Combine the date and time into a single field
     form.date_time = `${form.date}T${form.time}`;
-    
-    
+
+
         try {
             // Submit the form
             if(props.routeName == 'games.create') {

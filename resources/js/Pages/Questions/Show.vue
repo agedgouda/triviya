@@ -6,10 +6,9 @@ import QuestionsList from './Partials/QuestionsList.vue';
 
 const props = defineProps({
     questions: Object,
-
     routeName: String,
     modes: Array,
-    error: String
+    error: String,
 });
 
 
