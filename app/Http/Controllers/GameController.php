@@ -232,7 +232,6 @@ class GameController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone_number' => 'required|string|max:255',
         ]);
 
         $emailStatus = $this->inviteService->invitePlayer($game,$validated);

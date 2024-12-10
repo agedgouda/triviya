@@ -22,11 +22,11 @@ const form = useForm({
     email: props.user.email || '',
     password: '',
     password_confirmation: '',
-    terms: false,
+    terms: true,
 });
 
 const submit = () => {
-   
+
     if(props.user) {
         form.post(route('register.submit', props.user.id), {
                 onSuccess: () => {

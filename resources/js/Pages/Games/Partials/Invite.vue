@@ -11,7 +11,6 @@ const form = useForm({
     first_name: '',
     last_name: '',
     email: '',
-    phone_number: '',
 });
 
 const props = defineProps({
@@ -73,18 +72,6 @@ const submit = () => {
 
                     />
                     <InputError class="mt-2" :message="form.errors.email" />
-                </div>
-                <div class="mr-3">
-                    <InputLabel for="phone_number" value="Mobile Number" />
-                    <CustomMaskInput
-                        id="phone_number"
-                        v-model="form.phone_number"
-                        mask="(###) ###-####"
-                        type="tel"
-                        class="mt-1 block w-full"
-                        required
-                    />
-                    <InputError :message="form.errors.phone_number" class="mt-2" />
                 </div>
             </div>
 

@@ -16,7 +16,7 @@ class QuestionController extends Controller
      */
     public function index()
     {
-        $questions = Question::with('modes')->paginate(10);
+        $questions = Question::with('modes')->get();
         $modes = Mode::all();
 
         return Inertia::render('Questions/Show', [
