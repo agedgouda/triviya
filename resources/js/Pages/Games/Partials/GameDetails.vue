@@ -108,7 +108,10 @@ const goToAnswers = (userId) => {
                     <template #default="{ rowClass }">
                     <tr v-for="player in players"
                         :key="player.id"
-                        :class="rowClass"
+                        :class="[
+                            rowClass,
+                            $page.props.auth.user.id === player.id ? 'bg-amber-700 text-amber-400' : ''
+                        ]"
                     >
                         <td class="px-4 py-2">{{ player.first_name }} {{ player.last_name }}</td>
                         <td class="px-4 py-2 text-left">{{ player.email }}</td>
@@ -118,7 +121,7 @@ const goToAnswers = (userId) => {
                         <td class="px-4 py-2 text-center" v-else >
                             <a href="#" @click.prevent="goToQuestions(player.id)">{{ player.status }}</a>
                         </td>
-                        <td  class="px-4 py-2 text-center">
+                        <td class="px-4 py-2 text-center">
                             <div v-if="$page.props.auth.user.id === $page.props.host.id" >
                                 <SecondaryButton @click="handlePlayerAction(player, 'resendInvite', 'post')" v-if="player.status.includes('Invitation')" >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6">
