@@ -6,6 +6,7 @@ import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
 import PlayerQuestions from './Partials/PlayerQuestions.vue';
 import PlayerAnswers from './Partials/PlayerAnswers.vue';
+import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import Invite from './Partials/Invite.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
@@ -42,6 +43,8 @@ const createGame = () => {
         </template>
 
         <div class="p-5">
+
+            <h1 class="text-center text-xl font-bold text">{{ $page.props.flash.message }}</h1>
 
             <template v-if="routeName === 'games'">
                 <div v-if="gamesHosted.data.length" class="mb-5">
@@ -81,6 +84,9 @@ const createGame = () => {
             <template v-if="routeName === 'games.showQuestions'">
                 <PlayerAnswers :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-if="game.host && game.host[0].id===$page.props.auth.user.id"/>
                 <PlayerQuestions :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-else />
+            </template>
+            <template v-if="routeName === 'games.showAnswers'">
+                <AllPlayerAnswers :questions="questions"   />
             </template>
         </div>
     </AppLayout>

@@ -59,6 +59,10 @@ const goToQuestions = (userId) => {
     router.visit(route('games.showQuestions', { game: props.game.id, user: userId }));
 };
 
+const goToAnswers = (userId) => {
+    router.visit(route('games.showAnswers', { game: props.game.id }));
+};
+
 
 
 </script>
@@ -71,14 +75,25 @@ const goToQuestions = (userId) => {
             <div><span class="font-bold">Mode: </span>{{ game.mode.name }}</div>
             <div><span class="font-bold">Location: </span>{{ game.location }}</div>
             <div>{{ formatDate(game.date_time) }}</div>
-            <div v-if="$page.props.auth.user.id === $page.props.host.id" class="flex items-center justify-end mt-4">
-                <PrimaryButton class="ml-10 mb-5"  @click="goToEditPage" >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                    </svg>
+            <div v-if="$page.props.auth.user.id === $page.props.host.id" class="flex items-center w-full mt-4">
+                <div>
+                    <SecondaryButton  @click="goToAnswers">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 mr-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+                        </svg>
+                        View Answers
+                    </SecondaryButton>
+                </div>
+                <div class="flex-grow"></div>
+                <div class="justify-end">
+                    <PrimaryButton class="ml-10"  @click="goToEditPage" >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                        </svg>
 
-                    &nbsp;Edit
-                </PrimaryButton>
+                        &nbsp;Edit
+                    </PrimaryButton>
+                </div>
             </div>
 
             <div class="mt-5">

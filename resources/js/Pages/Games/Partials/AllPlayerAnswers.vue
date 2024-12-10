@@ -4,9 +4,7 @@ import { formatDate } from '@/utils';
 
 // Props for game and questions
 const props = defineProps({
-    game: Object,
     questions: Array,
-    answers: Array,
 });
 
 const answersMap = computed(() => {
@@ -16,12 +14,7 @@ const answersMap = computed(() => {
     }, {});
 });
 
-const formatAnswer = (question) => {
-    const answer = answersMap.value[question.id];
-
-    if (!answer) {
-        return 'Not yet answered';
-    }
+const formatAnswer = (question, answer) => {
 
     if (question.question_type === 'date') {
         return formatDate(answer);
@@ -36,7 +29,12 @@ const formatAnswer = (question) => {
     <div>
         <div v-for="question in questions" :key="question.id" class="mb-4 ml-4">
             <div class="font-bold text-amber-500">{{ question.question_text }}</div>
-            {{ formatAnswer(question) }}
+
+            <div v-for="answer in question.answers">
+                {{ answer.game_user.user.first_name }} {{ answer.game_user.user.last_name }}:
+                <span v-if="question.question_type === 'date'"> {{ formatDate(answer.answer) }} </span>
+                <span v-else> {{ answer.answer }} </span>
+            </div>
         </div>
     </div>
 </template>

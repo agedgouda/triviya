@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\User;
 use App\Models\Mode;
+use App\Models\Question;
 use App\Models\Answer;
 use App\Models\GameUser;
 use Illuminate\Http\Request;
@@ -322,5 +323,27 @@ class GameController extends Controller
         $updated = $game->players()->updateExistingPivot(auth()->id(), ['status' => $status]);
 
         return redirect()->route('games.show', $game->id);
+    }
+
+    public function showAnswers(Game $game)
+    {
+        if (auth()->id() !== $game->host->id) {
+            session()->flash('message', 'Cheaters never prosper!');
+
+            return redirect()->back();
+        }
+
+        $questions = Question::whereHas('games', function ($query) use ($game) {
+            $query->where('games.id', $game->id);
+        })
+        ->with(['answers.gameUser.user'])
+        ->get();
+
+        return Inertia::render('Games/Index', [
+            'questions' => $questions,
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);
+
     }
 }

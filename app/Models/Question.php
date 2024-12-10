@@ -18,6 +18,11 @@ class Question extends Model
         return $this->belongsToMany(Mode::class, 'mode_question');
     }
 
+    public function games()
+    {
+        return $this->belongsToMany(Game::class, 'game_question');
+    }
+
     public function answers()
     {
         return $this->hasMany(Answer::class);
