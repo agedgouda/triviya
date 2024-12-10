@@ -22,7 +22,7 @@ const form = useForm({
     email: props.user.email || '',
     password: '',
     password_confirmation: '',
-    terms: true,
+    terms: false,
 });
 
 const submit = () => {
