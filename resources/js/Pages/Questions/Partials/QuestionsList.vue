@@ -1,7 +1,7 @@
 <script setup>
 import { capitalizeFirstLetter } from '@/utils';
 import { router } from '@inertiajs/vue3';
-import { ref, computed,  } from 'vue';
+import { ref, computed, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -13,9 +13,14 @@ import AddQuestion from './AddQuestion.vue';
 
 const props = defineProps({
     questions: Object,
+    pageSize: {
+        type: Number,
+        default: 5, // Default page size
+    }
 });
 
-const selectedModes = ref([1, 2, 3]);
+const currentPage = ref(1);
+const selectedMode = ref(1);
 const editRow = ref();
 let oldQuestion = null;
 const addQuestion = ref(false)
@@ -43,18 +48,31 @@ const cancelEdit = (index) => {
 const closeAddQuestion = () => {
     addQuestion.value = false;
 }
-const { data: questionsList, current_page, last_page, links } = props.questions;
-
 const filteredQuestions = computed(() => {
-  // Access the questions from the paginated result
-  const questions = props.questions.data;
-
-  return questionsList.filter(question => {
-    // Filter questions where at least one mode matches selected values
-    const matchingModes = question.modes.filter(mode => selectedModes.value.includes(mode.id));
-    return matchingModes.length > 0;  // Only include questions with matching modes
+  const questions = props.questions;
+  return questions.filter(question => {
+    return question.modes.some(mode => mode.id === selectedMode.value);
   });
 });
+
+// Paginate filtered questions
+const paginatedQuestions = computed(() => {
+  const start = (currentPage.value - 1) * props.pageSize;
+  const end = start + props.pageSize;
+  return filteredQuestions.value.slice(start, end);
+});
+
+// Calculate total pages
+const totalPages = computed(() => {
+  return Math.ceil(filteredQuestions.value.length / props.pageSize);
+});
+
+// Navigation
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
 
 function isModeSelected(modeId, question) {
     return question.modes.some(mode => mode.id === modeId);
@@ -86,10 +104,10 @@ const fetchPage = (url) => {
 
         <Modal :show=addQuestion><AddQuestion @close-add-question="closeAddQuestion"/></Modal>
 
-        <div  class="flex items-center gap-4 mb-3 w-full">
+        <div class="flex items-center gap-4 mb-3 w-full">
             <div v-for="mode in $page.props.modes" :key="mode.id">
-                <input type="checkbox" :value="mode.id" v-model="selectedModes" />
-                <span>{{ mode.name }}</span>
+                <input type="radio" :value="mode.id" v-model="selectedMode" />
+                <span class="ml-1">{{ mode.name }}</span>
             </div>
 
             <div class="">
@@ -110,7 +128,7 @@ const fetchPage = (url) => {
             <!-- Use v-slot to access the slot props -->
             <template #default="{ rowClass }">
                 <tr
-                    v-for="(question, index) in filteredQuestions"
+                    v-for="(question, index) in paginatedQuestions"
                     :key="question.id"
                     :class="rowClass"
                 >
@@ -178,25 +196,95 @@ const fetchPage = (url) => {
             </template>
         </Table>
 
-    <div v-if="links.length > 3">
-      <!-- Pagination Links -->
-        <div class="mt-4 flex justify-center">
-            <nav class="inline-flex rounded-md shadow">
-                <button
-                    v-for="link in links"
-                    :key="link.url"
-                    :disabled="!link.url"
-                    @click="fetchPage(link.url)"
-                    :class="[
-                        'px-4 py-2 border text-sm font-medium',
-                        link.active ? 'bg-teal-700 text-white' : 'bg-white text-teal-700',
-                        !link.url ? 'cursor-not-allowed' : ''
-                    ]"
-                >
-                    <span v-html="link.label"></span>
-                </button>
-            </nav>
-        </div>
+    <div v-if="totalPages > 1">
+
+
+        <div class="mt-4 flex items-center justify-center">
+  <!-- Previous Button (<<) -->
+  <button
+    :disabled="currentPage === 1"
+    @click="goToPage(1)"
+    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
+  >
+    <<
+  </button>
+
+  <button
+    :disabled="currentPage === 1"
+    @click="goToPage(currentPage - 1)"
+    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
+  >
+    <svg
+      class="w-5 h-5"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M15 19l-7-7 7-7"
+      />
+    </svg>
+    <span class="sr-only">Previous</span>
+  </button>
+
+  <!-- Page Numbers -->
+  <template v-for="page in totalPages" :key="page">
+    <button
+      @click="goToPage(page)"
+      :class="[
+        'inline-flex items-center px-4 py-2 text-sm font-medium',
+        page === currentPage
+          ? 'bg-indigo-50 text-indigo-600 border-indigo-500'
+          : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50',
+        'border',
+        'disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white'
+      ]"
+    >
+      {{ page }}
+    </button>
+  </template>
+
+  <!-- Next Button (>>) -->
+  <button
+    :disabled="currentPage === totalPages"
+    @click="goToPage(currentPage + 1)"
+    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
+  >
+    <svg
+      class="w-5 h-5"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M9 5l7 7-7 7"
+      />
+    </svg>
+    <span class="sr-only">Next</span>
+  </button>
+
+  <!-- Next Page (>>) Button -->
+  <button
+    :disabled="currentPage === totalPages"
+    @click="goToPage(totalPages)"
+    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
+  >
+    >>
+  </button>
+</div>
+
+
+
+
+
     </div>
 
 
