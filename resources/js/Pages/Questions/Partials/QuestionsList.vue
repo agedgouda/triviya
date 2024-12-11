@@ -15,7 +15,7 @@ const props = defineProps({
     questions: Object,
     pageSize: {
         type: Number,
-        default: 5, // Default page size
+        default: 25, // Default page size
     }
 });
 
@@ -90,12 +90,6 @@ function toggleMode(mode, question) {
     }
 }
 
-const fetchPage = (url) => {
-    if (url) {
-        router.visit(url);
-    }
-};
-
 
 </script>
 
@@ -106,7 +100,7 @@ const fetchPage = (url) => {
 
         <div class="flex items-center gap-4 mb-3 w-full">
             <div v-for="mode in $page.props.modes" :key="mode.id">
-                <input type="radio" :value="mode.id" v-model="selectedMode" />
+                <input type="radio" :value="mode.id" v-model="selectedMode" class="text-amber-600 focus:ring-teal-700 "/>
                 <span class="ml-1">{{ mode.name }}</span>
             </div>
 
@@ -197,89 +191,73 @@ const fetchPage = (url) => {
         </Table>
 
     <div v-if="totalPages > 1">
-
-
         <div class="mt-4 flex items-center justify-center">
-  <!-- Previous Button (<<) -->
-  <button
-    :disabled="currentPage === 1"
-    @click="goToPage(1)"
-    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
-  >
-    <<
-  </button>
+            <!-- Previous Button (<<) -->
+            <button
+                :disabled="currentPage === 1"
+                @click="goToPage(1)"
+                class="inline-flex items-center px-4 py-2 text-sm font-bold text-amber-500 bg-teal-700 border border-amber-500 hover:bg-amber-700 disabled:text-amber-300 disabled:border-amber-500 disabled:bg-teal-700"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+            </svg>
 
-  <button
-    :disabled="currentPage === 1"
-    @click="goToPage(currentPage - 1)"
-    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
-  >
-    <svg
-      class="w-5 h-5"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M15 19l-7-7 7-7"
-      />
-    </svg>
-    <span class="sr-only">Previous</span>
-  </button>
+            </button>
 
-  <!-- Page Numbers -->
-  <template v-for="page in totalPages" :key="page">
-    <button
-      @click="goToPage(page)"
-      :class="[
-        'inline-flex items-center px-4 py-2 text-sm font-medium',
-        page === currentPage
-          ? 'bg-indigo-50 text-indigo-600 border-indigo-500'
-          : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50',
-        'border',
-        'disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white'
-      ]"
-    >
-      {{ page }}
-    </button>
-  </template>
+            <button
+                :disabled="currentPage === 1"
+                @click="goToPage(currentPage - 1)"
+                class="inline-flex items-center px-4 py-2 text-sm font-bold text-amber-500 bg-teal-700 border border-l-0 border-amber-500 hover:bg-amber-700 disabled:text-amber-300 disabled:border-amber-500 disabled:bg-teal-700"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
 
-  <!-- Next Button (>>) -->
-  <button
-    :disabled="currentPage === totalPages"
-    @click="goToPage(currentPage + 1)"
-    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
-  >
-    <svg
-      class="w-5 h-5"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M9 5l7 7-7 7"
-      />
-    </svg>
-    <span class="sr-only">Next</span>
-  </button>
+                <span class="sr-only">Previous</span>
+            </button>
 
-  <!-- Next Page (>>) Button -->
-  <button
-    :disabled="currentPage === totalPages"
-    @click="goToPage(totalPages)"
-    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white"
-  >
-    >>
-  </button>
-</div>
+            <!-- Page Numbers -->
+            <template v-for="page in totalPages" :key="page">
+                <button
+                @click="goToPage(page)"
+                :class="[
+                    'inline-flex items-center px-4 py-2 text-sm font-bold',
+                    page === currentPage
+                    ? 'bg-amber-700 text-amber-500 border-amber-500'
+                    : 'text-amber-500 bg-tea-700 border-amber-500 hover:bg-amber-700 ',
+                    'border border-l-0',
+                    'disabled:text-gray-300 disabled:border-gray-300 disabled:bg-white'
+                ]"
+                >
+                {{ page }}
+                </button>
+            </template>
+
+            <!-- Next Button (>>) -->
+            <button
+                :disabled="currentPage === totalPages"
+                @click="goToPage(currentPage + 1)"
+                class="inline-flex items-center px-4 py-2 text-sm font-bold text-amber-500 bg-teal-700 border border-l-0 border-amber-500 hover:bg-amber-700 disabled:text-amber-300 disabled:border-amber-500 disabled:bg-teal-700"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+
+                <span class="sr-only">Next</span>
+            </button>
+
+            <!-- Next Page (>>) Button -->
+            <button
+                :disabled="currentPage === totalPages"
+                @click="goToPage(totalPages)"
+                class="inline-flex items-center px-4 py-2 text-sm font-bold text-amber-500 bg-teal-700 border border-l-0 border-amber-500 hover:bg-amber-700 disabled:text-amber-300 disabled:border-amber-500 disabled:bg-teal-700"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+            </svg>
+
+            </button>
+            </div>
 
 
 
