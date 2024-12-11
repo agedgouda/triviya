@@ -1,12 +1,17 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Actions\Games\FetchGamesAction;
+
+use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\User;
 use App\Models\Mode;
 use App\Models\Question;
 use App\Models\Answer;
 use App\Models\GameUser;
+use App\Http\Requests\GameRequest;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Mail;
@@ -14,6 +19,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\InvitePlayer;
 use App\Services\GameService;
+use App\Actions\Games;
 use App\Services\InviteService;
 use Carbon\Carbon;
 
@@ -33,37 +39,8 @@ class GameController extends Controller
      */
     public function index()
     {
-        $gamesHosted = Game::withCount([
-            'players as total' => function ($query) {
-                $query->where('game_user.is_host', false);
-            },
-            'players as attending' => function ($query) {
-                $query->whereIn('game_user.status', [ 'Questions Answered','Questions Sent']);
-            },
-            'players as not_attending' => function ($query) {
-                $query->where('game_user.status', 'Can\'t Make It');
-            },
-        ])
-        ->whereHas('host', function ($query) {
-            $query->where('user_id', auth()->id());
-        })
-        ->paginate(10);
-
-        $games = Game::withCount([
-            'players as total' => function ($query) {
-                $query->where('game_user.is_host', false);
-            },
-            'players as attending' => function ($query) {
-                $query->whereIn('game_user.status', [ 'Questions Answered','Questions Sent']);
-            },
-            'players as not_attending' => function ($query) {
-                $query->where('game_user.status', 'Can\'t Make It');
-            },
-        ])
-        ->whereHas('players', function ($query) {
-            $query->where('user_id', auth()->id());
-        })
-        ->paginate(10);
+        $gamesHosted = GameActions::fetchGames(true);
+        $games = GameActions::fetchGames(false);
 
         return Inertia::render('Games/Index', [
             'games' => $games,
@@ -71,6 +48,7 @@ class GameController extends Controller
             'routeName' => request()->route()->getName(),
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -120,26 +98,14 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-        // Check if the user has questions sent
-        $hasQuestions = GameUser::where('game_id', $game->id)
-            ->where('user_id', auth()->id())
-            ->where('status', 'Questions Sent')
-            ->first();
+        $gameDetails =  GameActions::fetchGameDetails($game, auth()->id());
 
-        if ($hasQuestions) {
-            return redirect()->route('games.showQuestions', [
-                'game' => $game->id,
-                'user' => auth()->id(),
-            ]);
+        // Handle redirect if the user has questions sent
+        if (isset($gameDetails['redirect'])) {
+            return redirect($gameDetails['redirect']);
         }
 
-        // Fetch game details using the service
-        $gameDetails = $this->gameService->getGameDetails($game, auth()->id());
-
-        if (!$gameDetails['game']) {
-            return redirect()->route('games.index')->with('error', 'Game not found.');
-        }
-
+        // Render the view with the fetched game details
         return Inertia::render('Games/Index', [
             'game' => $gameDetails['game'],
             'players' => $gameDetails['players']->map(function ($player) {
@@ -177,23 +143,15 @@ class GameController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Game $game)
+    public function update(GameRequest $request, Game $game)
     {
-        $validated = $this->validateGame($request);
+        $validated = $request->validated();
 
-        try {
-            $game->update($validated);
+        $game->update($validated);
 
-            return Redirect::route('games.show', $game->id)->with('flash', [
-                'message' => 'Game updated successfully!',
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Error updating game: ' . $e->getMessage());
-
-            return Redirect::back()->withErrors([
-                'message' => 'There was a problem updating the game. Please try again.',
-            ]);
-        }
+        return Redirect::route('games.show', $game->id)->with('flash', [
+            'message' => 'Game updated successfully!',
+        ]);
     }
 
     /**
