@@ -14,6 +14,7 @@ const props = defineProps({
         type: Object,
         default: () => ({}), // Ensure a default empty object
     },
+    flash: Object,
 });
 
 const form = useForm({
@@ -49,6 +50,10 @@ const submit = () => {
         <template #logo>
             <AuthenticationCardLogo />
         </template>
+
+        <div v-if="flash" class="mb-4 font-medium text-sm text-amber-300">
+            {{ flash.message }}
+        </div>
 
         <form @submit.prevent="submit">
             <div>

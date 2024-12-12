@@ -4,11 +4,12 @@ import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
-import PlayerQuestions from './Partials/PlayerQuestions.vue';
+import PlayerQuestions from '@/Components/PlayerQuestions.vue';
 import PlayerAnswers from './Partials/PlayerAnswers.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import Invite from './Partials/Invite.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import { formatDate } from '@/utils';
 
 const props = defineProps({
     games: Object,
@@ -38,7 +39,13 @@ const createGame = () => {
     <AppLayout title="Games">
         <template #header>
 
-                Games
+                <div v-if="routeName !== 'games.showQuestions'">Games</div>
+                <div v-if="routeName === 'games.showQuestions'">
+                    <div >{{game.name}}</div>
+                    <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
+                    <div class="text-base">{{ formatDate(game.date_time) }}</div>
+                    <div class="text-base">{{ game.location }}</div>
+                </div>
 
         </template>
 
@@ -47,6 +54,13 @@ const createGame = () => {
             <h1 class="text-center text-xl font-bold text">{{ $page.props.flash.message }}</h1>
 
             <template v-if="routeName === 'games'">
+                <div class="mx-5">
+                <div class="text-lg font-bold">Welcome to Trivus. The party game where you are the trivia!</div>
+
+                Answer a few fun questions about yourself. Everyone invited to the party will do the same. Then, at the party, teams will compete to guess who said what. Match people to answers and score points. The team with the highest score takes home the trophy.
+
+                </div>
+
                 <div v-if="gamesHosted.data.length" class="mb-5">
                     <div class="mx-5 mt-3 font-bold pb-3">Games You Are Hosting</div>
                     <GamesList :games="gamesHosted" />
@@ -59,7 +73,7 @@ const createGame = () => {
                 <DangerButton class="ml-10 m-5"  @click="createGame" >
                     New Game
                 </DangerButton>
-            </div>
+                </div>
             </template>
             <template v-if="routeName === 'games.show'">
 

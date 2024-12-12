@@ -11,6 +11,7 @@ use App\Models\Question;
 use App\Models\Answer;
 use App\Models\GameUser;
 use App\Http\Requests\GameRequest;
+use App\Http\Requests\InvitePlayerRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -18,20 +19,17 @@ use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\InvitePlayer;
-use App\Services\GameService;
+use App\Services\MailService;
 use App\Actions\Games;
-use App\Services\InviteService;
 use Carbon\Carbon;
 
 class GameController extends Controller
 {
-    protected $gameService;
-    protected $inviteService;
+    protected $mailService;
 
-    public function __construct(GameService $gameService, InviteService $inviteService)
+    public function __construct(MailService $mailService)
     {
-        $this->gameService = $gameService;
-        $this->inviteService = $inviteService;
+        $this->mailService = $mailService;
     }
 
     /**
@@ -67,30 +65,23 @@ class GameController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(GameRequest $request)
     {
-        $validated = $this->validateGame($request);
+        $validated = $request->validated();
 
-        try {
-            $game = Game::create(
-                array_intersect_key($validated, array_flip((new Game)->getFillable()))
-            );
+        $game = Game::create(
+            array_intersect_key($validated, array_flip((new Game)->getFillable()))
+        );
 
-            $game->players()->attach(auth()->id(), [
-                'status' => 'host',
-                'is_host' => true,
-            ]);
+        $game->players()->attach(auth()->id(), [
+            'status' => 'host',
+            'is_host' => true,
+        ]);
 
-            return Redirect::route('games.show', $game->id)->with('flash', [
-                'message' => 'Game created successfully!',
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Error creating game: ' . $e->getMessage());
+        return Redirect::route('games.show', $game->id)->with('flash', [
+            'message' => 'Game created successfully!',
+        ]);
 
-            return Redirect::back()->withErrors([
-                'message' => 'There was a problem creating the game. Please try again.',
-            ]);
-        }
     }
 
     /**
@@ -155,29 +146,6 @@ class GameController extends Controller
     }
 
     /**
-     * Validate the game data.
-     */
-    private function validateGame(Request $request): array
-    {
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'date_time' => 'required|date',
-                'mode_id' => 'required|exists:modes,id',
-                'location' => 'required|string|max:255',
-            ]);
-
-            if (isset($validated['date_time'])) {
-                $validated['date_time'] = Carbon::parse($validated['date_time'])->format('Y-m-d H:i:s');
-            }
-
-            return $validated;
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            throw $e;
-        }
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Game $game)
@@ -185,109 +153,106 @@ class GameController extends Controller
         // Implement game deletion logic if needed
     }
 
-    public function createUserAndInvite(Request $request, Game $game)
+    public function createUserAndInvite(InvitePlayerRequest $request, Game $game)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-        ]);
-
-        $emailStatus = $this->inviteService->invitePlayer($game,$validated);
-
+        $validated = $request->validated();
+        $emailStatus = GameActions::createUserAndInviteAction($game,$validated);
         return redirect()->route('games.show', $game->id)->with($emailStatus['status'], $emailStatus['message']);
     }
 
-    public function updateAttendance(Game $game, User $user, bool $attending)
+    public function resendInvite(Game $game, User $user)
     {
-        $status = $attending ? 'Questions Sent' : 'Can\'t Make It';
-        return $this->gameService->updatePlayerStatus($game, $user, $status);
+        $result = $this->mailService->sendInvite($user, $game);
+        $status = $result['status'] === 'success' ? 'Invitation Resent' : 'Error sending invitation';
+        $game->players()->updateExistingPivot($user->id, ['status' => $status]);
+        return ['status' => 'success', 'message' => $status ];
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function showQuestions(Game $game, User $user)
+
+    public function updateAttendance(Game $game, User $user, bool $attending)
+    {
+        if (!$game->players()->where('user_id', $user->id)->exists()) {
+            throw new \Exception('User is not associated with the game.');
+        }
+
+        $status = $attending ? 'Questions Sent' : 'Can\'t Make It';
+        $game->players()->updateExistingPivot($user->id, ['status' => $status]);
+
+        return [
+            'status' => 'success',
+            'message' => $status,
+        ];
+    }
+
+   public function showQuestions(Game $game, User $user, Request $request)
     {
         // Check if the current user is either the player or the host
         $isHost = false;
         if ($game->host->id === auth()->id()) {
             $isHost = true;
-            $game->load('host');
+
         }
 
-        // Ensure that only the player or host can view the answers
-        if (auth()->id() !== $user->id && !$isHost) {
-            return redirect()->route('games.show', ['game' => $game->id])
-                ->withErrors(['msg' => 'No peeking!']);
-        }
-
-        // Retrieve the game user and the associated answers
-        $gameUser = $game->players()->where('user_id', $user->id)->first();
-
+        $gameUser = GameUser::with('answers')->where('user_id', $user->id)->where('game_id', $game->id)->first();
         if (!$gameUser) {
-            return redirect()->route('games.show', ['game' => $game->id])
-                ->withErrors(['msg' => 'Player not found in this game.']);
+            // need error page
+            //return redirect()->route($request->route()->getName() , ['game' => $game->id,'user' => $user->id])
+            //    ->withErrors(['msg' => 'Player not found in this game.']);
         }
 
-        // Get the answers related to this player's game entry
-        $answers = Answer::where('game_user_id', $gameUser->pivot->id)->get();
+        // If the user has answered all of the questions, they need to log in to see their answers
+        if (count($game->questions) === count($gameUser->answers) && !$isHost && !auth()->id()) {
+            if($user->password) {
+                session()->flash('message', 'You must login to change your answers.');
+                return redirect()->route('login', [
+                    'redirect_to' => route('games.showQuestions', ['game' => $game->id, 'user' => $user->id])
+                ]);
+            }
+            else {
+                session()->flash('message', 'You must register to change your answers.');
+                return redirect()->route('register', [
+                    'redirect_to' => route('games.showQuestions', ['game' => $game->id, 'user' => $user->id])
+                ]);
+            }
+        }
+        if (count($game->questions) === count($gameUser->answers) && !$isHost && auth()->id() && $request->route()->getName() == 'questions.showQuestions') {
+            return redirect()->route('games.showQuestions', ['game' => $game->id, 'user' => $user->id]);
+        }
 
-        return Inertia::render('Games/Index', [
-            'game' => $game,
-            'answers' => $answers,
+
+       $page = $request->route()->getName() == 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
+
+        return Inertia::render($page, [
+            'game' => $game->load('host'),
+            'answers' => $gameUser->answers,
             'questions' => $game->questions,
+            'user' => $user,
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
     }
 
-    public function storeAnswers(Request $request, Game $game)
+    public function storeAnswers(Request $request, Game $game, User $user)
     {
-        // Validate the incoming data
         $validated = $request->validate([
             'answers' => 'required|array',
         ]);
 
+        $response = GameActions::storeAnswersAction($game, $user, $validated);
 
-        // Find the game_user entry for the current user and the specified game
-        $gameUser = $game->players()->where('user_id', auth()->id())->first();
-
-        if (!$gameUser) {
-            return response()->json([
-                'message' => 'You are not a participant in this game.',
-            ], 403);
+        if($response['status'] === 'error') {
+            return redirect()->back()->withErrors([
+                'message' => $response["message"],
+            ]);
         }
-
-        // Loop through the answers and create records in the database
-        foreach ($validated['answers'] as $questionId => $answerText) {
-            Answer::updateOrCreate(
-                [
-                    'game_user_id' => $gameUser->pivot->id,
-                    'question_id' => $questionId,
-                ],
-                [
-                    'answer' => $answerText,
-                ]
-            );
-        }
-
-
-        if(count($validated['answers']) < count($game->questions)) {
-            $status = count($validated['answers']).' of '.count($game->questions). ' Questions Answered';
-        } else {
-            $status = 'Questions Answered';
-        }
-        $updated = $game->players()->updateExistingPivot(auth()->id(), ['status' => $status]);
-
-        return redirect()->route('games.show', $game->id);
+        //Redirect to the game show page
+        return redirect()->back()->with('status', $response);
     }
 
     public function showAnswers(Game $game)
     {
         if (auth()->id() !== $game->host->id) {
             session()->flash('message', 'Cheaters never prosper!');
-
             return redirect()->back();
         }
 

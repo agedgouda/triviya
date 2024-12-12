@@ -14,9 +14,12 @@ import SelectInput from '@/Components/SelectInput.vue';
 // Props for game and questions
 const props = defineProps({
     game: Object,
+    user: Object,
     questions: Array,
     answers: Array,
 });
+
+const error = ref();
 
 // Create a reactive form object using useForm
 const form = useForm({
@@ -34,12 +37,12 @@ if (props.answers && props.answers.length > 0) {
 
 // Submit answers function
 const submitAnswers = () => {
-    form.post(route('games.answers', { game: props.game.id }), {
-        onSuccess: () => {
-            console.log('Answers submitted successfully!');
+    form.post(route('questions.playerAnswers', { game: props.game.id, user: props.user.id }), {
+        onSuccess: (response) => {
+            console.log(response);
         },
         onError: (errors) => {
-            console.error('Submission errors:', errors);
+            error.value = errors.message;
         },
     });
 };
@@ -47,6 +50,7 @@ const submitAnswers = () => {
 
 <template>
     <div>
+        <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
         <form @submit.prevent="submitAnswers">
             <!-- Render each question -->
             <div v-for="question in questions" :key="question.id" class="mb-4 ml-4">

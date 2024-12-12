@@ -70,7 +70,7 @@ const availableHours = [
 
 
 <template>
-    <div class="m-10"> {{ game.date_time }} {{ form.time }}
+    <div class="m-10">
         <form @submit.prevent="submit">
             <div class="flex">
                 <div class="mr-3">

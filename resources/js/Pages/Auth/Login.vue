@@ -11,6 +11,7 @@ import TextInput from '@/Components/TextInput.vue';
 defineProps({
     canResetPassword: Boolean,
     status: String,
+    flash: Object,
 });
 
 const form = useForm({
@@ -40,8 +41,13 @@ const submit = () => {
         <div v-if="status" class="mb-4 font-medium text-sm text-amber-300">
             {{ status }}
         </div>
+        <div v-if="flash" class="mb-4 font-medium text-sm text-amber-300">
+            {{ flash.message }}
+        </div>
 
         <form @submit.prevent="submit">
+
+
             <div>
                 <InputLabel for="email" value="Email" />
                 <TextInput
@@ -50,7 +56,6 @@ const submit = () => {
                     type="email"
                     class="mt-1 block w-full"
                     required
-                    autofocus
                     autocomplete="username"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
