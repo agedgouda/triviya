@@ -71,6 +71,9 @@ const availableHours = [
 
 <template>
     <div class="m-10">
+        <div v-if="$page.props.errors" class="text-red-800 mb-3 text-lg">
+            {{ $page.props.errors.message }}
+        </div>
         <form @submit.prevent="submit">
             <div class="flex">
                 <div class="mr-3">

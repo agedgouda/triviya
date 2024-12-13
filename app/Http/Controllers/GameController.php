@@ -69,19 +69,17 @@ class GameController extends Controller
     {
         $validated = $request->validated();
 
-        $game = Game::create(
-            array_intersect_key($validated, array_flip((new Game)->getFillable()))
-        );
+        $response = GameActions::storeGame($validated);
 
-        $game->players()->attach(auth()->id(), [
-            'status' => 'host',
-            'is_host' => true,
-        ]);
-
-        return Redirect::route('games.show', $game->id)->with('flash', [
-            'message' => 'Game created successfully!',
-        ]);
-
+        if($response["status"] === 'success') {
+            return Redirect::route('games.show', $response["game"]->id)->with('flash', [
+                'message' => 'Game created successfully!',
+            ]);
+        } else {
+            return redirect()->back()->withErrors([
+                'message' => $response["message"],
+            ]);
+        }
     }
 
     /**
@@ -219,7 +217,6 @@ class GameController extends Controller
             return redirect()->route('games.showQuestions', ['game' => $game->id, 'user' => $user->id]);
         }
 
-
        $page = $request->route()->getName() == 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
 
         return Inertia::render($page, [
@@ -259,7 +256,11 @@ class GameController extends Controller
         $questions = Question::whereHas('games', function ($query) use ($game) {
             $query->where('games.id', $game->id);
         })
-        ->with(['answers.gameUser.user'])
+        ->with(['answers' => function ($query) use ($game) {
+            $query->whereHas('gameUser', function ($subQuery) use ($game) {
+                $subQuery->where('game_id', $game->id);
+            })->with('gameUser.user');
+        }])
         ->get();
 
         return Inertia::render('Games/Index', [

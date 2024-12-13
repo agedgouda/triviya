@@ -59,7 +59,7 @@ const goToQuestions = (userId) => {
     router.visit(route('games.showQuestions', { game: props.game.id, user: userId }));
 };
 
-const goToAnswers = (userId) => {
+const goToAnswers = () => {
     router.visit(route('games.showAnswers', { game: props.game.id }));
 };
 
