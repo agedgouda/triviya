@@ -28,7 +28,7 @@ const formatAnswer = (question, answer) => {
 <template>
     <div>
         <div v-for="question in questions" :key="question.id" class="mb-4 ml-4">
-            <div class="font-bold text-amber-500">{{ question.question_text }}</div>
+            <div class="font-bold">{{ question.question_text }}</div>
 
             <div v-for="answer in question.answers">
                 {{ answer.game_user.user.first_name }} {{ answer.game_user.user.last_name }}:

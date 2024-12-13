@@ -34,7 +34,7 @@ const submit = () => {
 
 <template>
     <div class="mt-10 ml-10">
-        <div class="mb-3 text-amber-400 font-bold">Invite Players</div>
+        <div class="mb-3 font-bold">Invite Players</div>
         <form @submit.prevent="submit">
             <div class="flex">
                 <div class="mr-3">

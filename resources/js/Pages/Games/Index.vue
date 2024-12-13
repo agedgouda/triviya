@@ -9,6 +9,7 @@ import PlayerAnswers from './Partials/PlayerAnswers.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import Invite from './Partials/Invite.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formatDate } from '@/utils';
 
 const props = defineProps({
@@ -70,9 +71,9 @@ const createGame = () => {
                     <GamesList :games="games " />
                 </div>
                 <div class="flex items-center justify-end mt-4">
-                <DangerButton class="ml-10 m-5"  @click="createGame" >
+                <PrimaryButton class="ml-10 m-5"  @click="createGame" >
                     New Game
-                </DangerButton>
+                </PrimaryButton>
                 </div>
             </template>
             <template v-if="routeName === 'games.show'">

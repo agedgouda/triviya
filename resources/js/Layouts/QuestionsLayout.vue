@@ -21,11 +21,11 @@ defineProps({
         <Head :title="title" />
         <Banner />
 
-        <div class="min-h-screen bg-teal-700 text-amber-400">
+        <div class="min-h-screen bg-gray-100">
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-teal-700 ">
+            <header v-if="$slots.header" class="bg-white shadow">
                 <div class="max-w-7xl pt-6 px-5 sm:px-6 lg:px-10">
-                    <h2 class="font-semibold text-xl  text-amber-500">
+                    <h2 class="font-semibold text-xl">
                         <slot name="header" />
                     </h2>
                 </div>

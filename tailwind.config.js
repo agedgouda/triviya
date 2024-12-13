@@ -16,7 +16,11 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
+            },colors: {
+                triviusBlue: '#2297B2',
+                triviusBlueLight: '#7DC9D9',
+                triviusPink: '#FD67C4',
+              },
         },
     },
 

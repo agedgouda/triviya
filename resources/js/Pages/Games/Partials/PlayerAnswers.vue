@@ -35,7 +35,7 @@ const formatAnswer = (question) => {
 <template>
     <div>
         <div v-for="question in questions" :key="question.id" class="mb-4 ml-4">
-            <div class="font-bold text-amber-500">{{ question.question_text }}</div>
+            <div class="font-bold">{{ question.question_text }}</div>
             {{ formatAnswer(question) }}
         </div>
     </div>

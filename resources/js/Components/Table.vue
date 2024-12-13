@@ -1,6 +1,6 @@
 <template>
     <table class="min-w-full table-auto">
-        <thead class="bg-amber-500 text-amber-700 border border-amber-500">
+        <thead class="bg-triviusBlue text-white border border-triviusBlue">
             <tr>
                 <slot name="header"></slot>
             </tr>
@@ -26,9 +26,9 @@ const props = defineProps({
 });
 
 const rowClass = computed(() => [
-    'border border-amber-400',
+    'border border-triviusBlue',
     props.hasHover || props.hasPointer
-        ? 'cursor-pointer hover:bg-amber-700 hover:text-amber-400'
+        ? 'cursor-pointer hover:bg-triviusBlueLight hover:text-triviusPink'
         : '',
 ].join(' '));
 </script>
