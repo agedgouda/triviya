@@ -100,7 +100,7 @@ function toggleMode(mode, question) {
 
         <div class="flex items-center gap-4 mb-3 w-full">
             <div v-for="mode in $page.props.modes" :key="mode.id">
-                <input type="radio" :value="mode.id" v-model="selectedMode" class="text-amber-600 focus:ring-teal-700 "/>
+                <input type="radio" :value="mode.id" v-model="selectedMode" class="text-triviusBlue focus:ring-triviusBlueLight "/>
                 <span class="ml-1">{{ mode.name }}</span>
             </div>
 

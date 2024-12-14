@@ -51,7 +51,7 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <div v-if="flash" class="mb-4 font-medium text-sm text-amber-300">
+        <div v-if="flash" class="mb-4 font-medium text-sm text-triviusPink">
             {{ flash.message }}
         </div>
 

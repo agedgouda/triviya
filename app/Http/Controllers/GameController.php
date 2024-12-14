@@ -208,8 +208,9 @@ class GameController extends Controller
             }
             else {
                 session()->flash('message', 'You must register to change your answers.');
-                return redirect()->route('register', [
-                    'redirect_to' => route('games.showQuestions', ['game' => $game->id, 'user' => $user->id])
+                return redirect()->route('register.prepopulated', [
+                    'userId' => $user->id,
+                    'redirect_to' => route('games.showQuestions', ['game' => $game->id, 'user' => $user->id]),
                 ]);
             }
         }

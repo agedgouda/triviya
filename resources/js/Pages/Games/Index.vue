@@ -1,5 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { ref, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
@@ -9,6 +10,7 @@ import PlayerAnswers from './Partials/PlayerAnswers.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import Invite from './Partials/Invite.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import ActionMessage from '@/Components/ActionMessage.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formatDate } from '@/utils';
 
@@ -25,6 +27,23 @@ const props = defineProps({
     error: String
 });
 
+const flashMessage = ref(null);
+const fadeOut = ref(false);
+
+onMounted(() => {
+            flashMessage.value = localStorage.getItem('flashMessage');
+            if (flashMessage.value) {
+                // Clear the message from localStorage after it's displayed
+                localStorage.removeItem('flashMessage');
+            }
+            setTimeout(() => {
+            fadeOut.value = true; // Trigger fade-out class
+            setTimeout(() => {
+                    flashMessage.value = null; // Remove message after fade-out
+                }, 1000); // Match the fade-out duration (1 second)
+            }, 2000); // 2 seconds before fade-out starts
+        });
+
 const goBack = () => {
     router.visit(route('games'));
 };
@@ -32,7 +51,6 @@ const goBack = () => {
 const createGame = () => {
     router.visit(route('games.create'));
 };
-
 
 </script>
 
@@ -50,9 +68,19 @@ const createGame = () => {
 
         </template>
 
-        <div class="p-5">
-
-            <h1 class="text-center text-xl font-bold text">{{ $page.props.flash.message }}</h1>
+        <div>
+            <div
+                v-if="flashMessage"
+                :class="['text-sm text-gray-600 transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
+            >
+                {{ flashMessage }}
+            </div>
+            <div
+                v-if="$page.props.flash.message"
+                :class="['text-sm text-gray-600 transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
+            >
+                {{ $page.props.flash.message }}
+            </div>
 
             <template v-if="routeName === 'games'">
                 <div class="mx-5">
@@ -97,8 +125,9 @@ const createGame = () => {
                 <GameEdit :modes="modes" :game="game" :routeName="routeName"  />
             </template>
             <template v-if="routeName === 'games.showQuestions'">
+
                 <PlayerAnswers :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-if="game.host && game.host[0].id===$page.props.auth.user.id"/>
-                <PlayerQuestions :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-else />
+                <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="$page.props.auth.user" :routeName="routeName" v-else />
             </template>
             <template v-if="routeName === 'games.showAnswers'">
                 <AllPlayerAnswers :questions="questions"   />

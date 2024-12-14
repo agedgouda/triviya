@@ -1,6 +1,6 @@
 <script setup>
-import { ref,reactive } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { useForm,usePage,router } from '@inertiajs/vue3';
 
 // Import components
 import ActionMessage from '@/Components/ActionMessage.vue';
@@ -9,7 +9,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
+
 
 // Props for game and questions
 const props = defineProps({
@@ -18,7 +18,7 @@ const props = defineProps({
     questions: Array,
     answers: Array,
 });
-
+const { props: pageProps } = usePage();
 const error = ref();
 
 // Create a reactive form object using useForm
@@ -39,7 +39,13 @@ if (props.answers && props.answers.length > 0) {
 const submitAnswers = () => {
     form.post(route('questions.playerAnswers', { game: props.game.id, user: props.user.id }), {
         onSuccess: (response) => {
-            console.log(response);
+            if (pageProps.auth.user) {
+                localStorage.setItem('flashMessage', 'Your answers were successfully updated.');
+                router.visit(route('games.show', { game: props.game.id }), {
+                    preserveState: false,
+                    preserveScroll: true,
+                });
+            }
         },
         onError: (errors) => {
             error.value = errors.message;

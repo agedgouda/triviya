@@ -69,7 +69,6 @@ const goToAnswers = () => {
 
 <template>
     <div class="m-10">
-
        <div class="mb-2">
             <div class="font-bold">{{ game.name }}</div>
             <div><span class="font-bold">Mode: </span>{{ game.mode.name }}</div>
@@ -101,7 +100,7 @@ const goToAnswers = () => {
                 <Table class="min-w-full table-auto ">
                     <template #header>
                             <th class="px-4 py-2 text-left">Name</th>
-                            <th class="px-4 py-2 text-center">Email</th>
+                            <th class="px-4 py-2 text-left">Email</th>
                             <th class="px-4 py-2 text-center">Status</th>
                             <th class="px-4 py-2 text-center"></th>
                     </template>
@@ -110,16 +109,19 @@ const goToAnswers = () => {
                         :key="player.id"
                         :class="[
                             rowClass,
-                            $page.props.auth.user.id === player.id ? 'bg-amber-700 text-amber-400' : ''
+                            $page.props.auth.user.id === player.id ? 'bg-triviusBlueLight' : ''
                         ]"
                     >
                         <td class="px-4 py-2">{{ player.first_name }} {{ player.last_name }}</td>
                         <td class="px-4 py-2 text-left">{{ player.email }}</td>
-                        <td class="px-4 py-2 text-center" v-if="!player.status.includes('Questions')">
-                            {{ player.status }}
+                        <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
+                            <a :href="route('games.showQuestions', { game: game.id, user: player.id })"
+                            class="cursor-pointer text-triviusPink hover:text-triviusBlue">
+                            Review your answers
+                            </a>
                         </td>
-                        <td class="px-4 py-2 text-center" v-else >
-                            <a href="#" @click.prevent="goToQuestions(player.id)">{{ player.status }}</a>
+                        <td class="px-4 py-2 text-center" v-else>
+                            {{ player.status }}
                         </td>
                         <td class="px-4 py-2 text-center">
                             <div v-if="$page.props.auth.user.id === $page.props.host.id" >
@@ -130,29 +132,7 @@ const goToAnswers = () => {
                                     &nbsp;Resend Invitation
                                 </SecondaryButton>
                             </div>
-                            <div v-if="$page.props.auth.user.id === player.id" >
-                                <div v-if="player.status.includes('Invitation')">
-                                    <div>Please RSVP</div>
-                                    <PrimaryButton
-                                        @click="handlePlayerAction(player, 'updateAttendance', 'put', { attendance: 1 })"
-                                        class="mr-5"
-                                        >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 mr-1">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                        </svg>
-                                        I'll be there
-                                    </PrimaryButton>
-                                    <DangerButton
-                                        @click="handlePlayerAction(player, 'updateAttendance', 'put', { attendance: 0 })"
-                                        >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 mr-1">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                        </svg>
-
-                                         I can't make it
-                                    </DangerButton>
-                                </div>
-                            </div>
+                            <div v-else>&nbsp</div>
                         </td>
                     </tr>
                 </template>

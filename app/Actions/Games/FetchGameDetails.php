@@ -12,7 +12,7 @@ class FetchGameDetails
         // Check if the user has questions sent
         $hasQuestions = GameUser::where('game_id', $game->id)
             ->where('user_id', $userId)
-            ->where('status', 'Questions Sent')
+            ->where('status','like', '%invitation%')
             ->first();
 
         if ($hasQuestions) {
