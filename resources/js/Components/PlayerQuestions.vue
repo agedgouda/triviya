@@ -87,7 +87,7 @@ const submitAnswers = () => {
             </div>
 
             <!-- Submit button -->
-            <PrimaryButton type="submit" class="mt-4">Submit</PrimaryButton>
+            <PrimaryButton type="submit" class="mt-4 mb-4 ml-4">Submit</PrimaryButton>
         </form>
     </div>
 </template>
