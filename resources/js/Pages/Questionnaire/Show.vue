@@ -1,18 +1,10 @@
 <script setup>
 import { ref } from 'vue';
 import { formatDate } from '@/utils';
-import { useForm } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
 import PlayerQuestions from '@/Components/PlayerQuestions.vue';
-
-// Import components
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 
 // Props for game and questions
 const props = defineProps({
@@ -22,52 +14,58 @@ const props = defineProps({
     answers: Array,
 });
 
-const error = ref();
-
-// Create a reactive form object using useForm
-const form = useForm({
-    answers: {}, // Store answers keyed by question ID
-});
-
-// Populate form.answers based on the answers prop
-if (props.answers && props.answers.length > 0) {
-    const initialAnswers = {};
-    props.answers.forEach(answer => {
-        initialAnswers[answer.question_id] = answer.answer;
-    });
-    form.answers = initialAnswers; // Replace form.answers with a reactive object
-}
-
-// Submit answers function
-const submitAnswers = () => {
-    form.post(route('questions.playerAnswers', { game: props.game.id, user: props.user.id }), {
-        onSuccess: (response) => {
-            console.log(response);
-        },
-        onError: (errors) => {
-            error.value = errors.message;
-        },
-    });
-};
+const { props: pageProps } = usePage();
+const showWelcome = ref(true);
+showWelcome.value =  pageProps.auth.user.id ===  props.user.id ? false : true;
 </script>
 
 <template>
-    <QuestionsLayout title="Questions">
-    <template #header>
-        <div>{{game.name}}</div>
-        <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
-        <div class="text-base">{{ formatDate(game.date_time) }}</div>
-        <div class="text-base">{{ game.location }}</div>
-    </template>
 
-    <div class="p-5">
-        <div class="ml-4 mb-4">
-            Welcome, {{ user.first_name }} {{ user.last_name }}.
-            <div v-if="!user.has_registered">
-                Once you've completed your quiz you will be able to register your account change any answers before the game as well as host your own game!
+    <div v-if="showWelcome">
+        <QuestionsLayout title="Questions">
+            <div class="flex justify-center">
+                <div class="pt-3 text-center max-w-2xl">
+                    <div class="mb-4">
+                        <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
+                        <h1 class="text-lg font-bold">Welcome to Trivus</h1>
+                        <p class="mb-4">The party game where you are the trivia!</p>
+                        <ul class="list-disc text-left inline-block">
+                            <li>Answer a few fun questions about yourself. You’ll have to register to save your answers.</li>
+                            <li>This way, you can change them right up until party time.</li>
+                            <li>Everyone invited to the party will do the same.</li>
+                            <li>Then, at the party, teams will compete to guess who said what.</li>
+                            <li>Match people to answers and score points.</li>
+                            <li>The team with the highest score takes home the trophy.</li>
+                        </ul>
+                        <div class="mt-4">
+                            <a href="#" class="text-pink-600 cursor:pointer" @click="showWelcome = false">Click here to get started</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="user" />
+        </QuestionsLayout>
+
     </div>
-</QuestionsLayout>
+
+    <div v-else>
+        <QuestionsLayout title="Questions">
+            <template #header>
+                <div>{{game.name}}</div>
+                <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
+                <div class="text-base">{{ formatDate(game.date_time) }}</div>
+                <div class="text-base">{{ game.location }}</div>
+            </template>
+
+            <div class="pl-5 pt-3">
+                <div class="ml-4 mb-4">
+                    Welcome, {{ user.first_name }} {{ user.last_name }}.
+                    <div v-if="!user.has_registered">
+                        Once you’ve completed the quiz, please create an account to save and change your answers at any time before the party.
+                        Creating an account also enables you to make your own Trivius Game at any time.
+                    </div>
+                </div>
+                <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="user" />
+            </div>
+        </QuestionsLayout>
+    </div>
 </template>

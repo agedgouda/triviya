@@ -115,7 +115,7 @@ const goToAnswers = () => {
                         <td class="px-4 py-2">{{ player.first_name }} {{ player.last_name }}</td>
                         <td class="px-4 py-2 text-left">{{ player.email }}</td>
                         <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
-                            <a :href="route('games.showQuestions', { game: game.id, user: player.id })"
+                            <a :href="route('questions.showQuestions', { game: game.id, user: player.id })"
                             class="cursor-pointer text-triviusPink hover:text-triviusBlue">
                             Review your answers
                             </a>

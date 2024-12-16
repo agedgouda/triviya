@@ -214,11 +214,8 @@ class GameController extends Controller
                 ]);
             }
         }
-        if (count($game->questions) === count($gameUser->answers) && !$isHost && auth()->id() && $request->route()->getName() == 'questions.showQuestions') {
-            return redirect()->route('games.showQuestions', ['game' => $game->id, 'user' => $user->id]);
-        }
 
-       $page = $request->route()->getName() == 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
+        $page = $request->route()->getName() == 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
 
         return Inertia::render($page, [
             'game' => $game->load('host'),

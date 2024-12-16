@@ -82,6 +82,7 @@ const createGame = () => {
                 {{ $page.props.flash.message }}
             </div>
 
+
             <template v-if="routeName === 'games'">
                 <div class="mx-5">
                 <div class="text-lg font-bold">Welcome to Trivus. The party game where you are the trivia!</div>

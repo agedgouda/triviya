@@ -3,11 +3,9 @@ import { ref } from 'vue';
 import { useForm,usePage,router } from '@inertiajs/vue3';
 
 // Import components
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 
@@ -87,7 +85,7 @@ const submitAnswers = () => {
             </div>
 
             <!-- Submit button -->
-            <PrimaryButton type="submit" class="mt-4 mb-4 ml-4">Submit</PrimaryButton>
+            <SecondaryButton type="submit" class="mt-4 mb-4 ml-4">Submit</SecondaryButton>
         </form>
     </div>
 </template>
