@@ -22,7 +22,7 @@ class InvitePlayer extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        $invitee, 
+        $invitee,
         $game
     ) {
         $this->invitee = $invitee;
@@ -37,7 +37,7 @@ class InvitePlayer extends Mailable
     {
         return new Envelope(
             from: new Address(config('mail.from.address'), config('mail.from.name')),
-            subject: 'You\'re Invited',
+            subject: $this->game->host->first_name.' '.$this->game->host->last_name.' has invited you to a party',
         );
     }
 
