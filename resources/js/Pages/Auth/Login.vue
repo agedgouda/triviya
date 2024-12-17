@@ -8,23 +8,40 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
-defineProps({
+const props = defineProps({
     canResetPassword: Boolean,
     status: String,
     flash: Object,
+    game: {
+        type: Object,
+        default: () => ({}),
+    },
+    user: {
+        type: Object,
+        default: () => ({}),
+    },
+    redirect_to: {
+        type: String,
+        default: '',
+    },
 });
 
 const form = useForm({
-    email: '',
+    email: props.user.email || '',
+    game: props.game || '',
+    user: props.user || '',
+    redirect_to: props.redirect_to || '',
     password: '',
     remember: false,
 });
 
 const submit = () => {
+    const postRoute = Object.keys(props.game).length === 0 ? 'login' : 'login.submit'
+    console.log(Object.keys(props.game).length)
     form.transform(data => ({
         ...data,
         remember: form.remember ? 'on' : '',
-    })).post(route('login'), {
+    })).post(route(postRoute, [props.game.id, props.user.id] ), {
         onFinish: () => form.reset('password'),
     });
 };

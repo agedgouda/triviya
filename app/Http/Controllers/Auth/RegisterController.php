@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -13,51 +14,45 @@ class RegisterController extends Controller
     /**
      * Show the prepopulated registration form for a user.
      */
-    public function show($userId = null)
+    public function show(Request $request, Game $game = null, User $user = null)
     {
-        $user = null;
-    
-        if ($userId) {
-            // Use find() to prevent the 404 exception from being thrown
-            $user = User::find($userId);
-    
-            // If no user is found, throw a 422 error
-            if (!$user) {
-                abort(422, 'No user found with the given ID.');
-            }
-    
-            // If user exists but already has a password, redirect to login
-            if ($user->password) {
-                return redirect()->route('login')->with('error', 'This user has already registered.');
-            }
+
+        // If user exists but already has a password, redirect to login
+        if ($user->password) {
+            return redirect()->route('login')->with('error', 'This user has already registered.');
         }
-    
+
+        $redirectTo = request()->input('redirect_to', route('games'));
+
         // Pass an empty object if no user is found
         return Inertia::render('Auth/Register', [
             'user' => $user ?? (object) [], // Pass an empty object if user is null
+            'game' => $game ?? (object) [], // Pass an empty object if user is null
+            'redirect_to' => $redirectTo
         ]);
     }
 
     /**
      * Handle the registration process.
      */
-    public function store(Request $request, $userId = null)
+    public function store(Request $request, Game $game = null, User $user = null)
     {
-        if ($userId) {
+
+        if ($user) {
             // Case 1: Update an existing user
-            $user = User::findOrFail($userId);
-    
+            $user = User::findOrFail($user->id);
+
             if ($user->password) {
                 return redirect()->route('login')->with('error', 'This user has already registered.');
             }
-    
+
             $validated = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:users,email,' . $user->id, // Unique except current user
                 'password' => 'required|string|min:8|confirmed',
             ]);
-    
+
             $user->update([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
@@ -72,7 +67,7 @@ class RegisterController extends Controller
                 'email' => 'required|email|max:255|unique:users,email', // Ensure email is unique
                 'password' => 'required|string|min:8|confirmed',
             ]);
-    
+
             $user = User::create([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
@@ -80,10 +75,11 @@ class RegisterController extends Controller
                 'password' => Hash::make($validated['password']),
             ]);
         }
-    
+
         // Log the user in
         auth()->login($user);
-    
-        return redirect()->route('games')->with('success', 'Registration successful!');
+        $redirectTo = request()->input('redirect_to', route('games'));
+
+        return redirect()->intended($redirectTo)->with('message', 'Registration Successful!');
     }
 }

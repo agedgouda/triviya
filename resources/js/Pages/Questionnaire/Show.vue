@@ -16,7 +16,8 @@ const props = defineProps({
 
 const { props: pageProps } = usePage();
 const showWelcome = ref(true);
-showWelcome.value =  pageProps.auth.user.id ===  props.user.id ? false : true;
+showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.user.id ? false : true;
+
 </script>
 
 <template>
@@ -26,6 +27,7 @@ showWelcome.value =  pageProps.auth.user.id ===  props.user.id ? false : true;
             <div class="flex justify-center">
                 <div class="pt-3 text-center max-w-2xl">
                     <div class="mb-4">
+                        {{ $page.props.auth.user }}
                         <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
                         <h1 class="text-lg font-bold">Welcome to Trivus</h1>
                         <p class="mb-4">The party game where you are the trivia!</p>

@@ -10,9 +10,17 @@ import TextInput from '@/Components/TextInput.vue';
 
 
 const props = defineProps({
+    game: {
+        type: Object,
+        default: () => ({}), // Ensure a default empty object
+    },
     user: {
         type: Object,
         default: () => ({}), // Ensure a default empty object
+    },
+    redirect_to: {
+        type: String,
+        default: '',
     },
     flash: Object,
 });
@@ -21,6 +29,7 @@ const form = useForm({
     first_name: props.user.first_name || '',
     last_name: props.user.last_name || '',
     email: props.user.email || '',
+    redirect_to: props.redirect_to || '',
     password: '',
     password_confirmation: '',
     terms: false,
@@ -29,7 +38,7 @@ const form = useForm({
 const submit = () => {
 
     if(props.user) {
-        form.post(route('register.submit', props.user.id), {
+        form.post(route('register.submit',  [props.game.id, props.user.id]), {
                 onSuccess: () => {
                     console.log('Registration successful!');
                 },

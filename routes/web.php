@@ -8,6 +8,7 @@ use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Middleware\EnsureIsAdmin;
 use Inertia\Inertia;
 
@@ -29,8 +30,12 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/register/{userId?}', [RegisterController::class, 'show'])->name('register.prepopulated');
-Route::post('register/{userId?}', [RegisterController::class, 'store'])->name('register.submit');
+Route::get('/register/{game?}/{user?}', [RegisterController::class, 'show'])->name('register.prepopulated');
+Route::post('register/{game?}/{user?}', [RegisterController::class, 'store'])->name('register.submit');
+
+Route::get('/login/{game?}/{user?}', [LoginController::class, 'show'])->name('login.prepopulated');
+Route::post('/playerlogin/{game}/{user}', [LoginController::class, 'login'])->name('login.submit');
+
 
 //Show questions form without logging in, only works if no questions have been answered
 Route::prefix('questions')->group(function () {

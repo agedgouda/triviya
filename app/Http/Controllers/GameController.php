@@ -202,15 +202,19 @@ class GameController extends Controller
         if (count($game->questions) === count($gameUser->answers) && !$isHost && !auth()->id()) {
             if($user->password) {
                 session()->flash('message', 'You must login to change your answers.');
-                return redirect()->route('login', [
-                    'redirect_to' => route('games.showQuestions', ['game' => $game->id, 'user' => $user->id])
+                return redirect()->route('login.prepopulated', [
+                    'game' => $game->id,
+                    'user' => $user->id,
+                    'redirect_to' => route('questions.showQuestions', ['game' => $game->id, 'user' => $user->id])
                 ]);
             }
             else {
                 session()->flash('message', 'You must register to change your answers.');
+
                 return redirect()->route('register.prepopulated', [
-                    'userId' => $user->id,
-                    'redirect_to' => route('games.showQuestions', ['game' => $game->id, 'user' => $user->id]),
+                    'game' => $game->id,
+                    'user' => $user->id,
+                    'redirect_to' => route('games.show', ['game' => $game->id]),
                 ]);
             }
         }
