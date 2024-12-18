@@ -34,8 +34,8 @@ const logout = () => {
 
         <Banner />
 
-        <div class="min-h-screen bg-blue-50 ">
-            <nav class="bg-white border-b border-gray-100">
+        <div class="min-h-screen bg-triviusBlue ">
+            <nav class="bg-triviusBlue">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 sm:px-5 lg:px-6">
                     <div class="flex justify-between h-16">
@@ -177,8 +177,8 @@ const logout = () => {
             </nav>
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-white shadow">
-                <div class="max-w-7xl py-3 px-5 sm:px-6 lg:px-10">
+            <header v-if="$slots.header" class="bg-triviusBlue">
+                <div class="max-w-7xl py-5 px-5 sm:px-6 lg:px-10 text-blue-50">
                     <h2 class="font-semibold text-xl">
                         <slot name="header" />
                     </h2>
@@ -187,9 +187,9 @@ const logout = () => {
 
             <!-- Page Content -->
             <main>
-                <div class="py-12">
+                <div class="">
                     <div class="mx-auto sm:px-6 lg:px-8">
-                        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 text-indigo-900 sm:rounded-lg">
                             <slot />
                         </div>
                     </div>

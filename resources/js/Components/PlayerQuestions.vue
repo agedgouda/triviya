@@ -6,7 +6,7 @@ import { useForm,usePage,router } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 
@@ -180,11 +180,11 @@ const submitAnswers = () => {
             <!-- Submit button -->
 
             <div class="mt-4">
-                <SecondaryButton type="submit">Submit</SecondaryButton>
+                <PrimaryButton type="submit">Submit</PrimaryButton>
 
-            <DangerButton type="button" class="mt-4 ml-4" v-if="$page.props.auth.user" @click="router.visit(route('games.show', { game: game.id }))">Cancel</DangerButton>
+                <SecondaryButton type="button" class="mt-4 ml-4" v-if="$page.props.auth.user" @click="router.visit(route('games.show', { game: game.id }))">Cancel</SecondaryButton>
 
-            <div v-if="!user.has_registered" class="text-sm">
+                <div v-if="!user.has_registered" class="text-sm">
                     After clicking submit you will be sent to a registration page
                 </div>
             </div>

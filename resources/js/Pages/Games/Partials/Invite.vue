@@ -33,7 +33,7 @@ const submit = () => {
 </script>
 
 <template>
-    <div class="mt-10 ml-10">
+    <div class="mt-5">
         <div class="mb-3 font-bold">Invite Players</div>
         <form @submit.prevent="submit">
             <div class="flex">
@@ -43,7 +43,7 @@ const submit = () => {
                         id="first_name"
                         v-model="form.first_name"
                         type="text"
-                        class="mt-1 block w-full"
+                        class="block w-full"
                         required
 
                     />
@@ -55,7 +55,7 @@ const submit = () => {
                         id="last_name"
                         v-model="form.last_name"
                         type="text"
-                        class="mt-1 block w-full"
+                        class="block w-full"
                         required
 
                     />
@@ -67,23 +67,21 @@ const submit = () => {
                         id="email"
                         v-model="form.email"
                         type="email"
-                        class="mt-1 block w-96"
+                        class="block w-96"
                         required
 
                     />
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
-            </div>
+                <div class="flex items-center justify-end mt-4">
 
-            <div class="h-3 mt-2 ml-1 text-red-500">
+                    <PrimaryButton class="mr-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        Invite Player
+                    </PrimaryButton>
+                </div>
+            </div>
+            <div class="h-3 mt-2 text-red-500">
                 {{ $page.props.error }}
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-
-                <PrimaryButton class="mr-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Invite Player
-                </PrimaryButton>
             </div>
         </form>
 

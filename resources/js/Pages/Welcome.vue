@@ -67,7 +67,7 @@ function handleImageError() {
         <div class="relative min-h-screen flex flex-col items-center justify-center ">
             <main class="h-96">
                 <div class="justify-center">
-                    <ApplicationLogo class="block h-48 w-auto" />
+                    <ApplicationLogo class="block h-52" />
                 </div>
                 <div class="text-center text-3xl pt-10 font-bold">The trivia game where you become the trivia!</div>
             </main>

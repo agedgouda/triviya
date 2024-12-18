@@ -68,9 +68,7 @@ const goToAnswers = () => {
 </script>
 
 <template>
-    <div class="m-10">
-       <div class="mb-2">
-            <div class="font-bold">{{ game.name }}</div>
+            <div class="text-lg font-bold">{{ game.name }}</div>
             <div><span class="font-bold">Mode: </span>{{ game.mode.name }}</div>
             <div><span class="font-bold">Location: </span>{{ game.location }}</div>
             <div>{{ formatDate(game.date_time) }}</div>
@@ -109,16 +107,14 @@ const goToAnswers = () => {
                         :key="player.id"
                         :class="[
                             rowClass,
-                            $page.props.auth.user.id === player.id ? 'bg-triviusBlueLight' : ''
+                            $page.props.auth.user.id === player.id ? 'bg-triviusBlueLight cursor-pointer text-red-600' : ''
                         ]"
+                        @click="($page.props.auth.user.id === player.id) && $inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
                     >
                         <td class="px-4 py-2">{{ player.first_name }} {{ player.last_name }}</td>
                         <td class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">{{ player.email }}</td>
                         <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
-                            <a :href="route('questions.showQuestions', { game: game.id, user: player.id })"
-                            class="cursor-pointer text-triviusPink hover:text-triviusBlue">
                             Review your answers
-                            </a>
                         </td>
                         <td class="px-4 py-2 text-center" v-else>
                             {{ player.status }}
@@ -138,6 +134,5 @@ const goToAnswers = () => {
                 </template>
                 </Table>
             </div>
-        </div>
-    </div>
+
 </template>

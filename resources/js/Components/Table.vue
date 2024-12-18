@@ -28,7 +28,7 @@ const props = defineProps({
 const rowClass = computed(() => [
     'border border-triviusBlue',
     props.hasHover || props.hasPointer
-        ? 'cursor-pointer hover:bg-triviusBlueLight hover:text-triviusPink'
+        ? 'cursor-pointer hover:bg-triviusBlueLight hover:text-red-600'
         : '',
 ].join(' '));
 </script>

@@ -19,6 +19,7 @@ export default {
             },colors: {
                 triviusBlue: '#2297B2',
                 triviusBlueLight: '#7DC9D9',
+                triviusContentLightBlue: '#E3F4F7',
                 triviusPink: '#FD67C4',
               },
         },

@@ -25,7 +25,6 @@ const fetchPage = (url) => {
 </script>
 
 <template>
-  <div class="mx-5">
     <Table :hasHover="true">
         <template #header>
             <th class="px-4 py-2 text-left">Game Name</th>
@@ -51,8 +50,8 @@ const fetchPage = (url) => {
         </template>
     </Table>
 
-      <div v-if="links.length > 3">
-      <!-- Pagination Links -->
+        <div v-if="links.length > 3">
+        <!-- Pagination Links -->
         <div class="mt-4 flex justify-center">
             <nav class="inline-flex rounded-md shadow">
                 <button
@@ -70,8 +69,7 @@ const fetchPage = (url) => {
                 </button>
             </nav>
         </div>
-      </div>
-  </div>
+    </div>
 </template>
 
 <style scoped>
