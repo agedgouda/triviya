@@ -100,9 +100,9 @@ const goToAnswers = () => {
                 <Table class="min-w-full table-auto ">
                     <template #header>
                             <th class="px-4 py-2 text-left">Name</th>
-                            <th class="px-4 py-2 text-left">Email</th>
+                            <th class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">Email</th>
                             <th class="px-4 py-2 text-center">Status</th>
-                            <th class="px-4 py-2 text-center"></th>
+                            <th class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id"></th>
                     </template>
                     <template #default="{ rowClass }">
                     <tr v-for="player in players"
@@ -113,7 +113,7 @@ const goToAnswers = () => {
                         ]"
                     >
                         <td class="px-4 py-2">{{ player.first_name }} {{ player.last_name }}</td>
-                        <td class="px-4 py-2 text-left">{{ player.email }}</td>
+                        <td class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">{{ player.email }}</td>
                         <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
                             <a :href="route('questions.showQuestions', { game: game.id, user: player.id })"
                             class="cursor-pointer text-triviusPink hover:text-triviusBlue">
@@ -123,8 +123,8 @@ const goToAnswers = () => {
                         <td class="px-4 py-2 text-center" v-else>
                             {{ player.status }}
                         </td>
-                        <td class="px-4 py-2 text-center">
-                            <div v-if="$page.props.auth.user.id === $page.props.host.id" >
+                        <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id" >
+                            <div>
                                 <SecondaryButton @click="handlePlayerAction(player, 'resendInvite', 'post')" v-if="player.status.includes('Invitation') || player.status ==='Error sending invitation'" >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
@@ -132,7 +132,7 @@ const goToAnswers = () => {
                                     &nbsp;Resend Invitation
                                 </SecondaryButton>
                             </div>
-                            <div v-else>&nbsp</div>
+
                         </td>
                     </tr>
                 </template>
