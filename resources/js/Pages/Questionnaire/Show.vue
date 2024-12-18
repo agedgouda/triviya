@@ -50,22 +50,29 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
         <QuestionsLayout title="Questions">
             <template #header>
                 <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
-                <div>{{game.name}}</div>
-                <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
-                <div class="text-base">When: {{ formatDate(game.date_time) }}</div>
-                <div class="text-base">Where: {{ game.location }}</div>
+                <div> Questions for {{game.name}}</div>
 
-                <div class="text-base mt-5">
-                Welcome, {{ user.first_name }} {{ user.last_name }}.
-                    <div v-if="!user.has_registered">
-                        Once you’ve completed the quiz, you will be asked to complete your account registration.
-                        Creating an account is free, and will let you change your questions up until game day.
-                        It also enables you to make your own Trivius Game!
-                    </div>
-                </div>
             </template>
+                <div class="text-base mt-5 mb-5">
+                    Welcome, {{ user.first_name }} {{ user.last_name }}!
+                    <p>
+                        Here are your questions for the game
+                        {{ game.host[0].first_name }} {{ game.host[0].last_name }} is hosting at {{ game.location }}
+                        on {{ formatDate(game.date_time) }}.
 
-            <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="user" />
+                        <div v-if="user.has_registered && !$page.props.auth.user" class="mt-3">
+                            Once you’ve completed the quiz, you will be asked to log into the system. Once you've logged in you can review and
+                            update your answers as well as see who else is playing.
+                        </div>
+                        <div v-if="!user.has_registered">
+                            Once you’ve completed the quiz, you will be asked to complete your account registration.
+                            Creating an account is free, and will let you change your questions up until game day.
+                            It also enables you to make your own Trivius Game!
+                        </div>
+                    </p>
+                </div>
+
+                <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="user" />
 
         </QuestionsLayout>
     </div>

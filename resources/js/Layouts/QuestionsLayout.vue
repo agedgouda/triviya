@@ -21,10 +21,10 @@ defineProps({
         <Head :title="title" />
         <Banner />
 
-        <div class="min-h-screen pt-6 sm:pt-0 bg-triviusBlue">
+        <div class="min-h-screen bg-triviusBlue">
             <!-- Page Heading -->
             <header v-if="$slots.header">
-                <div class="max-w-7xl mx-auto mt-6 py-6 text-white">
+                <div class="max-w-7xl mx-auto py-6 text-blue-50">
                     <h2 class="font-semibold text-xl">
                         <slot name="header" />
                     </h2>
@@ -33,7 +33,7 @@ defineProps({
 
             <!-- Page Content -->
             <main class="w-full">
-                <div class="max-w-7xl mx-auto px-5 py-6 sm:px-6 lg:px-10 text-triviusBlue bg-blue-50 shadow-md overflow-hidden sm:rounded-lg">
+                <div class="max-w-7xl mx-auto px-5 py-6 sm:px-6 lg:px-10 text-indigo-900 bg-blue-50 shadow-md overflow-hidden sm:rounded-lg">
                     <slot />
                 </div>
             </main>
