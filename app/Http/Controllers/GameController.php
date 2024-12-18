@@ -245,7 +245,22 @@ class GameController extends Controller
             ]);
         }
         //Redirect to the game show page
-        return redirect()->back()->with('status', $response);
+        if($user->password) {
+            session()->flash('message', 'You must login to change your answers.');
+            return redirect()->route('login.prepopulated', [
+                'game' => $game->id,
+                'user' => $user->id,
+            ]);
+        }
+        else {
+            session()->flash('message', 'You must register to change your answers.');
+
+            return redirect()->route('register.prepopulated', [
+                'game' => $game->id,
+                'user' => $user->id,
+                'redirect_to' => route('games.show', ['game' => $game->id]),
+            ]);
+        }
     }
 
     public function showAnswers(Game $game)

@@ -16,7 +16,7 @@ class LoginController extends Controller
     public function show(Game $game, User $user)
     {
 
-        $redirectTo = request()->input('redirect_to', route('games'));
+        $redirectTo = request()->input('redirect_to', route('games.show', ['game' => $game->id]));
 
         return inertia('Auth/Login', [
             'game' => $game,
@@ -28,10 +28,10 @@ class LoginController extends Controller
     /**
      * Handle the login submission.
      */
-    public function login(Request $request)
+    public function login(Request $request, Game $game)
     {
         $credentials = $request->only('email', 'password');
-        $redirectTo = $request->input('redirect_to', route('games'));
+        $redirectTo = $request->input('redirect_to', route('games.show', ['game' => $game->id]));
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();

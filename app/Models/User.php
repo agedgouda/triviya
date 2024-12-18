@@ -50,6 +50,14 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
+    public function getHasRegisteredAttribute()
+    {
+        return !empty($this->password);
+    }
+
+
+
+
     /**
      * The accessors to append to the model's array form.
      *
@@ -57,6 +65,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'has_registered'
     ];
 
     /**

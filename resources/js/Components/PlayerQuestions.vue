@@ -25,7 +25,6 @@ const form = useForm({
     answers: {}, // Store answers keyed by question ID
 });
 
-
 const questionDateValues = reactive({});
 
 // Populate form.answers based on the answers prop
@@ -121,12 +120,11 @@ const submitAnswers = () => {
 </script>
 
 <template>
-    <div>
         <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
         <form @submit.prevent="submitAnswers">
             <!-- Render each question -->
-            <div v-for="question in questions" :key="question.id" class="mb-4 ml-4">
-                <InputLabel :for="'question-' + question.id" :value="question.question_text" />
+            <div v-for="question in questions" :key="question.id" class="mb-4">
+                <InputLabel :for="'question-' + question.id" :value="question.question_text" class="text-lg"/>
 
                 <!-- Render input based on question type -->
                 <template v-if="question.question_type === 'text'">
@@ -180,9 +178,16 @@ const submitAnswers = () => {
             </div>
 
             <!-- Submit button -->
-            <SecondaryButton type="submit" class="mt-4 mb-4 ml-4">Submit</SecondaryButton>
-            <DangerButton type="button" class="mt-4 mb-4 ml-4" v-if="$page.props.auth.user" @click="router.visit(route('games.show', { game: game.id }))">Cancel</DangerButton>
+
+            <div class="mt-4">
+                <SecondaryButton type="submit">Submit</SecondaryButton>
+
+            <DangerButton type="button" class="mt-4 ml-4" v-if="$page.props.auth.user" @click="router.visit(route('games.show', { game: game.id }))">Cancel</DangerButton>
+
+            <div v-if="!user.has_registered" class="text-sm">
+                    After clicking submit you will be sent to a registration page
+                </div>
+            </div>
 
         </form>
-    </div>
 </template>
