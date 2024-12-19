@@ -55,8 +55,10 @@ class User extends Authenticatable
         return !empty($this->password);
     }
 
-
-
+    public function getNameAttribute()
+    {
+        return urlencode($this->first_name).' '.urlencode($this->last_name);
+    }
 
     /**
      * The accessors to append to the model's array form.
@@ -65,7 +67,8 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
-        'has_registered'
+        'has_registered',
+        'name'
     ];
 
     /**
