@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function getNameAttribute()
     {
-        return urlencode($this->first_name).' '.urlencode($this->last_name);
+        return $this->first_name.' '.$this->last_name;
     }
 
     /**

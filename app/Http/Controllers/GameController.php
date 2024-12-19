@@ -12,16 +12,17 @@ use App\Models\Answer;
 use App\Models\GameUser;
 use App\Http\Requests\GameRequest;
 use App\Http\Requests\InvitePlayerRequest;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\InvitePlayer;
 use App\Services\MailService;
 use App\Actions\Games;
 use Carbon\Carbon;
+
 
 class GameController extends Controller
 {
@@ -287,4 +288,23 @@ class GameController extends Controller
         ]);
 
     }
+
+    public function createGameQuestions(Game $game)
+    {
+        $response = GameActions::createGameQuestions($game);
+        return ['status' => 'success', 'message' => $response ];
+    }
+
+    public function showGameQuestions(Game $game) {
+        $questions = DB::table('game_user_question')->where('game_id', $game->id)->get();
+        if(!count($questions)){
+            $questions = GameActions::createGameQuestions($game);
+        }
+
+        return Inertia::render('Event/Show', [
+            'questions' => $questions,
+        ]);
+
+    }
+
 }
