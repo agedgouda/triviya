@@ -111,7 +111,7 @@ const goToAnswers = () => {
                         ]"
                         @click="($page.props.auth.user.id === player.id) && $inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
                     >
-                        <td class="px-4 py-2">{{ player.first_name }} {{ player.last_name }}</td>
+                        <td class="px-4 py-2">{{ player.profile_photo_url }} {{ player.first_name }} {{ player.last_name }}s</td>
                         <td class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">{{ player.email }}</td>
                         <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
                             Review your answers
