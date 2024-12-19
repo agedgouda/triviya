@@ -302,7 +302,7 @@ class GameController extends Controller
         }
 
         return Inertia::render('Event/Show', [
-            'questions' => $questions,
+            'questions' => $questions->shuffle(),
         ]);
 
     }
