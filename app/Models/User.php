@@ -96,4 +96,8 @@ class User extends Authenticatable
                     ->withPivot('is_host');
     }
 
+    public function defaultProfilePhotoUrl()
+    {
+        return 'https://ui-avatars.com/api/?name='.$this->name.'&color=EBF4FD&background=312E81';
+    }
 }

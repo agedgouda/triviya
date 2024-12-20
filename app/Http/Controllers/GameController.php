@@ -103,6 +103,8 @@ class GameController extends Controller
                     'id' => $player->id,
                     'first_name' => $player->first_name,
                     'last_name' => $player->last_name,
+                    'name' => $player->name,
+                    'profile_photo_url' => $player->profile_photo_url,
                     'email' => $player->email,
                     'status' => $player->pivot->status,  // Ensures the 'status' is passed
                 ];

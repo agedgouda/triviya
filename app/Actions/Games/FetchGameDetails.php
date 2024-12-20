@@ -24,7 +24,6 @@ class FetchGameDetails
             ];
         }
 
-        // Fetch game details
         $players = $game->players;
         $host = $game->host;
         $questions = $game->questions;

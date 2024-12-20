@@ -13,7 +13,6 @@ class Game extends Model
 
     protected $fillable = [
         'name',
-        'last_name',
         'date_time',
         'mode_id',
         'location'

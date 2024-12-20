@@ -75,8 +75,6 @@ const createQuestions = async () => {
     console.error('Error creating questions:', error);
   }
 };
-
-
 </script>
 
 <template>
@@ -129,7 +127,10 @@ const createQuestions = async () => {
                         ]"
                         @click="($page.props.auth.user.id === player.id) && $inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
                     >
-                        <td class="px-4 py-2">{{ player.profile_photo_url }} {{ player.first_name }} {{ player.last_name }}</td>
+                    <td class="px-4 py-2 flex items-center space-x-2">
+                        <img class="w-8 h-8 rounded-full object-cover" :src="player.profile_photo_url" alt="Player Photo" />
+                        <span>{{ player.name }}</span>
+                    </td>
                         <td class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">{{ player.email }}</td>
                         <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
                             Review your answers
