@@ -73,3 +73,5 @@ class CreateGameQuestions
         return $questions;
     }
 }
+//two reg to one pop culture
+//50 questions per game

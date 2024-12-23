@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, reactive } from 'vue';
+import { ref, watch, reactive } from 'vue';
 import { useForm,usePage,router } from '@inertiajs/vue3';
 
 // Import components
@@ -117,6 +117,10 @@ const submitAnswers = () => {
     });
 };
 
+const cancel = () => {
+    router.visit(route('games.show', { game: props.game.id }))
+}
+
 </script>
 
 <template>
@@ -182,7 +186,7 @@ const submitAnswers = () => {
             <div class="mt-4">
                 <PrimaryButton type="submit">Submit</PrimaryButton>
 
-                <SecondaryButton type="button" class="mt-4 ml-4" v-if="$page.props.auth.user" @click="router.visit(route('games.show', { game: game.id }))">Cancel</SecondaryButton>
+                <SecondaryButton type="button" class="mt-4 ml-4" v-if="$page.props.auth.user" @click="cancel">Cancel</SecondaryButton>
 
                 <div v-if="!user.has_registered" class="text-sm mt-1">
                     After clicking submit you will be sent to a registration page.

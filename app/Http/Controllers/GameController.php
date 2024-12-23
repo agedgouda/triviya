@@ -41,6 +41,7 @@ class GameController extends Controller
         $gamesHosted = GameActions::fetchGames(true);
         $games = GameActions::fetchGames(false);
 
+
         return Inertia::render('Games/Index', [
             'games' => $games,
             'gamesHosted' => $gamesHosted,
@@ -88,6 +89,7 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
+
         $gameDetails =  GameActions::fetchGameDetails($game, auth()->id());
 
         // Handle redirect if the user has questions sent
@@ -110,7 +112,6 @@ class GameController extends Controller
                 ];
             }),
             'host' => $gameDetails['host'],
-            'questions' => $gameDetails['questions'],
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
@@ -185,35 +186,41 @@ class GameController extends Controller
         ];
     }
 
-   public function showQuestions(Game $game, User $user, Request $request)
+    public function showQuestions(Game $game, User $user, Request $request)
     {
-        // Check if the current user is either the player or the host
-        $isHost = false;
-        if ($game->host->id === auth()->id()) {
-            $isHost = true;
+        // Load all necessary relationships for the game
+        $game->load(['host', 'questions']);
 
-        }
+        // Check if the current user is the host
+        $isHost = $game->host->id === auth()->id();
 
-        $gameUser = GameUser::with('answers')->where('user_id', $user->id)->where('game_id', $game->id)->first();
+        // Load GameUser with answers and user relationship
+        $gameUser = GameUser::with(['answers', 'user'])
+            ->where('user_id', $user->id)
+            ->where('game_id', $game->id)
+            ->first();
+
         if (!$gameUser) {
-            // need error page
-            //return redirect()->route($request->route()->getName() , ['game' => $game->id,'user' => $user->id])
-            //    ->withErrors(['msg' => 'Player not found in this game.']);
+            // Handle error: Player not found in this game
+            abort(404, 'Player not found in this game.');
         }
 
-        // If the user has answered all of the questions, they need to log in to see their answers
-        if (count($game->questions) === count($gameUser->answers) && !$isHost && !auth()->id()) {
-            if($user->password) {
+        // If the user has answered all questions and is neither the host nor logged in
+        if (
+            $game->questions->count() === $gameUser->answers->count() &&
+            !$isHost &&
+            !auth()->id()
+        ) {
+            // Redirect to login or register, based on whether the user has a password
+            if ($user->password) {
                 session()->flash('message', 'You must login to change your answers.');
                 return redirect()->route('login.prepopulated', [
                     'game' => $game->id,
                     'user' => $user->id,
-                    'redirect_to' => route('questions.showQuestions', ['game' => $game->id, 'user' => $user->id])
+                    'redirect_to' => route('questions.showQuestions', ['game' => $game->id, 'user' => $user->id]),
                 ]);
-            }
-            else {
+            } else {
                 session()->flash('message', 'You must register to change your answers.');
-
                 return redirect()->route('register.prepopulated', [
                     'game' => $game->id,
                     'user' => $user->id,
@@ -222,17 +229,19 @@ class GameController extends Controller
             }
         }
 
-        $page = $request->route()->getName() == 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
+        // Determine the correct page to render
+        $page = $request->route()->getName() === 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
 
         return Inertia::render($page, [
-            'game' => $game->load('host'),
-            'answers' => $gameUser->answers,
-            'questions' => $game->questions,
-            'user' => $user,
+            'game' => $game, // Already fully loaded
+            'answers' => $gameUser->answers, // Loaded with GameUser
+            'questions' => $game->questions, // Already loaded with the game
+            'user' => $gameUser->user, // Loaded with GameUser
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
     }
+
 
     public function storeAnswers(Request $request, Game $game, User $user)
     {

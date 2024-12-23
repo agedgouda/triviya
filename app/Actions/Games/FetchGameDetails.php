@@ -12,8 +12,8 @@ class FetchGameDetails
         // Check if the user has questions sent
         $hasQuestions = GameUser::where('game_id', $game->id)
             ->where('user_id', $userId)
-            ->where('status','like', '%invitation%')
-            ->first();
+            ->where('status', 'like', '%invitation%')
+            ->exists();
 
         if ($hasQuestions) {
             return [
@@ -24,16 +24,17 @@ class FetchGameDetails
             ];
         }
 
-        $players = $game->players;
-        $host = $game->host;
-        $questions = $game->questions;
-        $game = $game->load(['mode']);
+        // Eager load relationships only when necessary
+        $game = $game->load([
+            'players:id,first_name,last_name,email',
+            'host:id,first_name,last_name,email',
+            'mode',
+        ]);
 
         return [
             'game' => $game,
-            'players' => $players,
-            'host' => $host,
-            'questions' => $questions,
+            'players' => $game->players,
+            'host' => $game->host,
         ];
     }
 }

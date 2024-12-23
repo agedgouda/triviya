@@ -25,12 +25,30 @@ class Game extends Model
                     ->wherePivot('is_host',false);
     }
 
+    public function attendingPlayers()
+    {
+        return $this->players()->whereIn('game_user.status', ['Questions Answered', 'Questions Sent']);
+    }
+
     public function host()
     {
         return $this->belongsToMany(User::class, 'game_user')
                     ->wherePivot('is_host', true);
     }
 
+    public function scopeHostedBy($query, $userId)
+    {
+        return $query->whereHas('host', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        });
+    }
+
+    public function scopeAttendedBy($query, $userId)
+    {
+        return $query->whereHas('players', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        });
+    }
 
     public function getHostAttribute()
     {

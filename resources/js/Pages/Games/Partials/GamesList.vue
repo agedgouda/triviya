@@ -31,7 +31,6 @@ const fetchPage = (url) => {
             <th class="px-4 py-2 text-center">Date and Time</th>
             <th class="px-4 py-2 text-center"># Invited</th>
             <th class="px-4 py-2 text-center"># Attending</th>
-            <th class="px-4 py-2 text-center"># Not Attending</th>
         </template>
         <!-- Use v-slot to access the slot props -->
         <template #default="{ rowClass }">
@@ -43,9 +42,8 @@ const fetchPage = (url) => {
             >
                 <td class="px-4 py-2">{{ game.name }}</td>
                 <td class="px-4 py-2 text-center">{{ formatDate(game.date_time) }}</td>
-                <td class="px-4 py-2 text-center">{{ game.total }}</td>
-                <td class="px-4 py-2 text-center">{{ game.attending }}</td>
-                <td class="px-4 py-2 text-center">{{ game.not_attending }}</td>
+                <td class="px-4 py-2 text-center">{{ game.players_count }}</td>
+                <td class="px-4 py-2 text-center">{{ game.attending_players_count }}</td>
             </tr>
         </template>
     </Table>

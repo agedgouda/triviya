@@ -121,9 +121,8 @@ const createGame = () => {
                     <GameEdit :modes="modes" :game="game" :routeName="routeName"  />
                 </template>
                 <template v-if="routeName === 'games.showQuestions'">
-
                     <PlayerAnswers :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-if="game.host && game.host[0].id===$page.props.auth.user.id"/>
-                    <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="$page.props.auth.user" :routeName="routeName" v-else />
+                    <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="$page.props.auth.user"  v-else />
                 </template>
                 <template v-if="routeName === 'games.showAnswers'">
                     <AllPlayerAnswers :questions="questions"   />
