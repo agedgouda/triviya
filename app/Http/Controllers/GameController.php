@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Mail\InvitePlayer;
@@ -307,6 +308,12 @@ class GameController extends Controller
     }
 
     public function showGameQuestions(Game $game) {
+
+        if (! Gate::allows('view-event-questions', $game)) {
+            abort(403);
+        }
+
+
         $questions = DB::table('game_user_question')->where('game_id', $game->id)->get();
         if(!count($questions)){
             $questions = GameActions::createGameQuestions($game);

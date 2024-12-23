@@ -67,7 +67,7 @@ Route::middleware([
         Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
-        Route::get('/showquestions/{game}', [GameController::class, 'showGameQuestions'])->name('games.showquestions');
+        Route::get('/showquestions/{game}', [GameController::class, 'showGameQuestions'])->name('games.showEventQuestions');
     });
 
 });

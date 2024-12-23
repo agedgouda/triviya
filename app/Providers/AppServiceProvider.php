@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Providers;
+use App\Models\User;
+use App\Models\Game;
 
 use App\Services\GameActions;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::define('view-event-questions', function ($user, Game $game) {
+            return $user->is_admin || $game->host()->where('user_id', $user->id)->exists();
+        });
     }
 }
