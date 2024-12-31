@@ -10,7 +10,6 @@ use Carbon\Carbon;
 
 class CreateGameQuestions
 {
-
     public function handle(Game $game) {
         // Retrieve all players for the given game
         $players = $game->players;
@@ -22,56 +21,94 @@ class CreateGameQuestions
         DB::table('game_user_question')->where('game_id', $game->id)->delete();
 
         // Retrieve all answers that belong to the game users
-        $answers = Answer::whereIn('game_user_id', $gameUserIds)->get();
+        $answers = Answer::whereIn('game_user_id', $gameUserIds)
+            ->whereNot('question_id', '9da1a76e-c444-4fa0-8bd6-97f22924d032')
+            ->get();
 
-        // Group answers by question_id to ensure uniqueness per question
+        // Group answers by question_id to ensure uniqueness
         $uniqueAnswers = $answers->unique('question_id');
 
-        // Ensure that each player gets the same number of questions
+        if ($uniqueAnswers->isEmpty()) {
+            return response()->json(['error' => 'No unique questions available for the game'], 400);
+        }
+
+        // Ensure that there are players
         $playerCount = $players->count();
         if ($playerCount === 0) {
             return response()->json(['error' => 'No players in the game'], 400);
         }
 
-        // Determine the number of questions each player gets
-        $answersPerPlayer = intdiv($uniqueAnswers->count(), $playerCount);
-
-        if ($answersPerPlayer === 0) {
-            return response()->json(['error' => 'Not enough unique questions for all players'], 400);
-        }
-
-        // Shuffle the unique answers for randomness
+        // Shuffle unique answers for randomness
         $shuffledAnswers = $uniqueAnswers->shuffle();
 
-        // Assign answers evenly to each player and save to the database
-        foreach ($players as $player) {
-            // Get the corresponding game_user entry for this player
-            $gameUserId = $game->players()->where('users.id', $player->id)->first()->pivot->id;
+        // Initialize a counter for each player's question count as a plain PHP array
+        $playerQuestionCounts = $players->pluck('id')->mapWithKeys(fn($id) => [$id => 0])->toArray();
+        $totalQuestionCount = 0;
 
-            // Get a slice of answers for this player
-            $playerSlice = $shuffledAnswers->splice(0, $answersPerPlayer);
+        // Assign answers to players, allowing uneven distribution
+        $playerIndex = 0;
 
-            // Insert these assignments into the database
-            foreach ($playerSlice as $answer) {
-                $question = Question::find($answer->question_id);
+        foreach ($shuffledAnswers as $answer) {
+            // Get the current player
+            $player = $players[$playerIndex];
+            $playerIndex = ($playerIndex + 1) % $playerCount; // Move to the next player, wrapping around as needed
 
-                if($question->question_type === 'date'){
-                    $answer->answer = Carbon::createFromFormat('Y-m-d', $answer->answer)->format('M jS, Y');
-                }
+            // Retrieve the related question
+            $question = Question::find($answer->question_id);
 
-                DB::table('game_user_question')->insert([
-                    'game_id' => $game->id,
-                    'player_name' => $player->name,
-                    'question_text' => $question->question_text,
-                    'answer' => $answer->answer,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            // Format the answer if the question type is 'date'
+            if ($question->question_type === 'date') {
+                $answer->answer = Carbon::createFromFormat('Y-m-d', $answer->answer)->format('M jS, Y');
             }
+
+            // Insert the question assignment into the database
+            DB::table('game_user_question')->insert([
+                'game_id' => $game->id,
+                'player_name' => $player->name,
+                'question_text' => $question->question_text,
+                'answer' => $answer->answer,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Increment the player's question count
+
+            $playerQuestionCounts[$player->id]++;
+            $totalQuestionCount++;
         }
+
+        //Figure out how many event questions to add total
+        $questionsToAdd = intdiv(40, $playerCount);
+
+        foreach($playerQuestionCounts as $index=>$player) {
+
+            $numPlayerQuestions = $questionsToAdd - $player;
+            $choseEventQuestions = [];
+            $gameUserId = $game->players()
+                ->where('users.id', $index) // Filter by the user's ID
+                ->first()?->pivot->id;
+
+
+            $answer = Answer::whereHas('gameUser', function ($query) use ($game, $index) {
+                $query->where('id', $game->players()->where('users.id', $index)->first()?->pivot->id);
+            })
+            ->where('question_id', '9da1a76e-c444-4fa0-8bd6-97f22924d032') // Filter by the desired question ID
+            ->first();
+            \Log::info($answer->answer);
+            for($i=0; $i < $numPlayerQuestions; $i++){
+
+                $msg = $gameUserId.' needs '.$i;
+
+                \Log::info($msg);
+            }
+
+        }
+
+        \Log::info($questionsToAdd);
         $questions = DB::table('game_user_question')->where('game_id', $game->id)->get();
         return $questions;
     }
 }
-//two reg to one pop culture
-//50 questions per game
+
+
+
