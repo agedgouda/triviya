@@ -50,8 +50,6 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
         <QuestionsLayout title="Questions">
             <template #header>
                 <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
-                <div> Questions for {{game.name}}</div>
-
             </template>
                 <div class="text-base mt-5 mb-5">
                     Welcome, {{ user.first_name }} {{ user.last_name }}!
@@ -59,6 +57,8 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
                         Here are your questions for the game
                         {{ game.host[0].first_name }} {{ game.host[0].last_name }} is hosting at {{ game.location }}
                         on {{ formatDate(game.date_time) }}.
+
+                        <div class="mt-3">Your answers become the trivia.</div>
 
                         <div v-if="user.has_registered && !$page.props.auth.user" class="mt-3">
                             Once you’ve completed the quiz, you will be asked to log into the system. Once you've logged in you can review and

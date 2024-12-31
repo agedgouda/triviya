@@ -55,15 +55,12 @@ const createGame = () => {
 <template>
     <AppLayout title="Games">
         <template #header>
-
-                <div v-if="routeName !== 'games.showQuestions'">Games</div>
                 <div v-if="routeName === 'games.showQuestions'">
                     <div >{{game.name}}</div>
                     <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
                     <div class="text-base">{{ formatDate(game.date_time) }}</div>
                     <div class="text-base">{{ game.location }}</div>
                 </div>
-
         </template>
 
         <div>
@@ -82,10 +79,6 @@ const createGame = () => {
 
             <div class="mx-5">
                 <template v-if="routeName === 'games'">
-                        <div class="text-lg font-bold">Welcome to Trivus. The party game where you are the trivia!</div>
-
-                        Answer a few fun questions about yourself. Everyone invited to the party will do the same. Then, at the party, teams will compete to guess who said what. Match people to answers and score points. The team with the highest score takes home the trophy.
-
                         <div v-if="gamesHosted.data.length" class="mb-5">
                             <div class="mt-3 font-bold pb-3">Games You Are Hosting</div>
                             <GamesList :games="gamesHosted" />
