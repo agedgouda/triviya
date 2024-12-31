@@ -28,9 +28,9 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
             <div class="pt-3 text-center max-w-2xl">
                 <div class="mb-4">
                     <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
-                    <h1 class="text-2xl font-bold">{{ game.host[0].first_name }} {{ game.host[0].last_name }} has invited you to play Trivius</h1>
-                    <p class="mb-4 text-xl">The party game where you are the trivia!</p>
-                    <ul class="list-disc text-left inline-block text-lg">
+                    <h1 class="text-2xl font-bold">The party game where you are the trivia!</h1>
+                    <p class="mb-4 text-xl">{{ game.host[0].first_name }} {{ game.host[0].last_name }} has invited you to play Trivius</p>
+                    <ul class="list-disc text-left inline-block text-sm sm:text-lg px-10 sm:px-0">
                         <li>Answer a few fun questions about yourself.</li>
                         <li>You’ll have to register to save your answers so you can change them right up until party time.</li>
                         <li>Everyone invited to the party will do the same.</li>
@@ -39,7 +39,7 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
                         <li>The team with the highest score takes home the trophy.</li>
                     </ul>
                     <div class="mt-4">
-                        <SecondaryButton type="submit" class="mt-4 mb-4 ml-4" @click="showWelcome = false">CLICK HERE</SecondaryButton>
+                        <SecondaryButton type="submit" class="mt-4 mb-4 ml-4" @click="showWelcome = false">Get Started</SecondaryButton>
                     </div>
                 </div>
             </div>

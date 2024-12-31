@@ -37,7 +37,6 @@ const form = useForm({
 
 const submit = () => {
     const postRoute = Object.keys(props.game).length === 0 ? 'login' : 'login.submit'
-    console.log(Object.keys(props.game).length)
     form.transform(data => ({
         ...data,
         remember: form.remember ? 'on' : '',
