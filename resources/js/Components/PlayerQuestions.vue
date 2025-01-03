@@ -185,12 +185,12 @@ const cancel = () => {
 
             <div class="mt-4">
                <div v-if="!user.has_registered" class="text-sm mt-1">
-                    After clicking submit you will be sent to a registration page.
+                    After clicking NEXT, you’ll need to create an account to save your answers.
                 </div>
                 <div v-if="user.has_registered && !$page.props.auth.user" class="text-sm mt-1">
-                    After clicking submit you will be sent to the login page.
+                    After clicking NEXT you will be sent to the login page.
                 </div>
-                <PrimaryButton type="submit"  class="mt-2" >Continue</PrimaryButton>
+                <PrimaryButton type="submit"  class="mt-2" >NEXT</PrimaryButton>
 
                 <SecondaryButton type="button" class="mt-2 ml-4" v-if="$page.props.auth.user" @click="cancel">Cancel</SecondaryButton>
             </div>

@@ -43,7 +43,7 @@ const fetchPage = (url) => {
                 <td class="px-4 py-2">{{ game.name }}</td>
                 <td class="px-4 py-2 text-center">{{ formatDate(game.date_time) }}</td>
                 <td class="px-4 py-2 text-center">{{ game.players_count }}</td>
-                <td class="px-4 py-2 text-center">{{ game.attending_players_count }}</td>
+                <td class="px-4 py-2 text-center">{{ game.attending }}</td>
             </tr>
         </template>
     </Table>

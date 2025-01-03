@@ -27,8 +27,8 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-triviusBlue text-white">
             <div class="pt-3 text-center max-w-2xl">
                 <div class="mb-4">
-                    <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
-                    <h1 class="text-2xl font-bold">The party game where you are the trivia!</h1>
+                    <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto" />
+                    <h1 class="mb-4 text-2xl font-bold">The party game where you are the trivia!</h1>
                     <p class="mb-4 text-xl">{{ game.host[0].first_name }} {{ game.host[0].last_name }} has invited you to play Trivius</p>
                     <ul class="list-disc text-left inline-block text-sm sm:text-lg px-10 sm:px-0">
                         <li>Answer a few fun questions about yourself.</li>

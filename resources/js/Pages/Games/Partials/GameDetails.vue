@@ -139,7 +139,7 @@ const createQuestions = async () => {
                     </td>
                         <td class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">{{ player.email }}</td>
                         <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
-                            Review your answers
+                            Review & Edit<br/>Your Answers
                         </td>
                         <td class="px-4 py-2 text-center" v-else>
                             {{ player.status }}
