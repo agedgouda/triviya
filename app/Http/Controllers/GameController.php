@@ -110,6 +110,7 @@ class GameController extends Controller
                     'profile_photo_url' => $player->profile_photo_url,
                     'email' => $player->email,
                     'status' => $player->pivot->status,  // Ensures the 'status' is passed
+                    'message' => session('message'),
                 ];
             }),
             'host' => $gameDetails['host'],
@@ -214,7 +215,6 @@ class GameController extends Controller
         ) {
             // Redirect to login or register, based on whether the user has a password
             if ($user->password) {
-                session()->flash('message', 'Login to change your answers.');
                 return redirect()->route('login.prepopulated', [
                     'game' => $game->id,
                     'user' => $user->id,

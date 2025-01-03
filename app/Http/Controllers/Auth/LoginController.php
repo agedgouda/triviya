@@ -35,7 +35,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended($redirectTo)->with('message', 'Welcome back!');
+            return redirect()->intended($redirectTo)->with('message', 'Your Answers Were Saved');
         }
 
         return back()->withErrors([

@@ -64,21 +64,21 @@ const createGame = () => {
         </template>
 
         <div>
-            <div
-                v-if="flashMessage"
-                :class="['text-sm text-gray-600 transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
-            >
-                {{ flashMessage }}
-            </div>
-            <div
-                v-if="$page.props.flash.message"
-                :class="['text-sm text-gray-600 transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
-            >
-                {{ $page.props.flash.message }}
-            </div>
 
             <div class="mx-5">
-                <template v-if="routeName === 'games'">
+                <div
+                    v-if="flashMessage"
+                    :class="['transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
+                >
+                    {{ flashMessage }}
+                </div>
+                <div
+                    v-if="$page.props.flash.message"
+                    :class="['transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
+                >
+                    {{ $page.props.flash.message }}
+                </div>
+                <template v-if="routeName === 'games'"> {{ flashMessage }}
                         <div v-if="gamesHosted.data.length" class="mb-5">
                             <div class="mt-3 font-bold pb-3">Games You Are Hosting</div>
                             <GamesList :games="gamesHosted" />

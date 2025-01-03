@@ -80,6 +80,6 @@ class RegisterController extends Controller
         auth()->login($user);
         $redirectTo = request()->input('redirect_to', route('games'));
 
-        return redirect()->intended($redirectTo)->with('message', 'Registration Successful!');
+        return redirect()->intended($redirectTo)->with('message', 'Congratulations! You have registered with Trivius and your answers have been saved.');
     }
 }
