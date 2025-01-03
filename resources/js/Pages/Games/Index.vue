@@ -78,7 +78,7 @@ const createGame = () => {
                 >
                     {{ $page.props.flash.message }}
                 </div>
-                <template v-if="routeName === 'games'"> {{ flashMessage }}
+                <template v-if="routeName === 'games'">
                         <div v-if="gamesHosted.data.length" class="mb-5">
                             <div class="mt-3 font-bold pb-3">Games You Are Hosting</div>
                             <GamesList :games="gamesHosted" />
