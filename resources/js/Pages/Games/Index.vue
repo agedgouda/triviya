@@ -55,12 +55,12 @@ const createGame = () => {
 <template>
     <AppLayout title="Games">
         <template #header>
-                <div v-if="routeName === 'games.showQuestions'">
-                    <div >{{game.name}}</div>
-                    <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
-                    <div class="text-base">{{ formatDate(game.date_time) }}</div>
-                    <div class="text-base">{{ game.location }}</div>
-                </div>
+            <div v-if="routeName === 'games.showQuestions'">
+                <div >{{game.name}}</div>
+                <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
+                <div class="text-base">{{ formatDate(game.date_time) }}</div>
+                <div class="text-base">{{ game.location }}</div>
+            </div>
         </template>
 
         <div>

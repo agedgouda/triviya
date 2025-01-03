@@ -4,17 +4,22 @@
        <img src="{{config('app.url')}}/images/trivius-logo.png" width="200px" />
     </p>
 
-    <p>Welcome {{ $invitee->first_name }} {{ $invitee->last_name }},</p>
+    <p>Welcome {{ $invitee->first_name }},</p>
 
     <p>
 
     </p>
     <p>
-        <a href="{{config('app.url')}}/questions/{{ $game->id }}/{{ $invitee->id }}">Click here</a> for the trivia questions for the game {{ $host->first_name }} {{ $host->last_name }} is hosting at {{ $game->location }} on
-        {{ \Carbon\Carbon::parse($game->date_time)->format('m/d/Y') }} at {{ \Carbon\Carbon::parse($game->date_time)->format('h:i A') }}.
-
+        {{ $host->first_name }} {{ $host->last_name }} is having a party and you're invited. At the {{ $game->name }} you’ll be playing
+        everybody’s favorite new game, Trivius - where you become the trivia.
         <p>
-            After finishing the quiz, create an account if you’re new to Trivius or log in if you’ve played before. This lets you save your answers, edit them anytime, and see who’s joining the fun!
+            <a href="{{config('app.url')}}/questions/{{ $game->id }}/{{ $invitee->id }}">Click here</a> to RSVP and take the Trivius quiz.
+        </p>
+        <p>
+            Party Details:<br/>
+            Location: {{ $game->location }}<br/>
+            Date: {{ \Carbon\Carbon::parse($game->date_time)->format('m/d/Y') }}<br/>
+            Time: {{ \Carbon\Carbon::parse($game->date_time)->format('h:i A') }}
         </p>
     </p>
 </div>
