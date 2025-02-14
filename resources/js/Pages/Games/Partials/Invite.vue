@@ -1,25 +1,26 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref,reactive } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import CustomMaskInput from '@/Components/CustomMaskInput.vue';
+import { usePage } from '@inertiajs/vue3';
 
-const defaultForm = useForm({
+const form = useForm({
     first_name: '',
     last_name: '',
     email: '',
 });
 
-const form = reactive({ ...defaultForm });
-
 const props = defineProps({
     gameId: String,
+    invtees: Object,
 });
+const page = usePage();
 
 const submit = () => {
-    form.post(route('games.createUser', { game: props.gameId }), {
+    form.post(route('games.invite', { game: props.gameId }), {
         onSuccess: () => {
             form.reset();
         },
@@ -58,7 +59,7 @@ const submit = () => {
                         required
 
                     />
-                    <InputError class="mt-2" :message="form.errors.last_name" />
+                    <InputError class="mt-2" :message="form.errors.first_name" />
                 </div>
                 <div class="mr-3">
                     <InputLabel for="email" value="Email" />
@@ -73,14 +74,16 @@ const submit = () => {
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
                 <div class="flex items-center justify-end mt-4">
+
                     <PrimaryButton class="mr-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Invite Player
                     </PrimaryButton>
                 </div>
             </div>
+            <div class="h-3 mt-2 text-red-500">
+                {{ $page.props.error }}
+            </div>
         </form>
-        <div class="h-3 mt-2 text-red-500">
-            {{ $page.props.error }}
-        </div>
+
     </div>
 </template>
