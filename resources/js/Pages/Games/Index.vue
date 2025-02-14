@@ -8,7 +8,6 @@ import GameEdit from './Partials/GameEdit.vue';
 import PlayerQuestions from '@/Components/PlayerQuestions.vue';
 import PlayerAnswers from './Partials/PlayerAnswers.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
-import Invite from './Partials/Invite.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formatDate } from '@/utils';
 
@@ -96,8 +95,6 @@ const createGame = () => {
                 <template v-if="routeName === 'games.show'">
 
                 <GameDetails :game="game" :players="players"/>
-
-                <Invite :gameId="game.id" :invtees="game.invitees"   v-if="$page.props.auth.user.id === $page.props.host.id" />
 
                 <PrimaryButton class="my-5"  @click="goBack" >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">

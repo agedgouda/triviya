@@ -34,6 +34,7 @@ class FetchGameDetails
         return [
             'game' => $game,
             'players' => $game->players,
+            'invitees' => $game->invitees,
             'host' => $game->host,
         ];
     }

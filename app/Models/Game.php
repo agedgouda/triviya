@@ -60,11 +60,6 @@ class Game extends Model
         return $this->belongsTo(Mode::class);
     }
 
-    public function invitees()
-    {
-        return $this->hasMany(Invite::class);
-    }
-
     public function questions()
     {
         return $this->belongsToMany(Question::class);

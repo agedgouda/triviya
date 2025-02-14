@@ -157,11 +157,35 @@ class GameController extends Controller
         // Implement game deletion logic if needed
     }
 
+    public function createUser(InvitePlayerRequest $request, Game $game)
+    {
+        $validated = $request->validated();
+        $results = GameActions::createUserForGameAction($game,$validated);
+        return redirect()->route('games.show', $game->id)->with($results['status'], $results['message']);
+
+    }
+
     public function createUserAndInvite(InvitePlayerRequest $request, Game $game)
     {
         $validated = $request->validated();
         $emailStatus = GameActions::createUserAndInviteAction($game,$validated);
         return redirect()->route('games.show', $game->id)->with($emailStatus['status'], $emailStatus['message']);
+    }
+
+    public function sendInvitations(Game $game)
+    {
+
+        //first assign the questions to the players
+        $question = GameActions::AssignGameQuestionsAction($game);
+
+        //then send the invitations
+        foreach ($game->players as $player ) {
+            $result = $this->mailService->sendInvite($player, $game);
+            $status = $result['status'] === 'success' ? 'Invitation Sent' : 'Error sending invitation';
+            $game->players()->updateExistingPivot($player->id, ['status' => $status]);
+       }
+
+        return ['status' => 'success', 'message' => $game->players ];
     }
 
     public function resendInvite(Game $game, User $user)
