@@ -76,7 +76,7 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
                     </p>
                 </div>
 
-                <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="user" />
+                <PlayerQuestions :questions="questions" :game="game" :user="user" />
 
         </QuestionsLayout>
     </div>

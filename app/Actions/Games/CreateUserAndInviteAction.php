@@ -4,9 +4,9 @@ namespace App\Actions\Games;
 
 use App\Models\Game;
 use App\Models\User;
+use App\Models\GameUser;
+use App\Models\GameUserQuestions;
 use App\Services\MailService;
-
-use Illuminate\Support\Facades\DB;
 
 class CreateUserAndInviteAction
 {
@@ -37,31 +37,45 @@ class CreateUserAndInviteAction
                 'message' => $data['email'] . ' is already playing this game.',
             ];
         }
+        // Attach the user to the game with an "Waiting Invitation" status
+        $gameUser = GameUser::create([
+            'game_id' => $game->id,
+            'user_id' => $player->id,
+            'status'  => 'Waiting Invitation',
+        ]);
+
 
         // Select 10 random questions from the game
         $selectedQuestions = $game->questions->shuffle()->take(10);
 
         // Prepare bulk insert data for question assignments
-        $now = now();
-        $assignments = [];
+        //$assignments = [];
+        $assignments[] = [
+            'game_id' => $game->id,
+            'user_id' => $player->id,
+            'player_name'   => $player->name,
+            'question_text' => 'When were you born (month, date, year)?',
+            'question_type' => 'date',
+            'created_at'    => now(),
+            'updated_at'    => now(),
+        ];
+        \Log::info(json_encode( $assignments));
         foreach ($selectedQuestions as $question) {
             $assignments[] = [
-                'game_id'       => $game->id,
-                'user_id'       => $player->id,
+                'game_id' => $game->id,
+                'user_id' => $player->id,
                 'player_name'   => $player->name,
                 'question_text' => $question->question_text,
-                'created_at'    => $now,
-                'updated_at'    => $now,
+                'question_type' => $question->question_type,
+                'created_at'    => now(),
+                'updated_at'    => now(),
             ];
         }
 
         // Bulk insert all question assignments at once
         if (!empty($assignments)) {
-            DB::table('game_user_question')->insert($assignments);
+            GameUserQuestions::insert($assignments);
         }
-
-        // Attach the user to the game with an "Invitation Created" status
-        $game->players()->attach($player->id, ['status' => 'Invitation Created']);
 
         $result = $this->mailService->sendInvite($player, $game);
 

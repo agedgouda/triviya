@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('game_user_question', function (Blueprint $table) {
+        Schema::create('game_user_questions', function (Blueprint $table) {
             $table->id();
             $table->uuid('game_id');
+            $table->uuid('user_id');
             $table->string('player_name');
             $table->string('question_text');
-            $table->string('answer');
+            $table->string('answer')->nullable();
+            $table->string('question_type');
             $table->timestamps();
 
-            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

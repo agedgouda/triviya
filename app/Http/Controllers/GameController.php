@@ -10,6 +10,7 @@ use App\Models\Mode;
 use App\Models\Question;
 use App\Models\Answer;
 use App\Models\GameUser;
+use App\Models\GameUserQuestions;
 use App\Http\Requests\GameRequest;
 use App\Http\Requests\InvitePlayerRequest;
 use Illuminate\Http\Request;
@@ -221,19 +222,21 @@ class GameController extends Controller
         $isHost = $game->host->id === auth()->id();
 
         // Load GameUser with answers and user relationship
-        $gameUser = GameUser::with(['answers', 'user'])
-            ->where('user_id', $user->id)
+        $gameUserQuestions = GameUserQuestions::where('user_id', $user->id)
             ->where('game_id', $game->id)
-            ->first();
-
-        if (!$gameUser) {
+            ->get();
+        if (!$gameUserQuestions) {
             // Handle error: Player not found in this game
             abort(404, 'Player not found in this game.');
         }
 
+        $answerCount = $gameUserQuestions->filter(function ($question) {
+            return !is_null($question->answer) && $question->answer !== '';
+        })->count();
+
         // If the user has answered all questions and is neither the host nor logged in
         if (
-            $game->questions->count() === $gameUser->answers->count() &&
+            $answerCount >= 10 &&
             !$isHost &&
             !auth()->id()
         ) {
@@ -257,11 +260,11 @@ class GameController extends Controller
         // Determine the correct page to render
         $page = $request->route()->getName() === 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
 
+
         return Inertia::render($page, [
-            'game' => $game, // Already fully loaded
-            'answers' => $gameUser->answers, // Loaded with GameUser
-            'questions' => $game->questions, // Already loaded with the game
-            'user' => $gameUser->user, // Loaded with GameUser
+            'game' => $game,
+            'questions' => $gameUserQuestions,
+            'user' => $user,
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);

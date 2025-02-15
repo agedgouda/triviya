@@ -15,7 +15,6 @@ const props = defineProps({
     game: Object,
     user: Object,
     questions: Array,
-    answers: Array,
 });
 const { props: pageProps } = usePage();
 const error = ref();
@@ -124,10 +123,12 @@ const cancel = () => {
 </script>
 
 <template>
+
         <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
         <form @submit.prevent="submitAnswers">
             <!-- Render each question -->
             <div v-for="question in questions" :key="question.id" class="mb-4">
+
                 <InputLabel :for="'question-' + question.id" :value="question.question_text" class="text-lg"/>
 
                 <!-- Render input based on question type -->
