@@ -24,9 +24,7 @@ class StoreAnswersAction
         }
 
         // Determine the status based on the number of answered questions
-        $status = count($data['answers']) < count($game->questions)
-            ? count($data['answers']) . ' of ' . count($game->questions) . ' Questions Answered'
-            : 'Questions Answered';
+        $status = 'Questions Answered';
 
         // Update the player's status in the pivot table
         $game->players()->updateExistingPivot($user->id, ['status' => $status]);

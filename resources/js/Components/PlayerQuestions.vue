@@ -26,6 +26,12 @@ const form = useForm({
 
 const questionDateValues = reactive({});
 
+const initialAnswers = {};
+props.questions.forEach(question => {
+        initialAnswers[question.id] = question.answer;
+    });
+    form.answers = initialAnswers;
+
 // Populate form.answers based on the answers prop
 if (props.answers && props.answers.length > 0) {
     const initialAnswers = {};
