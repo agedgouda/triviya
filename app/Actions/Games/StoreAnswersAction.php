@@ -5,7 +5,7 @@ namespace App\Actions\Games;
 use App\Models\Game;
 use App\Models\User;
 use App\Models\GameUser;
-use App\Models\Answer;
+use App\Models\GameUserQuestions;
 
 
 class StoreAnswersAction
@@ -19,16 +19,8 @@ class StoreAnswersAction
         }
 
         // Loop through the answers and create records in the database
-        foreach ($data['answers'] as $questionId => $answerText) {
-            Answer::updateOrCreate(
-                [
-                    'game_user_id' => $gameUser->id,
-                    'question_id' => $questionId,
-                ],
-                [
-                    'answer' => $answerText,
-                ]
-            );
+        foreach ($data['answers'] as $id => $answerValue) {
+            GameUserQuestions::where('id', $id)->update(['answer' => $answerValue]);
         }
 
         // Determine the status based on the number of answered questions
