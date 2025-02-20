@@ -22,7 +22,7 @@ Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('p
 
 
 Route::get('/', function () {
-    return Inertia::render('Welcome2', [
+    return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
