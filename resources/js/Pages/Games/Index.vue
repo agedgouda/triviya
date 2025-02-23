@@ -6,7 +6,6 @@ import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
 import PlayerQuestions from '@/Components/PlayerQuestions.vue';
-import PlayerAnswers from './Partials/PlayerAnswers.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formatDate } from '@/utils';
@@ -16,7 +15,6 @@ const props = defineProps({
     gamesHosted: Object,
     game: Object,
     questions: Object,
-    answers: Object,
     host: Object,
     players: Array,
     routeName: String,
@@ -111,8 +109,7 @@ const createGame = () => {
                     <GameEdit :modes="modes" :game="game" :routeName="routeName"  />
                 </template>
                 <template v-if="routeName === 'games.showQuestions'">
-                    <PlayerAnswers :questions="questions" :answers="answers" :game="game" :routeName="routeName" v-if="game.host && game.host[0].id===$page.props.auth.user.id"/>
-                    <PlayerQuestions :questions="questions" :answers="answers" :game="game" :user="$page.props.auth.user"  v-else />
+                    <PlayerQuestions :questions="questions" :game="game" :user="$page.props.auth.user"/>
                 </template>
                 <template v-if="routeName === 'games.showAnswers'">
                     <AllPlayerAnswers :questions="questions"   />
