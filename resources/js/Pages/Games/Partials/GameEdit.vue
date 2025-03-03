@@ -21,7 +21,7 @@ const form = useForm({
     date: props.game ? props.game.date_time.split(' ')[0] : '',
     time: props.game ? props.game.date_time.split(' ')[1] : '',
     date_time: props.game?.date_time || '',
-    mode_id: props.game?.mode_id || null,
+    mode_id: props.game?.mode_id || 1,
 });
 
 const submit = async () => {
@@ -67,10 +67,13 @@ const availableHours = [
 
 
 <template>
-    <div class="m-10">
+    All fields are required
+    <div class="mb-10">
         <div v-if="$page.props.errors" class="text-red-800 mb-3 text-lg">
             {{ $page.props.errors.message }}
         </div>
+
+
         <form @submit.prevent="submit">
             <div class="flex">
                 <div class="mr-3">
@@ -85,32 +88,7 @@ const availableHours = [
                     />
                     <InputError class="mt-2" :message="form.errors.name" />
                 </div>
-                <div class="mr-3">
-                    <InputLabel for="mode_id" value="Mode" />
-                    <select
-                        id="mode_id"
-                        v-model="form.mode_id"
-                        class="mt-1 block w-96 text-black"
-                        required
-                        >
-                        <!-- Optional placeholder -->
-                        <option value="" disabled>Select a Mode</option>
 
-                        <!-- Dynamically generate options from modes array -->
-                        <option
-                            v-for="mode in modes"
-                            :key="mode.id"
-                            :value="mode.id"
-                        >
-                            {{ mode.name }}
-                        </option>
-                    </select>
-
-                    <InputError class="mt-2" :message="form.errors.mode_id" />
-                </div>
-            </div>
-
-            <div class="flex mt-3">
                 <div class="mr-3">
                     <InputLabel for="location" value="Location" />
                     <TextInput
@@ -122,7 +100,33 @@ const availableHours = [
                     />
                     <InputError class="mt-2" :message="form.errors.location" />
                 </div>
+                <!--
                 <div class="mr-3">
+                    <InputLabel for="mode_id" value="Mode" />
+                    <select
+                        id="mode_id"
+                        v-model="form.mode_id"
+                        class="mt-1 block w-96 text-black"
+                        required
+                        >
+                        <option value="" disabled>Select a Mode</option>
+
+
+                        <option
+                            v-for="mode in modes"
+                            :key="mode.id"
+                            :value="mode.id"
+                        >
+                            {{ mode.name }}
+                        </option>
+                    </select>
+
+                    <InputError class="mt-2" :message="form.errors.mode_id" />
+                </div> -->
+            </div>
+
+            <div class="flex mt-3">
+                <div class="mr-5">
                     <InputLabel for="date" value="Game Date" />
                     <TextInput
                         id="date"
@@ -134,12 +138,12 @@ const availableHours = [
                     <InputError class="mt-2" :message="form.errors.date" />
                 </div>
 
-                <div class="mr-3">
+                <div class="mr-5">
                     <InputLabel for="time" value="Game Time" />
                     <select
                         id="time"
                         v-model="form.time"
-                        class="mt-1 block w-32 text-black border rounded p-2"
+                        class="mt-1 block w-36 text-black border rounded p-2"
                         required
                     >
                         <option disabled value="">Select a time</option>
@@ -151,12 +155,10 @@ const availableHours = [
                 </div>
                 <div class="flex items-center mt-6">
                     <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        {{ routeName == 'games.create' ? 'Add' : 'Update'  }} Game
+                        {{ routeName == 'games.create' ? 'Continue' : 'Update Game'  }}
                     </PrimaryButton>
                 </div>
             </div>
         </form>
-
-
     </div>
 </template>

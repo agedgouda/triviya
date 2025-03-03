@@ -76,19 +76,25 @@ const createGame = () => {
                     {{ $page.props.flash.message }}
                 </div>
                 <template v-if="routeName === 'games'">
-                        <div v-if="gamesHosted.data.length" class="mb-5">
-                            <div class="mt-3 font-bold pb-3">Games You Are Hosting</div>
-                            <GamesList :games="gamesHosted" />
-                        </div>
-                        <div v-if="games.data.length">
-                            <div class="mt-3 font-bold pb-3">Games You are Playing</div>
-                            <GamesList :games="games " />
-                        </div>
-                        <div class="flex items-center justify-end">
-                        <PrimaryButton class="my-5"  @click="createGame" >
+                    <div v-if="gamesHosted.data.length" class="mb-5">
+                        <div class="mt-3 font-bold pb-3">Games You Are Hosting</div>
+                        <GamesList :games="gamesHosted" />
+                    </div>
+                    <div v-if="games.data.length">
+                        <div class="mt-3 font-bold pb-3">Games You are Playing</div>
+                        <GamesList :games="games " />
+                    </div>
+                    <div class="flex items-center mb-5" v-if="gamesHosted.data.length === 0 && games.data.length === 0">
+                        <span>Welcome to Trivius. Click on NEW GAME to get started.</span>
+                        <PrimaryButton class="ml-4" @click="createGame">
                             New Game
                         </PrimaryButton>
-                    </div>
+                        </div>
+                        <div v-else class="flex justify-end">
+                            <PrimaryButton class="my-5"  @click="createGame" >
+                                New Game
+                            </PrimaryButton>
+                        </div>
                 </template>
                 <template v-if="routeName === 'games.show'">
 

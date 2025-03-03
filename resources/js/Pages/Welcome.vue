@@ -45,7 +45,7 @@ function handleImageError() {
                         >
                             Dashboard
                         </Link>
-
+                        <!--
                         <template v-else>
                             <Link
                                 :href="route('login')"
@@ -62,6 +62,7 @@ function handleImageError() {
                                 Register
                             </Link>
                         </template>
+                        -->
                     </nav>
                 </header>
         <div class="relative min-h-screen flex flex-col items-center justify-center ">

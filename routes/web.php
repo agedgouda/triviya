@@ -22,12 +22,14 @@ Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('p
 
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Welcome'
+    /*,[
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-    ]);
+    ]*/
+    );
 });
 
 Route::get('/register/{game?}/{user?}', [RegisterController::class, 'show'])->name('register.prepopulated');
