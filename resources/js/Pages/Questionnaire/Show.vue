@@ -33,7 +33,9 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
                         <span class="inline sm:hidden">where<br></span>
                         you are the trivia!
                     </h1>
-                    <p class="mb-4 text-xl">{{ game.host[0].first_name }} {{ game.host[0].last_name }} has invited you to play Trivius</p>
+                    <p class="mb-4 text-xl">{{ game.host[0].first_name }} {{ game.host[0].last_name }}
+                        <span class="hidden sm:inline">where </span>
+                        <span class="inline sm:hidden">where<br></span>has invited you to play Trivius</p>
                     <ul class="list-disc text-left inline-block text-sm sm:text-lg px-10 sm:px-0">
                         <li>Answer a few fun questions about yourself.</li>
                         <li>You’ll have to register to save your answers so you can change them right up until party time.</li>
