@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { onMounted, watch } from 'vue';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -34,6 +35,30 @@ const form = useForm({
     password_confirmation: '',
     terms: false,
 });
+
+onMounted(() => {
+    if(form.password.length < 8) {
+        form.errors.password = "Password must be at least 8 characters";
+    }
+});
+
+watch(
+  [() => form.password, () => form.password_confirmation],
+  ([newPassword, newPasswordConfirmation], [oldPassword, oldPasswordConfirmation]) => {
+    // Handle changes to form.password
+    if(newPassword.length >= 8) {
+      form.errors.password = "";
+    } else {
+      form.errors.password = "Password must be at least 8 characters";
+    }
+
+    if(newPasswordConfirmation && newPassword !== newPasswordConfirmation) {
+      form.errors.password_confirmation = "Passwords do not match";
+    } else {
+      form.errors.password_confirmation = "";
+    }
+  }
+);
 
 const submit = () => {
 

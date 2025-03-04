@@ -10,8 +10,7 @@
 
     </p>
     <p>
-        {{ $host->first_name }} {{ $host->last_name }} is having a party and you're invited. At the {{ $game->name }} you’ll be playing
-        everybody’s favorite new game, Trivius - where you become the trivia.
+        {{ $host->first_name }} {{ $host->last_name }} is having a party and you're invited. You’ll be playing everybody’s favorite new game, Trivius - where you become the trivia.
         <p>
             <a href="{{config('app.url')}}/questions/{{ $game->id }}/{{ $invitee->id }}">Click here</a> to RSVP and take the Trivius quiz.
         </p>
