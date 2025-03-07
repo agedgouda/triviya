@@ -42,6 +42,7 @@ Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('log
 //Show questions form without logging in, only works if no questions have been answered
 Route::prefix('questions')->group(function () {
     Route::get('/{game}/{user}', [GameController::class, 'showQuestions'])->name('questions.showQuestions');
+    Route::get('/{game}/{user}/complete', [GameController::class, 'showThankYou'])->name('questions.showThankYou');
     Route::post('/answers/{game}/{user}', [GameController::class, 'storeAnswers'])->name('questions.playerAnswers');
 });
 

@@ -49,7 +49,10 @@ class CreateUserAndInviteAction
         $selectedQuestions = $game->questions->shuffle()->take(10);
 
         // Prepare bulk insert data for question assignments
-        //$assignments = [];
+        $assignments = [];
+
+        /*
+        //For when we add birthday back
         $assignments[] = [
             'game_id' => $game->id,
             'user_id' => $player->id,
@@ -59,7 +62,8 @@ class CreateUserAndInviteAction
             'created_at'    => now(),
             'updated_at'    => now(),
         ];
-        \Log::info(json_encode( $assignments));
+        */
+
         foreach ($selectedQuestions as $question) {
             $assignments[] = [
                 'game_id' => $game->id,

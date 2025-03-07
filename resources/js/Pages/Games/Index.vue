@@ -5,7 +5,7 @@ import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
-import PlayerQuestions from '@/Components/PlayerQuestions.vue';
+import PlayerQuestions from '@/Pages/Questionnaire/Partials/PlayerQuestions.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formatDate } from '@/utils';

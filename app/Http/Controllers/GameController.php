@@ -271,36 +271,35 @@ class GameController extends Controller
     }
 
 
+    public function showThankYou(Game $game, User $user) {
+        return Inertia::render('Questionnaire/Show' , [
+            'game' => $game->load(['host']),
+            'user' => $user,
+            'routeName' => request()->route()->getName(),
+        ]);
+    }
+
+
     public function storeAnswers(Request $request, Game $game, User $user)
     {
         $validated = $request->validate([
             'answers' => 'required|array',
         ]);
 
-        $response = GameActions::storeAnswersAction($game, $user, $validated);
+        //$response = GameActions::storeAnswersAction($game, $user, $validated);
+
+        $response = array('status' => 'test');
 
         if($response['status'] === 'error') {
             return redirect()->back()->withErrors([
                 'message' => $response["message"],
             ]);
         }
-        //Redirect to the game show page
-        if($user->password) {
-            session()->flash('message', 'You must login to change your answers.');
-            return redirect()->route('login.prepopulated', [
-                'game' => $game->id,
-                'user' => $user->id,
-            ]);
-        }
-        else {
-            session()->flash('message', 'You must register to change your answers.');
 
-            return redirect()->route('register.prepopulated', [
-                'game' => $game->id,
-                'user' => $user->id,
-                'redirect_to' => route('games.show', ['game' => $game->id]),
-            ]);
-        }
+        return redirect()->route('questions.showThankYou', [
+            'game' => $game->id,
+            'user' => $user->id,
+        ]);
     }
 
     public function showAnswers(Game $game)

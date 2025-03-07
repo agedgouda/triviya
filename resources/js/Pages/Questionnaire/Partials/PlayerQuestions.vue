@@ -5,9 +5,12 @@ import { useForm,usePage,router } from '@inertiajs/vue3';
 // Import components
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import { formatDate } from '@/utils';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 
 
 // Props for game and questions
@@ -129,7 +132,20 @@ const cancel = () => {
 </script>
 
 <template>
+        <QuestionsLayout title="Questions">
+            <template #header>
+                <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
+            </template>
+                <div class="text-base mt-5 mb-5">
+                    Welcome, {{ user.first_name }} {{ user.last_name }}!
+                    <p>
+                        Here are your questions for the game
+                        {{ game.host[0].first_name }} {{ game.host[0].last_name }} is hosting at {{ game.location }}
+                        on {{ formatDate(game.date_time) }}.
 
+                        <div class="mt-3">Your answers become the trivia.</div>
+                    </p>
+                </div>
         <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
         <form @submit.prevent="submitAnswers">
             <!-- Render each question -->
@@ -191,16 +207,11 @@ const cancel = () => {
             <!-- Submit button -->
 
             <div class="mt-4">
-               <div v-if="!user.has_registered" class="text-sm mt-1">
-                    After clicking NEXT, you’ll need to create an account to save your answers.
-                </div>
-                <div v-if="user.has_registered && !$page.props.auth.user" class="text-sm mt-1">
-                    After clicking NEXT you will be sent to the login page.
-                </div>
-                <PrimaryButton type="submit"  class="mt-2" >NEXT</PrimaryButton>
+                <PrimaryButton type="submit"  class="mt-2" >Save Answers</PrimaryButton>
 
                 <SecondaryButton type="button" class="mt-2 ml-4" v-if="$page.props.auth.user" @click="cancel">Cancel</SecondaryButton>
             </div>
 
         </form>
+    </QuestionsLayout>
 </template>
