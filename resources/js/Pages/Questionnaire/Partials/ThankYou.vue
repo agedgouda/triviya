@@ -1,8 +1,5 @@
 <script setup>
-import { ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
-import PlayerQuestions from './PlayerQuestions.vue';
+import { router } from '@inertiajs/vue3';
 import { formatDate } from '@/utils';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -12,6 +9,16 @@ const props = defineProps({
     game: Object,
     user: Object,
 });
+
+
+const loginOrRegister = () => {
+    if(!props.user.password) {
+        router.visit(route('register.prepopulated', { game: props.game.id,user: props.user.id  }))
+    } else {
+        router.visit(route('login.prepopulated', { game: props.game.id,user: props.user.id  }))
+    }
+}
+
 
 
 </script>
@@ -30,10 +37,10 @@ const props = defineProps({
                         game on {{  formatDate(game.date_time)  }} at {{ game.location }}
                     </p>
 
-                    We are going to put text here. Good text. Text better than you've ever seen before. You'l read it and say "wow, that is some good text."
-                    All to get you to click below to <span> {{ user.password ? 'Login': 'Register'}} </span>
+                    We are going to put text here. Good text. Text better than you've ever seen before. You'll read it and say "wow, that is some good text."
+                    All to get you to click below to <span> {{ user.password ? 'Login': 'Register'}} </span>.
                     <div class="mt-4">
-                        <SecondaryButton type="submit" class="mt-4 mb-4 ml-4">{{ user.password ? 'Login': 'Register'}}</SecondaryButton>
+                        <SecondaryButton type="submit" class="mt-4 mb-4 ml-4" @click="loginOrRegister">{{ user.password ? 'Login': 'Register'}}</SecondaryButton>
                     </div>
                 </div>
             </div>

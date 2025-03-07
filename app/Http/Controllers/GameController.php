@@ -286,9 +286,9 @@ class GameController extends Controller
             'answers' => 'required|array',
         ]);
 
-        //$response = GameActions::storeAnswersAction($game, $user, $validated);
+        $response = GameActions::storeAnswersAction($game, $user, $validated);
 
-        $response = array('status' => 'test');
+        //$response = array('status' => 'test');
 
         if($response['status'] === 'error') {
             return redirect()->back()->withErrors([
