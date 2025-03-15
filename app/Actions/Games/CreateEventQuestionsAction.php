@@ -27,6 +27,8 @@ class CreateEventQuestionsAction
 
         //Figure out how many event questions to add total
         $questionsToAdd = intdiv(30, $playerCount);
+
+        //dd($questionsToAdd);
         $playerQuestionCounts = $players->pluck('id')->mapWithKeys(fn($id) => [$id => 0])->toArray();
         $chooseEventQuestions = collect(); // Initialize as an empty collection outside the loop
 
@@ -45,9 +47,19 @@ class CreateEventQuestionsAction
                 ->toBase(); // Convert to base collection
 
             $chooseEventQuestions = $chooseEventQuestions->concat($gameQuestions);
-            \Log::info($chooseEventQuestions);
         }
-        //\Log::info($playerQuestionCounts);
+        //if we don't have 30 questions, randomly pull 2 more
+        if(count($chooseEventQuestions) < 30){
+            $questionsNeeded = 30-count($chooseEventQuestions);
+            $gameQuestions = GameUserQuestions::where('game_id', $game->id)
+
+            ->inRandomOrder()
+            ->limit($questionsNeeded)
+            ->get()
+            ->toBase(); // Convert to base collection
+            $chooseEventQuestions = $chooseEventQuestions->concat($gameQuestions);
+        }
+
         $eventQuestions = $chooseEventQuestions->shuffle();
         return $eventQuestions;
     }
