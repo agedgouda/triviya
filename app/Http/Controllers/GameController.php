@@ -331,14 +331,14 @@ class GameController extends Controller
     {
 
 
-        $gameUserQuestions = GameUserQuestions::where('game_id',$game->id)->get();
+//        $gameUserQuestions = GameUserQuestions::where('game_id',$game->id)->get();
         $response = GameActions::CreateEventQuestionsAction($game);
-        dd($response);
-        // return Inertia::render('Games/Index', [
-        //     'questions' => $gameUserQuestions,
-        //     'routeName' => request()->route()->getName(),
-        //     'error' => session('error'),
-        // ]);
+
+        return Inertia::render('Games/Index', [
+            'questions' => $response,
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);
         //$response = GameActions::createGameQuestions($game);
         //return ['status' => 'success', 'message' => $response ];
     }
