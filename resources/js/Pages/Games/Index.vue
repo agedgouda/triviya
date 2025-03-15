@@ -5,6 +5,7 @@ import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
+import Play from './Partials/Play.vue';
 import PlayerQuestions from '@/Pages/Questionnaire/Partials/PlayerQuestions.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -119,6 +120,9 @@ const createGame = () => {
                 </template>
                 <template v-if="routeName === 'games.showAnswers'">
                     <AllPlayerAnswers :questions="questions"   />
+                </template>
+                <template v-if="routeName === 'games.startGame'">
+                    <Play :questions="questions"   />
                 </template>
             </div>
         </div>

@@ -327,6 +327,22 @@ class GameController extends Controller
 
     }
 
+    public function startGame(Game $game)
+    {
+
+
+        $gameUserQuestions = GameUserQuestions::where('game_id',$game->id)->get();
+        $response = GameActions::CreateEventQuestionsAction($game);
+        dd($response);
+        // return Inertia::render('Games/Index', [
+        //     'questions' => $gameUserQuestions,
+        //     'routeName' => request()->route()->getName(),
+        //     'error' => session('error'),
+        // ]);
+        //$response = GameActions::createGameQuestions($game);
+        //return ['status' => 'success', 'message' => $response ];
+    }
+
     public function createGameQuestions(Game $game)
     {
         $response = GameActions::createGameQuestions($game);
