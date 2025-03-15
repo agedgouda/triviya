@@ -9,12 +9,14 @@ use Carbon\Carbon;
 
 class CreateEventQuestionsAction
 {
-    public function handle(Game $game) {
-        // Retrieve all players for the given game
-        $players = $game->players;
+    public function handle(Game $game, $reset = null)
+    {
 
-        // Retrieve all game_user IDs for the given game
-        $gameUserIds = $game->players()->pluck('game_user.id');
+        if ($reset) {
+            dd($reset);
+        }
+        // Retrieve all players for the given game with their pivot data
+        $players = $game->players()->withPivot('id')->get();
 
         // Ensure that there are players
         $playerCount = $players->count();
@@ -22,45 +24,60 @@ class CreateEventQuestionsAction
             return response()->json(['error' => 'No players in the game'], 400);
         }
 
-        //get all the questions that were answered by players
-        $gameQuestions = GameUserQuestions::where('game_id',$game->id)->get();
+        // Retrieve all event questions with a question number
+        $eventQuestions = GameUserQuestions::where('game_id', $game->id)
+            ->whereNotNull('question_number')
+            ->orderBy('question_number')
+            ->get();
 
-        //Figure out how many event questions to add total
-        $questionsToAdd = intdiv(30, $playerCount);
+        if ($eventQuestions->isEmpty()) {
+            // Calculate how many event questions to add per player
+            $questionsToAddPerPlayer = intdiv(30, $playerCount);
 
-        //dd($questionsToAdd);
-        $playerQuestionCounts = $players->pluck('id')->mapWithKeys(fn($id) => [$id => 0])->toArray();
-        $chooseEventQuestions = collect(); // Initialize as an empty collection outside the loop
+            // Initialize a collection to store selected questions
+            $selectedQuestions = collect();
 
-        foreach ($playerQuestionCounts as $index => $player) {
-            $numPlayerQuestions = $questionsToAdd - $player;
+            // Iterate over each player to select questions
+            foreach ($players as $player) {
+                $playerId = $player->id;
 
-            $gameUserId = $game->players()
-                ->where('users.id', $index)
-                ->first()?->pivot->id;
+                // Retrieve unanswered questions for the player
+                $playerQuestions = GameUserQuestions::where('game_id', $game->id)
+                    ->where('user_id', $playerId)
+                    ->inRandomOrder()
+                    ->limit($questionsToAddPerPlayer)
+                    ->get();
 
-            $gameQuestions = GameUserQuestions::where('game_id', $game->id)
-                ->where('user_id', $index)
-                ->inRandomOrder()
-                ->limit($numPlayerQuestions)
-                ->get()
-                ->toBase(); // Convert to base collection
+                // Merge the player's questions into the selected questions collection
+                $selectedQuestions = $selectedQuestions->merge($playerQuestions);
+            }
 
-            $chooseEventQuestions = $chooseEventQuestions->concat($gameQuestions);
+            // If we don't have 30 questions, randomly select additional questions
+            if ($selectedQuestions->count() < 30) {
+                $questionsNeeded = 30 - $selectedQuestions->count();
+
+                $additionalQuestions = GameUserQuestions::where('game_id', $game->id)
+                    ->whereNotIn('id', $selectedQuestions->pluck('id'))
+                    ->inRandomOrder()
+                    ->limit($questionsNeeded)
+                    ->get();
+
+                $selectedQuestions = $selectedQuestions->merge($additionalQuestions);
+            }
+
+            // Shuffle the selected questions
+            $shuffledQuestions = $selectedQuestions->shuffle();
+
+            // Assign question numbers and update the database
+            $shuffledQuestions->each(function ($question, $index) {
+                $question->update(['question_number' => $index + 1]);
+            });
+
+            // Update the event questions collection
+            $eventQuestions = $shuffledQuestions;
         }
-        //if we don't have 30 questions, randomly pull 2 more
-        if(count($chooseEventQuestions) < 30){
-            $questionsNeeded = 30-count($chooseEventQuestions);
-            $gameQuestions = GameUserQuestions::where('game_id', $game->id)
 
-            ->inRandomOrder()
-            ->limit($questionsNeeded)
-            ->get()
-            ->toBase(); // Convert to base collection
-            $chooseEventQuestions = $chooseEventQuestions->concat($gameQuestions);
-        }
-
-        $eventQuestions = $chooseEventQuestions->shuffle();
         return $eventQuestions;
     }
 }
+

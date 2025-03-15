@@ -51,7 +51,7 @@ const newQuestion = () => {
 <template>
 
 <div v-for="(question, index) in questions">
-   {{ index+1 }}. {{ question.player_name }}:  {{ question.question_text }}
+   {{ index+1 }}. {{ question }} {{ question.player_name }}:  {{ question.question_text }}
 </div>
 <div>Round {{ Math.floor(questionNumber/10)+1  }}</div>
     <div v-if="page  === 'interstitial'">

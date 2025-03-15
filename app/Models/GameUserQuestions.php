@@ -15,5 +15,6 @@ class GameUserQuestions extends Model
         'player_name',
         'question_text',
         'answer',
+        'question_number',
     ];
 }
