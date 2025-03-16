@@ -86,6 +86,9 @@ const newQuestion = (increment) => {
         <PrimaryButton @click="questionNumber = 30" class="my-4">
             &nbsp;Go to previous question
         </PrimaryButton>
+        <DangerButton @click="" class="my-4 ml-3">
+            &nbsp;View Answers
+        </DangerButton>
     </div>
     <div v-if="questionNumber  > 0 && questionNumber  <= 30">
         <div class="grid grid-cols-2 gap-4">
