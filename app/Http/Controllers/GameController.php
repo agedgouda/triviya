@@ -327,7 +327,7 @@ class GameController extends Controller
 
     }
 
-    public function startGame(Game $game, $reset = null)
+    public function startGame(Game $game, Int $reset = null)
     {
 
         $response = GameActions::CreateEventQuestionsAction($game,$reset);

@@ -12,25 +12,30 @@ class CreateEventQuestionsAction
     public function handle(Game $game, $reset = null)
     {
 
-        if ($reset) {
-            dd($reset);
+        //if the user wants to reset the questions, set all question_numbers for the game to null
+        if ($reset === 1) {
+            GameUserQuestions::where('game_id', $game->id)
+                ->update(['question_number' => null]);
+                $eventQuestions = collect();
         }
-        // Retrieve all players for the given game with their pivot data
-        $players = $game->players()->withPivot('id')->get();
-
-        // Ensure that there are players
-        $playerCount = $players->count();
-        if ($playerCount === 0) {
-            return response()->json(['error' => 'No players in the game'], 400);
+        else {
+            // Retrieve all event questions with a question number
+            $eventQuestions = GameUserQuestions::where('game_id', $game->id)
+                ->whereNotNull('question_number')
+                ->orderBy('question_number')
+                ->get();
         }
-
-        // Retrieve all event questions with a question number
-        $eventQuestions = GameUserQuestions::where('game_id', $game->id)
-            ->whereNotNull('question_number')
-            ->orderBy('question_number')
-            ->get();
 
         if ($eventQuestions->isEmpty()) {
+            // Retrieve all players for the given game with their pivot data
+            $players = $game->players()->withPivot('id')->get();
+
+            // Ensure that there are players
+            $playerCount = $players->count();
+            if ($playerCount === 0) {
+                return response()->json(['error' => 'No players in the game'], 400);
+            }
+
             // Calculate how many event questions to add per player
             $questionsToAddPerPlayer = intdiv(30, $playerCount);
 
