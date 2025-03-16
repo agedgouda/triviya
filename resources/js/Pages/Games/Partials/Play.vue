@@ -79,11 +79,19 @@ const newQuestion = (increment) => {
             &nbsp;Go to first question
         </PrimaryButton>
     </div>
-    <div v-else>
+    <div v-if="questionNumber  === 31">
+        <div >
+            Last page text
+        </div>
+        <PrimaryButton @click="questionNumber = 30" class="my-4">
+            &nbsp;Go to previous question
+        </PrimaryButton>
+    </div>
+    <div v-if="questionNumber  > 0 && questionNumber  <= 30">
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <div>Round {{ Math.floor(questionNumber/10)+1  }}</div>
-                <div>Question {{ questions[questionNumber-1].question_number%10  }}</div>
+                <div>Round {{ Math.ceil(questionNumber / 10)  }}</div>
+                <div>Question {{ (questions[questionNumber-1].question_number % 10 === 0) ? 10 : questions[questionNumber-1].question_number % 10  }}</div>
                 Who answered "<span>{{questions[questionNumber-1].question_text}}</span>""
                 <div>{{questions[questionNumber-1].answer}}</div>
                 <PrimaryButton @click="newQuestion(-1)" class="my-2">
