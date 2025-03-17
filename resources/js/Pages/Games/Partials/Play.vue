@@ -12,13 +12,20 @@ const props = defineProps({
     questions: Object,
 });
 
-const initialTime = 300
-const page = ref("landing")
-const questionNumber = ref(0)
-const timer = ref(initialTime)
-let intervalId = null
+const initialTime = 300;
+const page = ref("landing");
+const questionNumber = ref(0);
+const timer = ref(initialTime);
+let intervalId = null;
 const isPaused = ref(false);
 const isRunning = ref(false);
+
+
+
+const endGame = () => {
+
+    router.visit(route('games.endGame', { game: props.questions[0].game_id }));
+};
 
 
 const startCountdown = (onComplete) => {
@@ -75,7 +82,8 @@ const newQuestion = (increment) => {
         <div >
             Landing Page Text
         </div>
-        <PrimaryButton @click="questionNumber = 1" class="my-4">
+        <PrimaryButton @click="endGame()" class="my-4">
+        <!--<PrimaryButton @click="questionNumber = 1" class="my-4">-->
             &nbsp;Go to first question
         </PrimaryButton>
     </div>
@@ -86,7 +94,7 @@ const newQuestion = (increment) => {
         <PrimaryButton @click="questionNumber = 30" class="my-4">
             &nbsp;Go to previous question
         </PrimaryButton>
-        <DangerButton @click="" class="my-4 ml-3">
+        <DangerButton @click="endGame()" class="my-4 ml-3">
             &nbsp;View Answers
         </DangerButton>
     </div>
@@ -128,7 +136,6 @@ const newQuestion = (increment) => {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" />
                     </svg>
-
                 </PrimaryButton>
             </div>
         </div>
