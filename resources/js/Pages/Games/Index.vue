@@ -5,8 +5,6 @@ import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
-import Play from './Partials/Play.vue';
-import End from './Partials/End.vue';
 import PlayerQuestions from '@/Pages/Questionnaire/Partials/PlayerQuestions.vue';
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -17,7 +15,6 @@ const props = defineProps({
     gamesHosted: Object,
     game: Object,
     questions: Object,
-    answers: Object,
     host: Object,
     players: Array,
     routeName: String,
@@ -122,12 +119,6 @@ const createGame = () => {
                 </template>
                 <template v-if="routeName === 'games.showAnswers'">
                     <AllPlayerAnswers :questions="questions"   />
-                </template>
-                <template v-if="routeName === 'games.startGame'">
-                    <Play :questions="questions"   />
-                </template>
-                <template v-if="routeName === 'games.endGame' || routeName === 'games.endRound'">
-                    <End :answers="answers"   />
                 </template>
             </div>
         </div>

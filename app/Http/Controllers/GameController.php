@@ -331,8 +331,27 @@ class GameController extends Controller
     {
         $response = GameActions::CreateEventQuestionsAction($game,$reset);
 
-        return Inertia::render('Games/Index', [
+        return Inertia::render('Event/Index', [
             'questions' => $response,
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);
+    }
+
+    public function startRound(Game $game, Int $round)
+    {
+        $lastQuestion = $round*10;
+        $firstQuestion = $lastQuestion-9;
+
+        $questions = GameUserQuestions::where('game_id',$game->id)
+            ->where('question_number','>=',$firstQuestion)
+            ->where('question_number','<=',$lastQuestion)
+            ->orderBy('question_number')
+            ->get();
+
+        return Inertia::render('Event/Index', [
+            'questions' => $questions,
+            'round' => $round,
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
@@ -341,7 +360,7 @@ class GameController extends Controller
     public function endRound(Game $game, Int $round)
     {
         $response = GameActions::CreateEventAnswerListAction($game,$round);
-        return Inertia::render('Games/Index', [
+        return Inertia::render('Event/Index', [
             'answers' => $response,
             'round' => $round,
             'routeName' => request()->route()->getName(),
@@ -352,7 +371,7 @@ class GameController extends Controller
     public function endGame(Game $game)
     {
         $response = GameActions::CreateEventAnswerListAction($game);
-        return Inertia::render('Games/Index', [
+        return Inertia::render('Event/Index', [
             'answers' => $response,
             'routeName' => request()->route()->getName(),
             'error' => session('error'),

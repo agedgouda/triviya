@@ -59,6 +59,7 @@ Route::middleware([
         Route::get('/', [GameController::class, 'index'])->name('games');
         Route::get('/{game}/answers', [GameController::class, 'showAnswers'])->name('games.showAnswers');
         Route::get('/{game}/start/{reset?}', [GameController::class, 'startGame'])->name('games.startGame');
+        Route::get('/{game}/round/{round}', [GameController::class, 'startRound'])->name('games.startRound');
         Route::get('/{game}/end', [GameController::class, 'endGame'])->name('games.endGame');
         Route::get('/{game}/end/{round}', [GameController::class, 'endRound'])->name('games.endRound');
         Route::get('/create', [GameController::class, 'create'])->name('games.create');
@@ -75,7 +76,7 @@ Route::middleware([
         Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
-        Route::get('/showquestions/{game}', [GameController::class, 'showGameQuestions'])->name('games.showEventQuestions');
+        //Route::get('/showquestions/{game}', [GameController::class, 'showGameQuestions'])->name('games.showEventQuestions');
     });
 
 });
