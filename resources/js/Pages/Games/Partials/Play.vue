@@ -12,7 +12,7 @@ const props = defineProps({
     questions: Object,
 });
 
-const initialTime = 300;
+const initialTime = 1200;
 const page = ref("landing");
 const questionNumber = ref(0);
 const timer = ref(initialTime);
@@ -21,9 +21,7 @@ const isPaused = ref(false);
 const isRunning = ref(false);
 
 
-
 const endGame = () => {
-
     router.visit(route('games.endGame', { game: props.questions[0].game_id }));
 };
 
@@ -74,6 +72,12 @@ const onComplete = () => {
 const newQuestion = (increment) => {
     timer.value = 300
     questionNumber.value += increment
+    if(questionNumber.value % 10 === 1){
+        router.visit(route('games.endRound', { game: props.questions[0].game_id, round: Math.ceil((questionNumber.value-1) / 10) }));
+    } else {
+        //questionNumber.value += increment
+    }
+
 }
 
 </script>
@@ -82,8 +86,7 @@ const newQuestion = (increment) => {
         <div >
             Landing Page Text
         </div>
-        <PrimaryButton @click="endGame()" class="my-4">
-        <!--<PrimaryButton @click="questionNumber = 1" class="my-4">-->
+        <PrimaryButton @click="questionNumber = 1" class="my-4">
             &nbsp;Go to first question
         </PrimaryButton>
     </div>

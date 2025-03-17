@@ -7,13 +7,18 @@ use App\Models\Game;
 
 class CreateEventAnswerListAction
 {
-    public function handle(Game $game, $reset = null)
+    public function handle(Game $game, Int $round = null)
     {
-        // 1. Get the primary set of answers (those with a non-null question_number)
         $answers = GameUserQuestions::where('game_id', $game->id)
-            ->whereNotNull('question_number')
-            ->orderBy('question_number')
-            ->get();
+        ->when($round, function ($query, $round) {
+            return $query->where('question_number', '<=', $round * 10)
+                        ->where('question_number', '>', ($round * 10) - 10);
+        }, function ($query) {
+            return $query->whereNotNull('question_number');
+        })
+        ->orderBy('question_number')
+        ->get();
+
 
         // 2. Load ALL answers for this game (including those with null question_number)
         //    so that duplicates are found regardless of question_number.

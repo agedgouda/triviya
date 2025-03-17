@@ -126,7 +126,7 @@ const createGame = () => {
                 <template v-if="routeName === 'games.startGame'">
                     <Play :questions="questions"   />
                 </template>
-                <template v-if="routeName === 'games.endGame'">
+                <template v-if="routeName === 'games.endGame' || routeName === 'games.endRound'">
                     <End :answers="answers"   />
                 </template>
             </div>

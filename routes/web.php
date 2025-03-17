@@ -60,6 +60,7 @@ Route::middleware([
         Route::get('/{game}/answers', [GameController::class, 'showAnswers'])->name('games.showAnswers');
         Route::get('/{game}/start/{reset?}', [GameController::class, 'startGame'])->name('games.startGame');
         Route::get('/{game}/end', [GameController::class, 'endGame'])->name('games.endGame');
+        Route::get('/{game}/end/{round}', [GameController::class, 'endRound'])->name('games.endRound');
         Route::get('/create', [GameController::class, 'create'])->name('games.create');
         Route::get('/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
         Route::get('/{game}/{user}/questions', [GameController::class, 'showQuestions'])->name('games.showQuestions');
