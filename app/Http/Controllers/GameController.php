@@ -329,6 +329,7 @@ class GameController extends Controller
 
     public function startGame(Game $game, Int $reset = null)
     {
+
         $response = GameActions::CreateEventQuestionsAction($game,$reset);
 
         return Inertia::render('Event/Index', [
@@ -370,9 +371,9 @@ class GameController extends Controller
 
     public function endGame(Game $game)
     {
-        $response = GameActions::CreateEventAnswerListAction($game);
+        //$response = GameActions::CreateEventAnswerListAction($game);
         return Inertia::render('Event/Index', [
-            'answers' => $response,
+            'game' => $game,
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);

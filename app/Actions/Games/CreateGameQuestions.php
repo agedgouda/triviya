@@ -94,7 +94,7 @@ class CreateGameQuestions
             })
             ->where('question_id', '9da1a76e-c444-4fa0-8bd6-97f22924d032') // Filter by the desired question ID
             ->first();
-            \Log::info($answer->answer);
+
             for($i=0; $i < $numPlayerQuestions; $i++){
 
                 $msg = $gameUserId.' needs '.$i;

@@ -16,7 +16,7 @@ const newRound = (round) => {
 
 const endGame = () => {
     console.log('End Game')
-    //router.visit(route('games.startRound', { game: props.answers[0].game_id, round: round }));
+    router.visit(route('games.endGame', { game: props.answers[0].game_id}));
 }
 
 </script>

@@ -78,7 +78,6 @@ const onComplete = () => {
 };
 
 const newQuestion = (increment) => {
-    console.log(questionNumber.value+1)
     if((questionNumber.value+1) % 10 === 1){
         router.visit(route('games.endRound', { game: props.questions[0].game_id, round: props.round }));
     } else {

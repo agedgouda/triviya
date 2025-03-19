@@ -18,10 +18,33 @@ class CreateEventQuestionsAction
                 ->update(['question_number' => null]);
                 $eventQuestions = collect();
         }
+        elseif($reset === -1) {
+            GameUserQuestions::where('game_id', $game->id)
+                ->where('question_number','>',0)
+                ->update(['question_number' => -1]);
+            $selectedQuestions = GameUserQuestions::where('game_id', $game->id)
+                ->whereNull('question_number')
+                ->inRandomOrder()
+                ->limit(10)
+                ->get();
+
+            // Shuffle the selected questions
+            $shuffledQuestions = $selectedQuestions->shuffle();
+
+            // Assign question numbers and update the database
+            $shuffledQuestions->each(function ($question, $index) {
+                $question->update(['question_number' => $index + 1]);
+            });
+
+            // Update the event questions collection
+            $eventQuestions = $shuffledQuestions;
+        }
         else {
-            // Retrieve all event questions with a question number
+
+            // Retrieve all event questions with a question number not equal to -1
             $eventQuestions = GameUserQuestions::where('game_id', $game->id)
                 ->whereNotNull('question_number')
+                ->where('question_number','<>',-1)
                 ->orderBy('question_number')
                 ->get();
         }

@@ -5,6 +5,7 @@ import { router } from '@inertiajs/vue3';
 
 import Play from '../Event/Partials/Play.vue';
 import End from '../Event/Partials/End.vue';
+import EndGame from '../Event/Partials/EndGame.vue';
 
 import { formatDate } from '@/utils';
 
@@ -56,18 +57,7 @@ const fadeOut = ref(false);
                     <End :answers="answers" :round="round"   />
                 </template>
                 <template v-if="routeName === 'games.endGame'">
-                    <div class="video-container mb-5">
-                        <iframe
-                        width="560"
-                        height="315"
-                        src="https://www.youtube.com/embed/p_wfPij9lno"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                        </iframe>
-                    </div>
-
+                    <EndGame :game="game" />
                 </template>
             </div>
         </div>
