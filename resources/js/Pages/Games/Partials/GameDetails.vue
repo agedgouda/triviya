@@ -1,7 +1,7 @@
 <script setup>
 import { formatDate } from '@/utils';
 import { router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref,computed } from 'vue';
 import axios from 'axios';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -15,6 +15,10 @@ const props = defineProps({
 });
 
 const processing = ref(false)
+
+const questionsAnsweredCount = computed(() =>
+  props.players.filter(player => player.status === 'Questions Answered').length
+);
 
 const goToEditPage = () => {
     router.visit(route('games.edit', props.game.id));
@@ -91,16 +95,9 @@ const sendInvitations = async () => {
     <div><span class="font-bold">Location: </span>{{ game.location }}</div>
     <div>{{ formatDate(game.date_time) }}</div>
     <div v-if="$page.props.auth.user.id === $page.props.host.id" >
+
         <div>
-            <DangerButton @click="startGame" >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
-                </svg>
-
-                &nbsp;Start Game
-            </DangerButton>
-
-            <PrimaryButton @click="goToEditPage" class="m-4">
+            <PrimaryButton @click="goToEditPage" class="mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                 </svg>
@@ -110,7 +107,20 @@ const sendInvitations = async () => {
         </div>
 
         <div class="mt-34">
-            Trivius is best played with a group! You’ll need at least 6 players to start, but the more, the merrier!
+            <div v-if="players.length < 4">
+                Trivius is best played with a group! You’ll need at least {{players.length - 4}} more players to play
+            </div>
+            <div v-if="players.length >= 4">
+                <div v-if="questionsAnsweredCount < players.length">
+                    Still waiting for {{ players.length - questionsAnsweredCount }} more player to answer their questions before the game can begin.
+                </div>
+                <DangerButton @click="startGame" :class="[{ 'opacity-50 cursor-not-allowed': questionsAnsweredCount < players.length }]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
+                    </svg>
+                    &nbsp;Start Game
+                </DangerButton>
+            </div>
         </div>
     </div>
     <Invite :gameId="game.id" v-if="$page.props.auth.user.id === $page.props.host.id" />
