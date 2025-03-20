@@ -81,7 +81,7 @@ const newQuestion = (increment) => {
     if((questionNumber.value+1) % 10 === 1){
         router.visit(route('games.endRound', { game: props.questions[0].game_id, round: props.round }));
     } else {
-        timer.value = 300
+        timer.value = 1200
         questionNumber.value += increment
     }
 }
@@ -113,8 +113,8 @@ const newQuestion = (increment) => {
             <div>
                 <div>Round {{ round }}</div>
                 <div>Question {{ (questions[questionNumber-1].question_number % 10 === 0) ? 10 : questions[questionNumber-1].question_number % 10  }}</div>
-                Who answered "<span>{{questions[questionNumber-1].question_text}}</span>""
-                <div>{{questions[questionNumber-1].answer}}</div>
+                <div><span class="font-bold">For the question</span> {{questions[questionNumber-1].question_text}}</div>
+                <div><span class="font-bold">Who answered</span> {{questions[questionNumber-1].answer}}<span class="font-bold">?</span></div>
                 <PrimaryButton @click="newQuestion(-1)" class="my-2 mr-2 " :class="['my-2 mr-2', { 'opacity-50 cursor-not-allowed': questionNumber === 1 }]"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">

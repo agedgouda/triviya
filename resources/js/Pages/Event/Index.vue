@@ -25,7 +25,7 @@ const fadeOut = ref(false);
 </script>
 
 <template>
-    <AppLayout title="Games">
+    <AppLayout title="Event">
         <template #header>
             <div v-if="routeName === 'games.showQuestions'">
                 <div >{{game.name}}</div>

@@ -343,12 +343,11 @@ class GameController extends Controller
     {
         $lastQuestion = $round*10;
         $firstQuestion = $lastQuestion-9;
-
         $questions = GameUserQuestions::where('game_id',$game->id)
-            ->where('question_number','>=',$firstQuestion)
-            ->where('question_number','<=',$lastQuestion)
-            ->orderBy('question_number')
-            ->get();
+        ->where('question_number','>=',$firstQuestion)
+        ->where('question_number','<=',$lastQuestion)
+        ->orderBy('question_number')
+        ->get();
 
         return Inertia::render('Event/Index', [
             'questions' => $questions,
