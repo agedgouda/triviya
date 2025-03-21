@@ -389,7 +389,7 @@ class GameController extends Controller
 
         // Check if a record was deleted
         if ($deleted) {
-            return ['status' => 'success', 'message' => 'User removed from game successfully.'];
+            return ['status' => 'success', 'message' => 'User removed'];
         }
 
         return ['status' => 'error', 'message' => 'No user found.'];

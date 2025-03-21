@@ -40,6 +40,12 @@ const handlePlayerAction = async (player, action, method = 'put', additionalPara
             throw new Error(`Invalid action: ${action}`);
         }
 
+        // Show confirmation dialog if removing a player
+        if (action === 'removePlayer') {
+            const confirmed = confirm(`Are you sure you want to remove ${player.email} from the game?`);
+            if (!confirmed) return;
+        }
+
         // Construct the route with additional parameters
         const response = await axios[method](
             route(routes[action], { game: props.game.id, user: player.id, ...additionalParams })
@@ -52,6 +58,11 @@ const handlePlayerAction = async (player, action, method = 'put', additionalPara
             if(response.data.message === 'Questions Sent') {
                 router.visit(route('games.showQuestions', { game: props.game.id, user: player.id }));
             }
+            if(response.data.message === 'User removed'){
+                const index = props.players.findIndex(player => player.status === "User removed");
+                if (index !== -1) props.players.splice(index, 1);
+            }
+
         } else {
             // Handle a failure response
             console.error(`Action '${action}' failed:`, response.data.message);
@@ -66,28 +77,10 @@ const handlePlayerAction = async (player, action, method = 'put', additionalPara
     }
 };
 
-const goToAnswers = () => {
-    router.visit(route('games.showAnswers', { game: props.game.id }));
-};
-
 const startGame = () => {
     router.visit(route('games.startGame', { game: props.game.id }));
 };
 
-const sendInvitations = async () => {
-    processing.value = true;
-    try {
-        const response = await axios['post'](
-                route('games.sendInvites', { game: props.game.id})
-            );
-        console.log(response.data.message);
-        console.log(props.players);
-        processing.value = false;
-    } catch (error) {
-        console.error('Error creating questions:', error);
-        processing.value = false;
-    }
-};
 
 </script>
 
