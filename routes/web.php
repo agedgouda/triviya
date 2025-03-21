@@ -65,6 +65,7 @@ Route::middleware([
         Route::get('/create', [GameController::class, 'create'])->name('games.create');
         Route::get('/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
         Route::get('/{game}/{user}/questions', [GameController::class, 'showQuestions'])->name('games.showQuestions');
+        Route::delete('/{game}/{user}/', [GameController::class, 'removePlayer'])->name('games.removePlayer');
         Route::put('/{game}', [GameController::class, 'update'])->name('games.update');
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');

@@ -97,18 +97,8 @@ const newQuestion = (increment) => {
             &nbsp;Go to first question
         </PrimaryButton>
     </div>
-    <div v-if="questionNumber  === 31">
-        <div >
-            Last page text
-        </div>
-        <PrimaryButton @click="questionNumber = 30" class="my-4">
-            &nbsp;Go to previous question
-        </PrimaryButton>
-        <DangerButton @click="endGame()" class="my-4 ml-3">
-            &nbsp;View Answers
-        </DangerButton>
-    </div>
-    <div v-if="questionNumber  > 0 && questionNumber  <= 30">
+
+    <div v-if="questionNumber  > 0 && questionNumber  <= 10">
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <div>Round {{ round }}</div>
