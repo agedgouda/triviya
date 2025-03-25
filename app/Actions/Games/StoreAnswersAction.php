@@ -29,6 +29,17 @@ class StoreAnswersAction
         // Update the player's status in the pivot table
         $game->players()->updateExistingPivot($user->id, ['status' => $status]);
 
+        $allAnswered = GameUser::where('game_id', $game->id)
+            ->where('status', '!=', 'Questions Answered')
+            ->where('status', '!=', 'Host')
+            ->doesntExist() ? 1 : 0;
+
+        if($allAnswered) {
+            Game::where('id',$game->id)->update(['status' => 'ready']);
+        } else {
+            Game::where('id',$game->id)->update(['status' => 'new']);
+        }
+
         return ['status' => 'success', 'message' => $status];
     }
 }

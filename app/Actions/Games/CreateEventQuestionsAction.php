@@ -18,6 +18,9 @@ class CreateEventQuestionsAction
             ->update(['question_number' => null]);
         $eventQuestions = collect();
     } elseif ($reset === -1) {
+        //Bonus round so update games table with proper status
+        $game->status = 'bonus';
+        $game->save();
         // Mark all questions with a positive question_number as -1.
         GameUserQuestions::where('game_id', $game->id)
             ->where('question_number', '>', 0)

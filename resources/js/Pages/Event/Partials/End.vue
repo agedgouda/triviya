@@ -8,6 +8,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 const props = defineProps({
     answers: Object,
     round: Number,
+    game: Object,
 });
 const newRound = (round) => {
     router.visit(route('games.startRound', { game: props.answers[0].game_id, round: round }));
@@ -22,7 +23,8 @@ const questionNumber = ref(0);
     <div class="flex">
         <div class="font-bold text-xl">Round {{ round }} Answers</div>
             <div class="ml-auto">
-                <PrimaryButton @click="newRound(round+1)" v-if="round <= 2">
+                {{(round <= 2 && game.status==='ready')}}
+                <PrimaryButton @click="newRound(round+1)" v-if="round <= 2 && game.status==='ready' ">
                     &nbsp;Go to Round {{ round+1 }}
                 </PrimaryButton>
                 <DangerButton @click="endGame" v-else>
@@ -66,7 +68,7 @@ const questionNumber = ref(0);
         </PrimaryButton>
     </div>
     <div v-if="questionNumber >= 10" class="my-4">
-        <PrimaryButton @click="newRound(round+1)" v-if="round <= 2">
+        <PrimaryButton @click="newRound(round+1)" v-if="round <= 2 && game.status==='ready'">
             &nbsp;Go to Round {{ round+1 }}
         </PrimaryButton>
         <DangerButton @click="endGame" v-else>

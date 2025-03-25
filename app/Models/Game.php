@@ -15,7 +15,8 @@ class Game extends Model
         'name',
         'date_time',
         'mode_id',
-        'location'
+        'location',
+        'status'
     ];
 
     public function players()
