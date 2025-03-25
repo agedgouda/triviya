@@ -380,19 +380,9 @@ class GameController extends Controller
 
     public function removePlayer(Game $game, User $user) {
 
-        \Log::info(json_encode($game));
-        \Log::info(json_encode($user));
+        $response = GameActions::RemoveUserAndResetQuestions($game, $user);
 
-        $deleted = GameUser::where('game_id', $game->id)
-            ->where('user_id', $user->id)
-            ->delete();
-
-        // Check if a record was deleted
-        if ($deleted) {
-            return ['status' => 'success', 'message' => 'User removed'];
-        }
-
-        return ['status' => 'error', 'message' => 'No user found.'];
+        return ['status' => $response["status"], 'message' => $response["message"] ];
 
     }
 
