@@ -372,7 +372,11 @@ class GameController extends Controller
     public function endGame(Game $game)
     {
         //$response = GameActions::CreateEventAnswerListAction($game);
-        $game->status = 'done';
+        if($game->status == 'bonus'){
+            $game->status = 'done-bonus';
+        } else {
+            $game->status = 'done';
+        }
         $game->save();
 
         return Inertia::render('Event/Index', [

@@ -13,10 +13,7 @@ const restartGame = () => {
 
 </script>
 
-
-
 <template>
-
     <div class="grid grid-cols-2 gap-4">
         <div class="video-container mb-5">
             <iframe
@@ -30,7 +27,7 @@ const restartGame = () => {
             </iframe>
         </div>
         <div>
-            <PrimaryButton @click="restartGame()" >
+            <PrimaryButton @click="restartGame()" v-if="game.status !== 'done-bonus' ">
                 Replay with New Questions
             </PrimaryButton>
         </div>
