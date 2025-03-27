@@ -4,32 +4,65 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     game: Object,
+    flash: Object,
 });
 
 
 const restartGame = () => {
+    const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    router.post(route('games.duplicate', { game: props.game.id }), {
+        timeZone: clientTimeZone
+    }, {
+        onSuccess: (page) => {
+            console.log(page)
+            if (page.props.flash.success) {
+                alert(page.props.flash.success); // Show success message
+            }
+        },
+        onError: (errors) => {
+            if (errors.error) {
+                alert(errors.error); // Show error message
+            }
+        }
+    });
+};
+
+const startBonusRound = () => {
     router.visit(route('games.startGame', { game: props.game.id, reset: -1 }));
 };
 
 </script>
 
 <template>
-    <div class="grid grid-cols-2 gap-4">
-        <div class="video-container mb-5">
-            <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/p_wfPij9lno"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-            </iframe>
-        </div>
+    <div class="grid grid-cols-2 gap-4 mb-5">
+        <div class="mb-5">
+            <div class="text-xl font-bold">That’s a Wrap!</div>
+            Well played, {{game.host[0].first_name}}. The game is over. Let’s find out who won.
+            <div class="font-bold mt-2">🏆 And the Winner is</div>
+            Ask players to tally their scores and crown a champion!
+            <div class="font-bold mt-2">🎤 Say a Few Words</div>
+            Give your crew a big congrats — they were the trivia all along.
+         </div>
         <div>
-            <PrimaryButton @click="restartGame()" v-if="game.status !== 'done-bonus' ">
-                Replay with New Questions
+            <div class="text-xl font-bold ">Keep the Fun Going!</div>
+            <div  v-if="game.status !== 'done-bonus' ">
+                <div>
+                    <div class="font-bold mt-2">➕ Bonus Round</div>
+                    Get 10 extra questions pulled from everyone’s earlier answers.
+                </div>
+                <div>
+                    <PrimaryButton @click="startBonusRound()">
+                        Play Bonus Round
+                    </PrimaryButton>
+                </div>
+            </div>
+            <div class="font-bold mt-5">🔁 New Game</div>
+            <div>Start fresh! Players will get 10 new questions to answer before the next round.</div>
+            <div class="font-bold mt-2">
+            <PrimaryButton @click="restartGame()">
+                Start New Game
             </PrimaryButton>
+            </div>
         </div>
     </div>
 </template>

@@ -69,6 +69,7 @@ Route::middleware([
         Route::put('/{game}', [GameController::class, 'update'])->name('games.update');
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
+        Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
         Route::post('/{game}/send-invites', [GameController::class, 'sendInvitations'])->name('games.sendInvites');
         Route::post('/{game}/resend-invite/{user}', [GameController::class, 'resendInvite'])
             ->name('games.resend-invite');

@@ -158,6 +158,35 @@ class GameController extends Controller
         // Implement game deletion logic if needed
     }
 
+    /**
+     * Make a copy of an existing game and invite those users to answer new questions.
+     */
+    public function duplicate(Game $game, Request $request)
+    {
+        $clientTimeZone = $request->input('timeZone', 'UTC');
+        $gameData = $game->toArray();
+        unset($gameData['id'], $gameData['created_at'], $gameData['updated_at'],$gameData['status']);
+        $gameData['name'] .= ' - ' . Carbon::now()->format('m/d/Y');
+        $gameData['date_time'] = Carbon::now($clientTimeZone);
+        $response = GameActions::storeGame($gameData);
+        if ($response['status'] !== 'success') {
+            return redirect()->back()->withErrors(['error' => 'Failed to create game ']);
+        }
+
+        foreach($game->players as $player)
+        {
+
+            $emailStatus = GameActions::createUserAndInviteAction($response["game"],$player->toArray());
+            //dd($emailStatus['status'] );
+            if ($emailStatus['status'] !== 'success') {
+                return redirect()->back()->withErrors(['error' => 'Failed to add user ' . $player->name]);
+            }
+        }
+        return Redirect::route('games.show', $response["game"]->id)->with('flash', [
+            'message' => 'Game created successfully!',
+        ]);
+    }
+
     public function createUser(InvitePlayerRequest $request, Game $game)
     {
         $validated = $request->validated();
@@ -372,15 +401,11 @@ class GameController extends Controller
     public function endGame(Game $game)
     {
         //$response = GameActions::CreateEventAnswerListAction($game);
-        if($game->status == 'bonus'){
-            $game->status = 'done-bonus';
-        } else {
-            $game->status = 'done';
-        }
+        $game->status = $game->status == 'bonus' ? 'done-bonus' : 'done';
         $game->save();
 
         return Inertia::render('Event/Index', [
-            'game' => $game,
+            'game' => $game->load(['host']),
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
