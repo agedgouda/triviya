@@ -30,7 +30,7 @@ function handleImageError() {
 <template>
     <Head title="Welcome" />
 
-    <div class="bg-gray-50 text-triviusBlue">
+    <div class="bg-gray-50 text-triviusRegular">
 
         <img id="background" class="absolute -left-20 top-0 max-w-[877px]" src="" />
         <header class="grid grid-cols-2 items-center gap-2 pb-10 lg:grid-cols-3">

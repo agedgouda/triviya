@@ -71,12 +71,12 @@ const closeModal = () => {
                     </div>
 
                     <div class="ms-3">
-                        <div class="text-sm text-triviusBlue">
+                        <div class="text-sm text-triviusRegular">
                             {{ session.agent.platform ? session.agent.platform : 'Unknown' }} - {{ session.agent.browser ? session.agent.browser : 'Unknown' }}
                         </div>
 
                         <div>
-                            <div class="text-xs text-triviusBlueLight">
+                            <div class="text-xs text-triviusLight">
                                 {{ session.ip_address }},
 
                                 <span v-if="session.is_current_device" class="text-green-500 font-semibold">This device</span>

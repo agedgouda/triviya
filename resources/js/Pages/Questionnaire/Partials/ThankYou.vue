@@ -24,7 +24,7 @@ const loginOrRegister = () => {
 </script>
 
 <template>
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-triviusBlue text-white">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-triviusRegular text-white">
             <div class="pt-3 text-center max-w-2xl">
                 <div class="mb-4">
                     <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto" />

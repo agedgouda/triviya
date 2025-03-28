@@ -134,7 +134,7 @@ const startGame = () => {
                 :key="player.id"
                 :class="[
                     rowClass,
-                    $page.props.auth.user.id === player.id ? 'bg-triviusBlueLight cursor-pointer text-red-600' : ''
+                    $page.props.auth.user.id === player.id ? 'bg-triviusLight cursor-pointer text-red-600' : ''
                 ]"
                 @click="($page.props.auth.user.id === player.id) && $inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
             >

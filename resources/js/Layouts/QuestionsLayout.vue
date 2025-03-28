@@ -21,7 +21,7 @@ defineProps({
         <Head :title="title" />
         <Banner />
 
-        <div class="min-h-screen bg-triviusBlue">
+        <div class="min-h-screen bg-triviusRegular">
             <!-- Page Heading -->
             <header v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 text-blue-50">

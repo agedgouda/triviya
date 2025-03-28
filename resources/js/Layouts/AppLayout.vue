@@ -34,8 +34,8 @@ const logout = () => {
 
         <Banner />
 
-        <div class="min-h-screen bg-triviusBlue ">
-            <nav class="bg-triviusBlue">
+        <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-triviusRegular" style="background-image: url('/images/trivius-bg-cover.png');">
+            <nav>
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 sm:px-5 lg:px-6">
                     <div class="flex justify-between h-16">
@@ -83,7 +83,7 @@ const logout = () => {
 
                                     <template #content>
                                         <!-- Account Management -->
-                                        <div class="block px-4 py-2 text-xs text-triviusBlue">
+                                        <div class="block px-4 py-2 text-xs text-triviusRegular">
                                             Manage Account
                                         </div>
 
@@ -140,17 +140,17 @@ const logout = () => {
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200 border-triviusBlueLight">
+                    <div class="pt-4 pb-1 border-t border-gray-200 border-triviusLight">
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 me-3">
                                 <img class="size-10 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.first_name+' '+$page.props.auth.user.last_name">
                             </div>
 
                             <div>
-                                <div class="font-medium text-base text-triviusBlue">
+                                <div class="font-medium text-base text-triviusRegular">
                                     {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}
                                 </div>
-                                <div class="font-medium text-sm text-triviusBlue">
+                                <div class="font-medium text-sm text-triviusRegular">
                                     {{ $page.props.auth.user.email }}
                                 </div>
                             </div>
@@ -177,7 +177,7 @@ const logout = () => {
             </nav>
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-triviusBlue">
+            <header v-if="$slots.header">
                 <div class="max-w-7xl py-5 px-5 sm:px-6 lg:px-10 text-blue-50">
                     <h2 class="font-semibold text-xl">
                         <slot name="header" />
@@ -189,7 +189,7 @@ const logout = () => {
             <main>
                 <div class="">
                     <div class="mx-auto sm:px-6 lg:px-8">
-                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 text-indigo-900 sm:rounded-lg">
+                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 text-triviusPurple-900 sm:rounded-lg">
                             <slot />
                         </div>
                     </div>
