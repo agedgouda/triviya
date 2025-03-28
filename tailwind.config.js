@@ -15,7 +15,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Quicksand', ...defaultTheme.fontFamily.sans],
             },colors: {
                 triviusBlue: '#2297B2',
                 triviusBlueLight: '#7DC9D9',

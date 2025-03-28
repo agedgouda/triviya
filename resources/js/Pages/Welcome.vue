@@ -30,9 +30,9 @@ function handleImageError() {
 <template>
     <Head title="Welcome" />
 
-    <div class="bg-gray-50 text-triviusBlue">
+    <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-triviusBlue" style="background-image: url('/images/trivius-bg-cover.png');">
 
-        <img id="background" class="absolute -left-20 top-0 max-w-[877px]" src="" />
+        <!--<img id="background" class="absolute -left-20 top-0 bg-cover" src="/images/trivius-bg-cover.png" />-->
         <header class="grid grid-cols-2 items-center gap-2 pb-10 lg:grid-cols-3">
                     <div class="flex lg:justify-center lg:col-start-2">
 
@@ -70,10 +70,10 @@ function handleImageError() {
                 <div class="justify-center items-center">
                     <ApplicationLogo />
                 </div>
-                <div class="text-center text-3xl pt-10 font-bold">The party game where you become the trivia!</div>
+                <div class="text-center text-3xl pt-10 font-bold text-white">The party game where you become the trivia!</div>
             </main>
 
-            <footer class="py-16 text-center text-sm text-black dark:text-white/70">
+            <footer class="py-16 text-center text-sm text-white dark:text-white/70">
                 Trivius Copyright ©{{ new Date().getFullYear() }}
             </footer>
         </div>
