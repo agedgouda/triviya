@@ -38,6 +38,7 @@ const fadeOut = ref(false);
         <div>
 
             <div class="mx-5">
+
                 <div
                     v-if="flashMessage"
                     :class="['transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
@@ -51,7 +52,7 @@ const fadeOut = ref(false);
                     {{ $page.props.flash.message }}
                 </div>
                 <template v-if="routeName === 'games.startGame' || routeName === 'games.startRound'">
-                    <Play :questions="questions" :round="round"    />
+                    <Play :questions="questions" :round="round" :game="game" />
                 </template>
                 <template v-if="routeName === 'games.endRound'">
                     <End :answers="answers" :round="round" :game="game"   />

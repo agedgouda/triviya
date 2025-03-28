@@ -10,6 +10,7 @@ import Table from '@/Components/Table.vue';
 
 const props = defineProps({
     questions: Object,
+    game:Object,
     round: {
         type: Number,
         default: 1
@@ -90,18 +91,22 @@ const newQuestion = (increment) => {
 <template>
 
     <div v-if="questionNumber  === 0">
-        <div >
+        <div v-if="game.status !== 'bonus'">
             Landing Page Text
         </div>
+        <div v-else>
+            Bonus Round Text
+        </div>
         <PrimaryButton @click="questionNumber = 1" class="my-4">
-            &nbsp;Go to first question
+            &nbsp;Go to first<span v-if="game.status === 'bonus'">&nbsp;Bonus&nbsp;</span> question
         </PrimaryButton>
     </div>
 
     <div v-if="questionNumber  > 0 && questionNumber  <= 10">
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <div>Round {{ round }}</div>
+                <div v-if="game.status !== 'bonus'">Round {{ round }}</div>
+                <div v-else>Bonus Round</div>
                 <div>Question {{ (questions[questionNumber-1].question_number % 10 === 0) ? 10 : questions[questionNumber-1].question_number % 10  }}</div>
                 <div><span class="font-bold">For the question</span> {{questions[questionNumber-1].question_text}}</div>
                 <div><span class="font-bold">Who answered</span> {{questions[questionNumber-1].answer}}<span class="font-bold">?</span></div>

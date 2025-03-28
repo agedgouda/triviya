@@ -34,7 +34,7 @@ const logout = () => {
 
         <Banner />
 
-        <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-triviusRegular" style="background-image: url('/images/trivius-bg-cover.png');">
+        <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-black" style="background-image: url('/images/trivius-bg-cover.png');">
             <nav>
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 sm:px-5 lg:px-6">
@@ -189,7 +189,7 @@ const logout = () => {
             <main>
                 <div class="">
                     <div class="mx-auto sm:px-6 lg:px-8">
-                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 text-triviusPurple-900 sm:rounded-lg">
+                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 text-black-900 sm:rounded-lg">
                             <slot />
                         </div>
                     </div>

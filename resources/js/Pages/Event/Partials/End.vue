@@ -21,7 +21,8 @@ const questionNumber = ref(0);
 </script>
 <template>
     <div class="flex">
-        <div class="font-bold text-xl">Round {{ round }} Answers</div>
+        <div class="font-bold text-xl"  v-if="game.status !== 'bonus'">Round {{ round }} Answers</div>
+        <div class="font-bold text-xl" v-else>Bonus Round Answers</div>
             <div class="ml-auto">
                 {{(round <= 2 && game.status==='ready')}}
                 <PrimaryButton @click="newRound(round+1)" v-if="round <= 2 && game.status==='ready' ">
@@ -36,14 +37,20 @@ const questionNumber = ref(0);
             Begin Showing Answers
         </div>
         <div v-if="questionNumber > 0 && questionNumber <=10">
-                <div>Round {{ round }}</div>
+                <div v-if="game.status !== 'bonus'">Round {{ round }}</div>
+                <div v-else>Bonus Round</div>
                 <div>Question {{ (answers[questionNumber-1].question_number % 10 === 0) ? 10 : answers[questionNumber-1].question_number % 10  }}</div>
             <div><span class="font-bold">For the question</span> {{ answers[questionNumber-1].question_text }}</div>
             <div><span class="font-bold">Who answered</span> {{ answers[questionNumber-1].answer }}<span class="font-bold">?</span></div>
             <div class="font-bold text-red-500">{{ answers[questionNumber-1].player_name }}</div>
         </div>
         <div v-else>
+        <div v-if="game.status !== 'bonus'">
             Next Round
+        </div>
+        <div v-else>
+            Bonus Round
+        </div>
         </div>
      <div v-if="questionNumber  === 0">
         <div >

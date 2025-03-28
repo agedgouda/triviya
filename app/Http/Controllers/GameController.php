@@ -363,6 +363,7 @@ class GameController extends Controller
 
         return Inertia::render('Event/Index', [
             'questions' => $response,
+            'game' => $game,
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
