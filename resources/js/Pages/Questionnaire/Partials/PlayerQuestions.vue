@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, reactive } from 'vue';
+import { ref, watch, reactive,computed } from 'vue';
 import { useForm,usePage,router } from '@inertiajs/vue3';
 
 // Import components
@@ -128,6 +128,20 @@ const submitAnswers = () => {
 const cancel = () => {
     router.visit(route('games.show', { game: props.game.id }))
 }
+const answeredCount = computed(() => props.questions.filter(q => q.answer !== null).length);
+
+watch(
+  () => form.answers,
+  (newAnswers) => {
+    props.questions.forEach((question) => {
+      if (newAnswers[question.id] !== undefined) {
+        question.answer = newAnswers[question.id]; // Update question.answer with latest answer
+      }
+    });
+  },
+  { deep: true }
+);
+
 
 </script>
 
@@ -137,7 +151,7 @@ const cancel = () => {
                 <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
             </template>
                 <div class="text-base mt-5 mb-5">
-                    Welcome, {{ user.first_name }} {{ user.last_name }}!
+                    Welcome<span v-if="answeredCount>0"> back</span>, {{ user.first_name }} {{ user.last_name }}!
                     <p>
                         Here are your questions for the game
                         {{ game.host[0].first_name }} {{ game.host[0].last_name }} is hosting at {{ game.location }}

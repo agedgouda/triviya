@@ -258,7 +258,7 @@ class GameController extends Controller
             // Handle error: Player not found in this game
             abort(404, 'Player not found in this game.');
         }
-
+/*
         $answerCount = $gameUserQuestions->filter(function ($question) {
             return !is_null($question->answer) && $question->answer !== '';
         })->count();
@@ -285,7 +285,7 @@ class GameController extends Controller
                 ]);
             }
         }
-
+*/
         // Determine the correct page to render
         $page = $request->route()->getName() === 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
 

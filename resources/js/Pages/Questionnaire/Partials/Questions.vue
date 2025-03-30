@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref,computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import PlayerQuestions from './PlayerQuestions.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
@@ -15,13 +15,13 @@ const props = defineProps({
 
 const { props: pageProps } = usePage();
 const showWelcome = ref(true);
+const answeredCount = computed(() => props.questions.filter(q => q.answer !== null).length);
 showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.user.id ? false : true;
 
 </script>
 
 <template>
-
-    <div v-if="showWelcome">
+    <div v-if="answeredCount === 0 && showWelcome" >
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-triviusRegular text-white" style="background-image: url('/images/trivius-bg-cover.png');">
             <div class="pt-3 text-center max-w-2xl">
                 <div class="mb-4">
@@ -49,7 +49,7 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
         </div>
     </div>
 
-    <div v-else>
+    <div v-if="answeredCount >= 0  || !showWelcome">
 
         <PlayerQuestions :questions="questions" :game="game" :user="user" />
 
