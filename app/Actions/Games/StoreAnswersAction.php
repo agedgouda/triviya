@@ -6,10 +6,20 @@ use App\Models\Game;
 use App\Models\User;
 use App\Models\GameUser;
 use App\Models\GameUserQuestions;
+use App\Services\MailService;
+
 
 
 class StoreAnswersAction
 {
+
+    protected $mailService;
+
+    public function __construct()
+    {
+        $this->mailService = app(MailService::class);
+    }
+
     public function handle(Game $game, User $user, array $data)
     {
         // Find the game_user entry for the current user and the specified game
@@ -25,6 +35,8 @@ class StoreAnswersAction
 
         // Determine the status based on the number of answered questions
         $status = 'Questions Answered';
+
+        $result = $this->mailService->sendPlayerAnsweredQuestions($user, $game);
 
         // Update the player's status in the pivot table
         $game->players()->updateExistingPivot($user->id, ['status' => $status]);
