@@ -49,7 +49,7 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
         </div>
     </div>
 
-    <div v-if="answeredCount >= 0  || !showWelcome">
+    <div v-if="answeredCount > 0  || !showWelcome">
 
         <PlayerQuestions :questions="questions" :game="game" :user="user" />
 
