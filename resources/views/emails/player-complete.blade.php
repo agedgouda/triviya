@@ -9,6 +9,10 @@
     <p>
 
     </p>
+
+    <p>
+        You’re one step closer to game night greatness.
+    </p>
     <p>
         Good news — {{ $player->first_name }} {{ $player->last_name }} has completed their TriviYa quiz! 🎉<br>
         Here are a few things to keep in mind before game time:
@@ -21,9 +25,6 @@
             </ul>
         </p>
         <p>
-            You’re one step closer to game night greatness.
-        </p>
-        <p>
 
             @if (count($noAnswers) > 0)
                 We're still waiting for answers from:
@@ -32,11 +33,11 @@
                     <li>{{ $noAnswer->user->name }}</li>
                 @endforeach
                 </ul>
-            Need to update them make changes?<br>
+                👉 <a href="{{config('app.url')}}/games/{{ $game->id }}">Click here </a> to send reminders, add or delete players.<br>
             @else
-            Want to get the party started?<br>
+                👉 <a href="{{config('app.url')}}/games/{{ $game->id }}">Click here </a> to get the party started.<br>
             @endif
-            👉 {{config('app.url')}}/games/{{ $game->id }}
+
         </p>
 
             Let the countdown begin!<br>
