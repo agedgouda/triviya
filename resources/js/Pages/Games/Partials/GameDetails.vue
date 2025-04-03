@@ -123,7 +123,7 @@ const copyToClipboard = (game, player) => {
 
         <div class="mt-34">
             <div v-if="players.length < 4">
-                Trivius is best played with a group! You’ll need at least {{4 - players.length}} more player<span v-if="players.length >3">s</span> to play
+                TriviYa is best played with a group! You’ll need at least {{4 - players.length}} more player<span v-if="players.length >3">s</span> to play
             </div>
             <div v-if="players.length >= 4">
                 <div v-if="questionsAnsweredCount < players.length">
@@ -154,7 +154,7 @@ const copyToClipboard = (game, player) => {
                 :key="player.id"
                 :class="[
                     rowClass,
-                    $page.props.auth.user.id === player.id ? 'bg-triviusLight cursor-pointer text-red-600' : ''
+                    $page.props.auth.user.id === player.id ? 'bg-triviyaLight cursor-pointer text-red-600' : ''
                 ]"
                 @click="($page.props.auth.user.id === player.id) && $inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
             >

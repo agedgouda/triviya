@@ -30,9 +30,9 @@ function handleImageError() {
 <template>
     <Head title="Welcome" />
 
-    <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-triviusRegular" style="background-image: url('/images/trivius-bg-cover.png');">
+    <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-triviyaRegular" style="background-image: url('/images/triviya-bg-cover.png');">
 
-        <!--<img id="background" class="absolute -left-20 top-0 bg-cover" src="/images/trivius-bg-cover.png" />-->
+        <!--<img id="background" class="absolute -left-20 top-0 bg-cover" src="/images/triviya-bg-cover.png" />-->
         <header class="grid grid-cols-2 items-center gap-2 pb-10 lg:grid-cols-3">
                     <div class="flex lg:justify-center lg:col-start-2">
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0"  style="background-image: url('/images/trivius-bg-cover.png');">
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0"  style="background-image: url('/images/triviya-bg-cover.png');">
         <div>
             <slot name="logo" />
         </div>

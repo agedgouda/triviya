@@ -22,7 +22,7 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
 
 <template>
     <div v-if="answeredCount === 0 && showWelcome" >
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-triviusRegular text-white" style="background-image: url('/images/trivius-bg-cover.png');">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-triviyaRegular text-white" style="background-image: url('/images/triviya-bg-cover.png');">
             <div class="pt-3 text-center max-w-2xl">
                 <div class="mb-4">
                     <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto" />
@@ -32,7 +32,7 @@ showWelcome.value =  (pageProps.auth.user && pageProps.auth.user.id) ===  props.
                         you are the trivia!
                     </h1>
                     <p class="mb-4 text-xl">{{ game.host[0].first_name }} {{ game.host[0].last_name }}
-                        <span class="inline sm:hidden"><br></span>has invited you to play Trivius</p>
+                        <span class="inline sm:hidden"><br></span>has invited you to play TriviYa</p>
                     <ul class="list-disc text-left inline-block text-sm sm:text-lg px-10 sm:px-0">
                         <li>Answer a few fun questions about yourself.</li>
                         <li>You’ll have to register to save your answers so you can change them right up until party time.</li>

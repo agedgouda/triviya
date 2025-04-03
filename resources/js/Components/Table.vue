@@ -1,6 +1,6 @@
 <template>
     <table class="min-w-full table-auto">
-        <thead class="bg-triviusRegular text-white border border-triviusRegular">
+        <thead class="bg-triviyaRegular text-white border border-triviyaRegular">
             <tr>
                 <slot name="header"></slot>
             </tr>
@@ -26,9 +26,9 @@ const props = defineProps({
 });
 
 const rowClass = computed(() => [
-    'border border-triviusRegular',
+    'border border-triviyaRegular',
     props.hasHover || props.hasPointer
-        ? 'cursor-pointer hover:bg-triviusLight hover:text-red-600'
+        ? 'cursor-pointer hover:bg-triviyaLight hover:text-red-600'
         : '',
 ].join(' '));
 </script>

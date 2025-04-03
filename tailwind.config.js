@@ -17,11 +17,11 @@ export default {
             fontFamily: {
                 sans: ['Quicksand', ...defaultTheme.fontFamily.sans],
             },colors: {
-                triviusRegular: '#9022b2',
-                triviusLight: '#7DC9D9',
-                triviusContent: '#9022b2',
-                triviusPink: '#FD67C4',
-                triviusPurple: {
+                triviyaRegular: '#9022b2',
+                triviyaLight: '#7DC9D9',
+                triviyaContent: '#9022b2',
+                triviyaPink: '#FD67C4',
+                triviyaPurple: {
                     900: '#9022b2',
                     800: '#9c35bd',
                     700: '#a94ec7',

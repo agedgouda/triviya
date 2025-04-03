@@ -85,7 +85,7 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <div v-if="flash" class="mb-4 font-medium text-sm text-triviusPink">
+        <div v-if="flash" class="mb-4 font-medium text-sm text-triviyaPink">
             {{ flash.message }}
         </div>
 
@@ -168,7 +168,7 @@ const submit = () => {
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Link :href="route('login')" class="underline text-sm text-triviusRegular hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Link :href="route('login')" class="underline text-sm text-triviyaRegular hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Already registered?
                 </Link>
 

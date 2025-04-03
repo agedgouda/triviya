@@ -85,7 +85,7 @@ const createGame = () => {
                         <GamesList :games="games " />
                     </div>
                     <div class="flex items-center mb-5" v-if="gamesHosted.data.length === 0 && games.data.length === 0">
-                        <span>Welcome to Trivius. Click on NEW GAME to get started.</span>
+                        <span>Welcome to TriviYa. Click on NEW GAME to get started.</span>
                         <PrimaryButton class="ml-4" @click="createGame">
                             New Game
                         </PrimaryButton>

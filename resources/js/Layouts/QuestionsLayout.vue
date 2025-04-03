@@ -21,7 +21,7 @@ defineProps({
         <Head :title="title" />
         <Banner />
 
-        <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-black" style="background-image: url('/images/trivius-bg-cover.png');">
+        <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-black" style="background-image: url('/images/triviya-bg-cover.png');">
             <!-- Page Heading -->
             <header v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 text-black-900">

@@ -34,7 +34,7 @@ const logout = () => {
 
         <Banner />
 
-        <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-black" style="background-image: url('/images/trivius-bg-cover.png');">
+        <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-black" style="background-image: url('/images/triviya-bg-cover.png');">
             <nav>
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 sm:px-5 lg:px-6">
@@ -83,7 +83,7 @@ const logout = () => {
 
                                     <template #content>
                                         <!-- Account Management -->
-                                        <div class="block px-4 py-2 text-xs text-triviusRegular">
+                                        <div class="block px-4 py-2 text-xs text-triviyaRegular">
                                             Manage Account
                                         </div>
 
@@ -140,17 +140,17 @@ const logout = () => {
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200 border-triviusLight">
+                    <div class="pt-4 pb-1 border-t border-gray-200 border-triviyaLight">
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 me-3">
                                 <img class="size-10 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.first_name+' '+$page.props.auth.user.last_name">
                             </div>
 
                             <div>
-                                <div class="font-medium text-base text-triviusRegular">
+                                <div class="font-medium text-base text-triviyaRegular">
                                     {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}
                                 </div>
-                                <div class="font-medium text-sm text-triviusRegular">
+                                <div class="font-medium text-sm text-triviyaRegular">
                                     {{ $page.props.auth.user.email }}
                                 </div>
                             </div>

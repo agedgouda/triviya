@@ -18,16 +18,19 @@ class PlayerAnsweredQuestions extends Mailable
     use Queueable, SerializesModels;
     public $player;
     public $game;
+    public $noAnswers;
 
     /**
      * Create a new message instance.
      */
     public function __construct(
         $player,
-        $game
+        $game,
+        $noAnswers
     ) {
         $this->player = $player;
         $this->game = $game;
+        $this->noAnswers = $noAnswers;
     }
 
 
@@ -38,7 +41,7 @@ class PlayerAnsweredQuestions extends Mailable
     {
         return new Envelope(
             from: new Address(config('mail.from.address'), config('mail.from.name')),
-            subject: $this->player->first_name.' '.$this->player->last_name.' Just Completed Their Trivius Quiz!',
+            subject: $this->player->first_name.' '.$this->player->last_name.' Just Completed Their TriviYa Quiz!',
         );
     }
 
@@ -50,7 +53,7 @@ class PlayerAnsweredQuestions extends Mailable
     {
         return new Content(
             view: 'emails.player-complete',
-            with: ['player' => $this->player,'game' => $this->game,'host' => $this->game->host,],
+            with: ['player' => $this->player,'game' => $this->game,'host' => $this->game->host,'noAnswers' => $this->noAnswers,],
         );
     }
 

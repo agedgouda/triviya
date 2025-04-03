@@ -23,10 +23,10 @@ class MailService
         }
     }
 
-    public function sendPlayerAnsweredQuestions(User $user, Game $game)
+    public function sendPlayerAnsweredQuestions(User $user, Game $game, $noAnswers)
     {
         try {
-            Mail::to($game->host->email)->send(new PlayerAnsweredQuestions($user, $game));
+            Mail::to($game->host->email)->send(new PlayerAnsweredQuestions($user, $game, $noAnswers));
             return ['status' => 'success', 'message' => 'Player update mail sent successfully.'];
         } catch (\Throwable $e) {
             \Log::error('Failed to send invite email: ' . $e->getMessage());
