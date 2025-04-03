@@ -74,7 +74,7 @@ function handleImageError() {
             </main>
 
             <footer class="py-16 text-center text-sm text-white dark:text-white/70">
-                Trivius Copyright ©{{ new Date().getFullYear() }}
+                TriviYa Copyright ©{{ new Date().getFullYear() }}
             </footer>
         </div>
     </div>
