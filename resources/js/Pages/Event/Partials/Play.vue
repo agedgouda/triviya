@@ -82,7 +82,8 @@ const newQuestion = (increment) => {
     if((questionNumber.value+1) % 10 === 1){
         router.visit(route('games.endRound', { game: props.questions[0].game_id, round: props.round }));
     } else {
-        timer.value = 1200
+        //timer.value = 1200
+        resetCountdown();
         questionNumber.value += increment
     }
 }
