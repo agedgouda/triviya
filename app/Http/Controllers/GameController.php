@@ -380,6 +380,7 @@ class GameController extends Controller
         ->get();
 
         return Inertia::render('Event/Index', [
+            'game' => $game,
             'questions' => $questions,
             'round' => $round,
             'routeName' => request()->route()->getName(),
