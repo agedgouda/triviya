@@ -129,6 +129,7 @@ const copyToClipboard = (game, player) => {
             <div v-if="players.length >= 4">
                 <div v-if="questionsAnsweredCount < players.length">
                     Still waiting for {{ players.length - questionsAnsweredCount }} more player<span v-if="players.length - questionsAnsweredCount > 1">s</span> to answer their questions before the game can begin.
+                    <span v-if="$page.props.host.pivot.status !== 'Questions Answered'">Click ‘TAKE QUIZ’ below to get started.</span>
                 </div>
                 <DangerButton @click="startGame" v-if="questionsAnsweredCount === players.length">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
