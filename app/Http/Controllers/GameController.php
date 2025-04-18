@@ -76,20 +76,13 @@ class GameController extends Controller
 
         if($response["status"] === 'success') {
 
-            $game = $response["game"];
-
-            $response = GameActions::AssignPlayerQuestionsAction($game, $game->host);
-            if($response["status"] === 'success' ) {
-                return Redirect::route('games.show', $game->id)->with('flash', [
-                    'message' => 'Game created successfully!',
-                ]);
-            } else {
-                return redirect()->back()->withErrors([
-                    'message' => $response["message"],
-                ]);
-            }
+            return Redirect::route('games.show', $response["game"]->id)->with('flash', [
+                'status' => $response["status"],
+                'message' => 'Game created successfully!',
+            ]);
         } else {
             return redirect()->back()->withErrors([
+                'status' =>  $response["status"],
                 'message' => $response["message"],
             ]);
         }
