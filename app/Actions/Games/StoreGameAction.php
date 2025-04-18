@@ -5,38 +5,52 @@ namespace App\Actions\Games;
 use App\Models\Game;
 use App\Models\Question;
 use Illuminate\Support\Facades\DB;
+use App\Facades\GameActions;
+
 use Exception;
 
-class StoreGame
+class StoreGameAction
 {
     public function handle(array $data): array
     {
         try {
-            // Wrap everything in a transaction
             return DB::transaction(function () use ($data) {
                 // Create the game
                 $game = Game::create(
                     array_intersect_key($data, array_flip((new Game)->getFillable()))
                 );
 
-                // Attach the authenticated user as the host
-                $game->players()->attach(auth()->id(), [
-                    'status' => 'host',
-                    'is_host' => true,
-                ]);
+                // Prepare the host user from the currently authenticated user
+                $authUser = auth()->user();
 
-                // Retrieve questions with a record in mode_question where mode_id matches the game's mode_id
+                if (!$authUser) {
+                    throw new Exception('No authenticated user found.');
+                }
+
+                // Use CreateUserAndInviteAction to add the host
+                $hostData = [
+                    'first_name' => $authUser->first_name,
+                    'last_name' => $authUser->last_name,
+                    'email' => $authUser->email,
+                    'is_host' => true,
+                ];
+
+                // Get questions for the game mode
                 $questions = Question::whereHas('modes', function ($query) use ($game) {
                     $query->where('mode_id', $game->mode_id);
                 })->get();
 
-                // Check if no questions exist for the selected mode
                 if ($questions->isEmpty()) {
                     throw new Exception('No questions found for the selected mode.');
                 }
 
-                // Attach the retrieved questions to the game
+                // Attach questions to the game
                 $game->questions()->attach($questions->pluck('id')->toArray());
+
+                $hostResult = GameActions::CreateUserAndInviteAction($game, $hostData);
+                if ($hostResult['status'] !== 'success') {
+                    throw new Exception('Failed to add host: ' . $hostResult['message']);
+                }
 
                 return [
                     'status' => 'success',
@@ -44,7 +58,6 @@ class StoreGame
                 ];
             });
         } catch (Exception $e) {
-            // Handle any errors during the transaction
             return [
                 'status' => 'error',
                 'message' => $e->getMessage(),

@@ -123,7 +123,7 @@ const copyToClipboard = (game, player) => {
 
         <div class="mt-34">
             <div v-if="players.length < 4">
-                TriviYa is best played with a group! You’ll need at least {{4 - players.length}} more player<span v-if="players.length >3">s</span> to play
+                TriviYa is best played with a group! You’ll need at least {{4 - players.length}} more player<span v-if="players.length <3">s</span> to play
             </div>
             <div v-if="players.length >= 4">
                 <div v-if="questionsAnsweredCount < players.length">

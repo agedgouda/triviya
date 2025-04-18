@@ -12,7 +12,6 @@ import { formatDate } from '@/utils';
 
 const props = defineProps({
     games: Object,
-    gamesHosted: Object,
     game: Object,
     questions: Object,
     host: Object,
@@ -76,15 +75,10 @@ const createGame = () => {
                     {{ $page.props.flash.message }}
                 </div>
                 <template v-if="routeName === 'games'">
-                    <div v-if="gamesHosted.data.length" class="mb-5">
-                        <div class="mt-3 font-bold pb-3">Games You Are Hosting</div>
-                        <GamesList :games="gamesHosted" />
-                    </div>
-                    <div v-if="games.data.length">
-                        <div class="mt-3 font-bold pb-3">Games You are Playing</div>
+                    <div v-if="games.data.length" class="mt-5 pb-3">
                         <GamesList :games="games " />
                     </div>
-                    <div class="flex items-center mb-5" v-if="gamesHosted.data.length === 0 && games.data.length === 0">
+                    <div class="flex items-center mb-5" v-if="games.data.length === 0">
                         <span>Welcome to TriviYa. Click on NEW GAME to get started.</span>
                         <PrimaryButton class="ml-4" @click="createGame">
                             New Game

@@ -40,13 +40,12 @@ class GameController extends Controller
      */
     public function index()
     {
-        $gamesHosted = GameActions::fetchGames(true);
+        //$gamesHosted = GameActions::fetchGames(true);
         $games = GameActions::fetchGames(false);
 
 
         return Inertia::render('Games/Index', [
             'games' => $games,
-            'gamesHosted' => $gamesHosted,
             'routeName' => request()->route()->getName(),
         ]);
     }
@@ -73,7 +72,7 @@ class GameController extends Controller
     {
         $validated = $request->validated();
 
-        $response = GameActions::storeGame($validated);
+        $response = GameActions::StoreGameAction($validated);
 
         if($response["status"] === 'success') {
 
@@ -178,7 +177,7 @@ class GameController extends Controller
         unset($gameData['id'], $gameData['created_at'], $gameData['updated_at'],$gameData['status']);
         $gameData['name'] .= ' - ' . Carbon::now()->format('m/d/Y');
         $gameData['date_time'] = Carbon::now($clientTimeZone);
-        $response = GameActions::storeGame($gameData);
+        $response = GameActions::StoreGameAction($gameData);
         if ($response['status'] !== 'success') {
             return redirect()->back()->withErrors(['error' => 'Failed to create game ']);
         }

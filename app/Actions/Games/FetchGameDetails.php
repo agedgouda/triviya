@@ -13,7 +13,9 @@ class FetchGameDetails
         $hasQuestions = GameUser::where('game_id', $game->id)
             ->where('user_id', $userId)
             ->where('status', 'like', '%invitation%')
+            ->where('is_host',0)
             ->exists();
+
 
         if ($hasQuestions) {
             return [
