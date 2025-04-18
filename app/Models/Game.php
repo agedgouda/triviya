@@ -33,7 +33,8 @@ class Game extends Model
     public function host()
     {
         return $this->belongsToMany(User::class, 'game_user')
-                    ->wherePivot('is_host', true);
+                    ->wherePivot('is_host', true)
+                    ->withPivot('status');
     }
 
     public function scopeHostedBy($query, $userId)
