@@ -22,8 +22,7 @@ class Game extends Model
     public function players()
     {
         return $this->belongsToMany(User::class, 'game_user')
-                    ->withPivot('id','status', 'is_host')
-                    ->wherePivot('is_host',false);
+                    ->withPivot('id','status', 'is_host');
     }
 
     public function attendingPlayers()

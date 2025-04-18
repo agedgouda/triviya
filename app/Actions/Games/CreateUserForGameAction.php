@@ -29,11 +29,12 @@ class CreateUserForGameAction
             ];
         }
 
-        $game->players()->attach($user->id, ['status' => 'Pending']);
+        $game->players()->attach($user->id, ['status' => 'Waiting Invitation']);
 
         return [
             'status' => 'success',
             'message' => 'Pending',
+            'player'  => $user,
         ];
     }
 }

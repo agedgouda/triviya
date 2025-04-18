@@ -76,9 +76,19 @@ class GameController extends Controller
         $response = GameActions::storeGame($validated);
 
         if($response["status"] === 'success') {
-            return Redirect::route('games.show', $response["game"]->id)->with('flash', [
-                'message' => 'Game created successfully!',
-            ]);
+
+            $game = $response["game"];
+
+            $response = GameActions::AssignPlayerQuestionsAction($game, $game->host);
+            if($response["status"] === 'success' ) {
+                return Redirect::route('games.show', $game->id)->with('flash', [
+                    'message' => 'Game created successfully!',
+                ]);
+            } else {
+                return redirect()->back()->withErrors([
+                    'message' => $response["message"],
+                ]);
+            }
         } else {
             return redirect()->back()->withErrors([
                 'message' => $response["message"],
@@ -187,14 +197,6 @@ class GameController extends Controller
         ]);
     }
 
-    public function createUser(InvitePlayerRequest $request, Game $game)
-    {
-        $validated = $request->validated();
-        $results = GameActions::createUserForGameAction($game,$validated);
-        return redirect()->route('games.show', $game->id)->with($results['status'], $results['message']);
-
-    }
-
     public function createUserAndInvite(InvitePlayerRequest $request, Game $game)
     {
         $validated = $request->validated();
@@ -204,7 +206,6 @@ class GameController extends Controller
 
     public function sendInvitations(Game $game)
     {
-
         //first assign the questions to the players
         $question = GameActions::AssignGameQuestionsAction($game);
 
@@ -258,34 +259,7 @@ class GameController extends Controller
             // Handle error: Player not found in this game
             abort(404, 'Player not found in this game.');
         }
-/*
-        $answerCount = $gameUserQuestions->filter(function ($question) {
-            return !is_null($question->answer) && $question->answer !== '';
-        })->count();
 
-        // If the user has answered all questions and is neither the host nor logged in
-        if (
-            $answerCount >= 10 &&
-            !$isHost &&
-            !auth()->id()
-        ) {
-            // Redirect to login or register, based on whether the user has a password
-            if ($user->password) {
-                return redirect()->route('login.prepopulated', [
-                    'game' => $game->id,
-                    'user' => $user->id,
-                    'redirect_to' => route('questions.showQuestions', ['game' => $game->id, 'user' => $user->id]),
-                ]);
-            } else {
-                session()->flash('message', 'Register to save your answers.');
-                return redirect()->route('register.prepopulated', [
-                    'game' => $game->id,
-                    'user' => $user->id,
-                    'redirect_to' => route('games.show', ['game' => $game->id]),
-                ]);
-            }
-        }
-*/
         // Determine the correct page to render
         $page = $request->route()->getName() === 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
 

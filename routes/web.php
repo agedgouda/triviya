@@ -73,7 +73,6 @@ Route::middleware([
         Route::post('/{game}/send-invites', [GameController::class, 'sendInvitations'])->name('games.sendInvites');
         Route::post('/{game}/resend-invite/{user}', [GameController::class, 'resendInvite'])
             ->name('games.resend-invite');
-        Route::post('/{game}/createUser', [GameController::class, 'createUser'])->name('games.createUser');
         Route::post('/{game}/invite', [GameController::class, 'createUserAndInvite'])->name('games.invite');
         Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');

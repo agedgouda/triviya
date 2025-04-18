@@ -169,7 +169,7 @@ const copyToClipboard = (game, player) => {
                 <td class="px-4 py-2 text-center" v-else>
                     {{ player.status }}
                 </td>
-                <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id" >
+                <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id && player.id != $page.props.host.id" >
                     <div>
                         <SecondaryButton @click="copyToClipboard(game, player)" v-if="player.status.includes('Invitation') || player.status ==='Error sending invitation'" >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6">
@@ -178,7 +178,11 @@ const copyToClipboard = (game, player) => {
                             &nbsp;Copy Link
                         </SecondaryButton>
                     </div>
-
+                </td>
+                <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id && player.id === $page.props.host.id" >
+                    <div>
+                        HOST
+                    </div>
                 </td>
                 <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id" >
                     <div>
