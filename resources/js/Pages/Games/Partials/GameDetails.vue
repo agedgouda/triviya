@@ -123,13 +123,12 @@ const copyToClipboard = (game, player) => {
 
         <div class="mt-34">
             <div v-if="players.length < 4">
-                TriviYa is best played with a group! The host (that’s you) has automatically been added. <span v-if="$page.props.host.pivot.status !== 'Questions Answered'">Click ‘TAKE QUIZ’ below to get started.</span>
+                TriviYa is best played with a group! As the host, you have automatically been added.
                 <p>You’ll need at least {{4 - players.length}} more player<span v-if="players.length < 3">s</span> before the game can begin.</p>
             </div>
             <div v-if="players.length >= 4">
                 <div v-if="questionsAnsweredCount < players.length">
                     Still waiting for {{ players.length - questionsAnsweredCount }} more player<span v-if="players.length - questionsAnsweredCount > 1">s</span> to answer their questions before the game can begin.
-                    <span v-if="$page.props.host.pivot.status !== 'Questions Answered'">Click ‘TAKE QUIZ’ below to get started.</span>
                 </div>
                 <DangerButton @click="startGame" v-if="questionsAnsweredCount === players.length">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
