@@ -14,13 +14,21 @@ class StoreAnswerAction
     {
 
         GameUserQuestions::where('id', $data['id'])->update(['answer' => $data['answer']]);
+
         $numberAnswered = GameUserQuestions::where('user_id', $user->id)
             ->where('game_id', $game->id)
             ->whereNotNull('answer')
             ->count();
 
-        $status = $numberAnswered . ' ' . ($numberAnswered == 1 ? 'question' : 'questions') . ' answered';
+        $totalQuestions = GameUserQuestions::where('user_id', $user->id)
+            ->where('game_id', $game->id)
+            ->count();
 
+        if ($numberAnswered === $totalQuestions && $totalQuestions > 0) {
+            $status = 'All Questions Answered';
+        } else {
+            $status = $numberAnswered . ' ' . ($numberAnswered === 1 ? 'Question' : 'Questions') . ' Answered';
+        }
 
         $game->players()->updateExistingPivot($user->id, ['status' => $status]);
 

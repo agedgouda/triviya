@@ -109,7 +109,13 @@ const submitAnswers = async () => {
             route('questions.playerAnswer', { game: props.game.id, user: props.user.id }),
             { question: question.value } // assuming you're sending this as data
         );
-        questionNumber.value += 1;
+
+
+        questionNumber.value + 1 < props.questions.length
+        ? questionNumber.value++
+        : router.visit(route('questions.showThankYou', { game: props.game.id, user: props.user.id }));
+
+
     } catch (error) {
         console.error(`Failed to save changes for ${question.value.id}:`, error.response?.data || error.message);
     }
@@ -200,9 +206,9 @@ const changeQuestion = (increment) => {
 
             <div class="mt-4">
 
-                <SecondaryButton type="button" class="mt-2 mr-4" @click="changeQuestion(-1)" v-if="questionNumber !=0">Go Back</SecondaryButton>
+                <SecondaryButton type="button" class="mt-2 mr-4" @click="changeQuestion(-1)" :disabled="questionNumber === 0">Go Back</SecondaryButton>
 
-                <PrimaryButton type="submit"  class="mt-2" >Save and Next</PrimaryButton>
+                <PrimaryButton type="submit"  class="mt-2" >Save&nbsp;<span v-if="questionNumber + 1 < props.questions.length"> and Next</span><span v-else> and End</span></PrimaryButton>
 
             </div>
 
