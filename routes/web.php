@@ -43,6 +43,7 @@ Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('log
 Route::prefix('questions')->group(function () {
     Route::get('/{game}/{user}', [GameController::class, 'showQuestions'])->name('questions.showQuestions');
     Route::get('/{game}/{user}/complete', [GameController::class, 'showThankYou'])->name('questions.showThankYou');
+    Route::post('/answer/{game}/{user}', [GameController::class, 'storeAnswer'])->name('questions.playerAnswer');
     Route::post('/answers/{game}/{user}', [GameController::class, 'storeAnswers'])->name('questions.playerAnswers');
 });
 

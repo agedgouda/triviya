@@ -297,6 +297,14 @@ class GameController extends Controller
         ]);
     }
 
+
+
+    public function storeAnswer(Request $request, Game $game, User $user)
+    {
+        $response = GameActions::storeAnswerAction($game, $user, $request->question);
+        return $response;
+    }
+
     public function showAnswers(Game $game)
     {
         if (auth()->id() !== $game->host->id) {

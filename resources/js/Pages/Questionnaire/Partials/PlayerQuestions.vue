@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, reactive,computed } from 'vue';
 import { useForm,usePage,router } from '@inertiajs/vue3';
+import axios from 'axios';
 
 // Import components
 import InputError from '@/Components/InputError.vue';
@@ -21,28 +22,22 @@ const props = defineProps({
 });
 const { props: pageProps } = usePage();
 const error = ref();
+const questionNumber = ref(0);
+
+const question = computed(() => props.questions[questionNumber.value]);
 
 // Create a reactive form object using useForm
-const form = useForm({
+const form2 = useForm({
     answers: {}, // Store answers keyed by question ID
+});
+
+const form = reactive({
+    questionId: null,
+    answer: null
 });
 
 const questionDateValues = reactive({});
 
-const initialAnswers = {};
-props.questions.forEach(question => {
-        initialAnswers[question.id] = question.answer;
-    });
-    form.answers = initialAnswers;
-
-// Populate form.answers based on the answers prop
-if (props.answers && props.answers.length > 0) {
-    const initialAnswers = {};
-    props.answers.forEach(answer => {
-        initialAnswers[answer.question_id] = answer.answer;
-    });
-    form.answers = initialAnswers; // Replace form.answers with a reactive object
-}
 /***********************
  *
  *  Date Dropdowns
@@ -108,40 +103,23 @@ watch(
 
 
 // Submit answers function
-const submitAnswers = () => {
-    form.post(route('questions.playerAnswers', { game: props.game.id, user: props.user.id }), {
-        onSuccess: (response) => {
-            if (pageProps.auth.user) {
-                localStorage.setItem('flashMessage', 'Your answers were successfully updated.');
-                router.visit(route('games.show', { game: props.game.id }), {
-                    preserveState: false,
-                    preserveScroll: true,
-                });
-            }
-        },
-        onError: (errors) => {
-            error.value = errors.message;
-        },
-    });
+const submitAnswers = async () => {
+    try {
+        const response = await axios.post(
+            route('questions.playerAnswer', { game: props.game.id, user: props.user.id }),
+            { question: question.value } // assuming you're sending this as data
+        );
+        questionNumber.value += 1;
+    } catch (error) {
+        console.error(`Failed to save changes for ${question.value.id}:`, error.response?.data || error.message);
+    }
 };
 
-const cancel = () => {
-    router.visit(route('games.show', { game: props.game.id }))
-}
 const answeredCount = computed(() => props.questions.filter(q => q.answer !== null).length);
 
-watch(
-  () => form.answers,
-  (newAnswers) => {
-    props.questions.forEach((question) => {
-      if (newAnswers[question.id] !== undefined) {
-        question.answer = newAnswers[question.id]; // Update question.answer with latest answer
-      }
-    });
-  },
-  { deep: true }
-);
-
+const changeQuestion = (increment) => {
+    questionNumber.value += increment;
+}
 
 </script>
 
@@ -163,8 +141,8 @@ watch(
         <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
         <form @submit.prevent="submitAnswers">
             <!-- Render each question -->
-            <div v-for="question in questions" :key="question.id" class="mb-4">
-
+            <div class="mb-4">
+                Question {{ questionNumber + 1 }} of {{ questions.length }}
                 <InputLabel :for="'question-' + question.id" :value="question.question_text" class="text-lg"/>
 
                 <!-- Render input based on question type -->
@@ -172,7 +150,7 @@ watch(
                     <TextInput
                         :id="'question-' + question.id"
                         type="text"
-                        v-model="form.answers[question.id]"
+                        v-model="question.answer"
                         required
                         class="mt-1 block w-full"
                     />
@@ -215,15 +193,17 @@ watch(
                     </div>
                 </template>
 
-                <InputError :message="form.errors['answers.' + question.id]" class="mt-2" />
+                <InputError :message="form.errors" class="mt-2" />
             </div>
 
             <!-- Submit button -->
 
             <div class="mt-4">
-                <PrimaryButton type="submit"  class="mt-2" >Save Answers</PrimaryButton>
 
-                <SecondaryButton type="button" class="mt-2 ml-4" v-if="$page.props.auth.user" @click="cancel">Cancel</SecondaryButton>
+                <SecondaryButton type="button" class="mt-2 mr-4" @click="changeQuestion(-1)" v-if="questionNumber !=0">Go Back</SecondaryButton>
+
+                <PrimaryButton type="submit"  class="mt-2" >Save and Next</PrimaryButton>
+
             </div>
 
         </form>
