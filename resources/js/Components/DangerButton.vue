@@ -9,10 +9,20 @@ defineProps({
 
 <template>
     <button
-        :type="type"
-        class="inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150"
+      :type="type"
+      class="
+        inline-flex items-center px-4 py-2
+        bg-triviya-black border border-transparent
+        rounded-md font-semibold text-xs uppercase tracking-widest
+        text-white
+        hover:bg-triviya-darkGray hover:text-white
+        focus:bg-triviya-darkGray focus:text-white
+        active:bg-white active:text-black
+        focus:outline-none focus:ring-2 focus:ring-triviya-red focus:ring-offset-2
+        transition ease-in-out duration-150
+      "
     >
-        <slot />
+      <slot />
     </button>
-</template>
+  </template>
 
