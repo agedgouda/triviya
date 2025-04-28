@@ -130,32 +130,31 @@ const changeQuestion = (increment) => {
 </script>
 
 <template>
-        <QuestionsLayout title="Questions">
-            <template #header>
-                <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto mb-5" />
-            </template>
-                <div class="text-base mt-5 mb-5">
-                    Welcome<span v-if="answeredCount>0"> back</span>, {{ user.first_name }} {{ user.last_name }}!
-                    <p>
-                        Here are your questions for the game
-                        {{ game.host[0].first_name }} {{ game.host[0].last_name }} is hosting at {{ game.location }}
-                        on {{ formatDate(game.date_time) }}.
+    <QuestionsLayout title="Questions">
+        <template #header>
+            <ApplicationLogo class="flex justify-center block !h-20 mx-auto w-auto" />
+        </template>
 
-                        <div class="mt-3">Your answers become the trivia.</div>
-                    </p>
-                </div>
-        <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
-        <form @submit.prevent="submitAnswers">
-            <!-- Render each question -->
+        <template #question-header>
+            <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
+
             <div class="mb-4">
-                Question {{ questionNumber + 1 }} of {{ questions.length }}
-                <InputLabel :for="'question-' + question.id" :value="question.question_text" class="text-lg"/>
+                <div class="mb-2 text-triviya-red text-lg font-bold">
+                    Question {{ questionNumber + 1 }} of {{ questions.length }}
+                </div>
+                <div class="mb-2 text-white">
+                    <InputLabel :for="'question-' + question.id" :value="question.question_text" />
+                </div>
+            </div>
+        </template>
 
-                <!-- Render input based on question type -->
+        <template #question-input>
+            <div>
                 <template v-if="question.question_type === 'text'">
                     <TextInput
                         :id="'question-' + question.id"
                         type="text"
+                        placeholder="Enter your answer"
                         v-model="question.answer"
                         required
                         class="mt-1 block w-full"
@@ -164,54 +163,62 @@ const changeQuestion = (increment) => {
 
                 <template v-else-if="question.question_type === 'date'">
                     <div class="flex">
-                    <!-- Month Select -->
-                    <select
-                        :id="'month-' + question.id"
-                        v-model="questionDateValues[question.id].selectedMonth"
-                        class="mt-1 block w-34 text-black"
-                    >
-                        <option v-for="(month, index) in months" :key="index" :value="index + 1">
-                        {{ month }}
-                        </option>
-                    </select>
+                        <!-- Month -->
+                        <select
+                            :id="'month-' + question.id"
+                            v-model="questionDateValues[question.id].selectedMonth"
+                            class="mt-1 block w-34 text-black"
+                        >
+                            <option v-for="(month, index) in months" :key="index" :value="index + 1">
+                                {{ month }}
+                            </option>
+                        </select>
 
-                    <!-- Day Select -->
-                    <select
-                        :id="'day-' + question.id"
-                        v-model="questionDateValues[question.id].selectedDay"
-                        class="mt-1 block w-24 text-black ml-2"
-                    >
-                        <option v-for="day in daysInMonth(question.id)" :key="day" :value="day">
-                        {{ day }}
-                        </option>
-                    </select>
+                        <!-- Day -->
+                        <select
+                            :id="'day-' + question.id"
+                            v-model="questionDateValues[question.id].selectedDay"
+                            class="mt-1 block w-24 text-black ml-2"
+                        >
+                            <option v-for="day in daysInMonth(question.id)" :key="day" :value="day">
+                                {{ day }}
+                            </option>
+                        </select>
 
-                    <!-- Year Select -->
-                    <select
-                        :id="'year-' + question.id"
-                        v-model="questionDateValues[question.id].selectedYear"
-                        class="mt-1 block w-32 text-black ml-2"
-                    >
-                        <option v-for="year in years" :key="year" :value="year">
-                        {{ year }}
-                        </option>
-                    </select>
+                        <!-- Year -->
+                        <select
+                            :id="'year-' + question.id"
+                            v-model="questionDateValues[question.id].selectedYear"
+                            class="mt-1 block w-32 text-black ml-2"
+                        >
+                            <option v-for="year in years" :key="year" :value="year">
+                                {{ year }}
+                            </option>
+                        </select>
                     </div>
                 </template>
 
                 <InputError :message="form.errors" class="mt-2" />
             </div>
+        </template>
 
-            <!-- Submit button -->
+        <template #question-buttons>
+            <form @submit.prevent="submitAnswers" class="flex items-center space-x-4">
+                <SecondaryButton
+                    type="button"
+                    class="mt-2"
+                    @click="changeQuestion(-1)"
+                    :disabled="questionNumber === 0"
+                >
+                    Go Back
+                </SecondaryButton>
 
-            <div class="mt-4">
+                <PrimaryButton type="submit" class="mt-2" :disabled="question.answer == NULL || question.answer.length === 0 ">
+                    <span v-if="questionNumber + 1 < props.questions.length">Next</span>
+                    <span v-else>End</span>
+                </PrimaryButton>
+            </form>
+        </template>
 
-                <SecondaryButton type="button" class="mt-2 mr-4" @click="changeQuestion(-1)" :disabled="questionNumber === 0">Go Back</SecondaryButton>
-
-                <PrimaryButton type="submit"  class="mt-2" >Save&nbsp;<span v-if="questionNumber + 1 < props.questions.length"> and Next</span><span v-else> and End</span></PrimaryButton>
-
-            </div>
-
-        </form>
     </QuestionsLayout>
 </template>
