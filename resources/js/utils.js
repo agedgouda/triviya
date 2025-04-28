@@ -37,7 +37,7 @@ export const formatDate = (dateTime) => {
     const ampm = hours >= 12 ? 'PM' : 'AM';
 
     // Format the time as hh:mm:ss AM/PM
-    const timeString = `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+    const timeString = `${formattedHours}:${formattedMinutes} ${ampm}`;
 
     // Return formatted date and time: "mm/dd/yyyy at hh:mm:ss AM/PM"
     return `${formattedMonth}/${formattedDay}/${formattedYear} at ${timeString}`;
