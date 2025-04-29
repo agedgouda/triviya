@@ -75,7 +75,7 @@ const questionNumber = ref(0);
         </PrimaryButton>
     </div>
     <div v-if="questionNumber >= 10" class="my-4">
-        <PrimaryButton @click="newRound(round+1)" v-if="round <= 2 && game.status==='ready'">
+        <PrimaryButton @click="newRound(round+1)" v-if="round <= 2">
             &nbsp;Go to Round {{ round+1 }}
         </PrimaryButton>
         <DangerButton @click="endGame" v-else>
