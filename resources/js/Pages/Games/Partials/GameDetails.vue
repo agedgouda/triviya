@@ -19,7 +19,7 @@ const processing = ref(false)
 const currentDomain = window.location.origin;
 
 const questionsAnsweredCount = computed(() =>
-  props.players.filter(player => player.status === 'Questions Answered').length
+  props.players.filter(player => (player.status === 'Questions Answered' || player.status === 'All Questions Answered')).length
 );
 
 const goToEditPage = () => {
