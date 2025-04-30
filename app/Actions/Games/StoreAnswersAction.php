@@ -38,7 +38,7 @@ class StoreAnswersAction
         $status = $gameUser->status;
 
         //if this is the first time filling out the form, let the host know this person completed the form
-        if($gameUser->status !== 'Questions Answered') {
+        if($gameUser->status !== 'All Questions Answered') {
 
             // Update the player's status in the pivot table
             $status = 'Questions Answered';
@@ -47,7 +47,7 @@ class StoreAnswersAction
             //check to see how many people we are waiting for
             $noAnswers = GameUser::where('game_id', $game->id)
                 ->where('status', '!=', 'Host')
-                ->where('status', '!=', 'All Questions Answered')
+                ->where('status', '!=', 'Questions Answered')
                 ->get();
 
 

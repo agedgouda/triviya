@@ -42,9 +42,6 @@ export default {
                     darkGray: '#363636',
                     black: '#141414',
                   },
-                  backgroundImage: {
-                    'gradient-red': 'linear-gradient(to bottom, #FB38B0 3px, transparent 3px)',
-                  },
               },
         },
     },

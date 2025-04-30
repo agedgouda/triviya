@@ -1,35 +1,37 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import Table from '@/Components/Table.vue';
+
+import Play from '../Event/Partials/Play.vue';
+import End from '../Event/Partials/End.vue';
+import EndGame from '../Event/Partials/EndGame.vue';
+
+import { formatDate } from '@/utils';
 
 const props = defineProps({
+    game: Object,
     questions: Object,
+    answers: Object,
+    round: Number,
+    firstQuestion:Number,
+    routeName: String,
+    error: String
 });
+
+const flashMessage = ref(null);
+const fadeOut = ref(false);
 
 </script>
 
 <template>
-    <div class="m-10">
-    <Table>
-        <template #header>
-            <th class="px-4 py-2 text-left">Question</th>
-            <th class="py-2 text-center">Answer</th>
-            <th class="py-2 text-center">Player</th>
-        </template>
-        <!-- Use v-slot to access the slot props -->
-        <template #default="{ rowClass }">
-            <tr
-                v-for="question in questions"
-                :class="[rowClass]"
-            >
-                <td class="px-4 py-2 text-left">{{ question.question_text }}</td>
-                <td class="py-2 text-center">{{ question.answer }}</td>
-                <td class="py-2 text-center">{{ question.player_name }}</td>
-            </tr>
-        </template>
-    </Table>
-</div>
+    <template v-if="routeName === 'games.startGame' || routeName === 'games.startRound'">
+        <Play :questions="questions" :round="round" :game="game" />
+    </template>
+    <template v-if="routeName === 'games.endRound'">
+        <End :answers="answers" :round="round" :game="game"   />
+    </template>
+    <template v-if="routeName === 'games.endGame'">
+        <EndGame :game="game" />
+    </template>
 </template>

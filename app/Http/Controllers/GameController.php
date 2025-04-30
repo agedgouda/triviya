@@ -335,7 +335,7 @@ class GameController extends Controller
 
         $response = GameActions::CreateEventQuestionsAction($game,$reset);
 
-        return Inertia::render('Event/Index', [
+        return Inertia::render('Event/Show', [
             'questions' => $response,
             'game' => $game,
             'routeName' => request()->route()->getName(),
@@ -353,7 +353,7 @@ class GameController extends Controller
         ->orderBy('question_number')
         ->get();
 
-        return Inertia::render('Event/Index', [
+        return Inertia::render('Event/Show', [
             'game' => $game,
             'questions' => $questions,
             'round' => $round,
@@ -365,7 +365,7 @@ class GameController extends Controller
     public function endRound(Game $game, Int $round)
     {
         $response = GameActions::CreateEventAnswerListAction($game,$round);
-        return Inertia::render('Event/Index', [
+        return Inertia::render('Event/Show', [
             'answers' => $response,
             'round' => $round,
             'game' => $game,
@@ -380,7 +380,7 @@ class GameController extends Controller
         $game->status = $game->status == 'bonus' ? 'done-bonus' : 'done';
         $game->save();
 
-        return Inertia::render('Event/Index', [
+        return Inertia::render('Event/Show', [
             'game' => $game->load(['host']),
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
