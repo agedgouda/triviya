@@ -131,9 +131,9 @@ const changeQuestion = (increment) => {
 
 <template>
     <QuestionsLayout title="Questions">
-        <template #header>
-            <ApplicationLogo class="flex justify-center block !h-20 mx-auto w-auto" />
-        </template>
+<!--        <template #header>-->
+<!--            <ApplicationLogo class="flex justify-center block !h-20 mx-auto w-auto" />-->
+<!--        </template>-->
 
         <template #question-header>
             <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
@@ -143,7 +143,7 @@ const changeQuestion = (increment) => {
                     Question {{ questionNumber + 1 }} of {{ questions.length }}
                 </div>
                 <div class="mb-2 text-white">
-                    <InputLabel :for="'question-' + question.id" :value="question.question_text" />
+                    <InputLabel :for="'question-' + question.id" :value="question.question_text" size-class="text-2xl"/>
                 </div>
             </div>
         </template>
@@ -210,7 +210,7 @@ const changeQuestion = (increment) => {
                     @click="changeQuestion(-1)"
                     :disabled="questionNumber === 0"
                 >
-                    Go Back
+                    Previous
                 </SecondaryButton>
 
                 <PrimaryButton type="submit" class="mt-2" :disabled="question.answer == NULL || question.answer.length === 0 ">

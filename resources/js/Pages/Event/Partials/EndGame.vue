@@ -1,6 +1,9 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import BubblesLayout from "@/Layouts/BubblesLayout.vue";
+import BubblesContainer from "@/Components/BubblesContainer.vue";
+import GameBubble from "@/Components/GameBubble.vue";
 
 const props = defineProps({
     game: Object,
@@ -34,35 +37,40 @@ const startBonusRound = () => {
 </script>
 
 <template>
-    <div class="grid grid-cols-2 gap-4 mb-5">
-        <div class="mb-5">
-            <div class="text-xl font-bold">That’s a Wrap!</div>
-            Well played, {{game.host[0].first_name}}. The game is over. Let’s find out who won.
-            <div class="font-bold mt-2">🏆 And the Winner is</div>
-            Ask players to tally their scores and crown a champion!
-            <div class="font-bold mt-2">🎤 Say a Few Words</div>
-            Give your crew a big congrats — they were the trivia all along.
-         </div>
-        <div>
-            <div class="text-xl font-bold ">Keep the Fun Going!</div>
-            <div  v-if="game.status !== 'done-bonus' ">
-                <div>
-                    <div class="font-bold mt-2">➕ Bonus Round</div>
-                    Get 10 extra questions pulled from everyone’s earlier answers.
+    <BubblesLayout>
+        <BubblesContainer>
+            <GameBubble color="white">
+                <div class="mb-5">
+                    <div class="text-xl font-bold">That’s a Wrap!</div>
+                    Well played, {{game.host[0].first_name}}. The game is over. Let’s find out who won.
+                    <div class="font-bold mt-2">🏆 And the Winner is</div>
+                    Ask players to tally their scores and crown a champion!
+                    <div class="font-bold mt-2">🎤 Say a Few Words</div>
+                    Give your crew a big congrats — they were the trivia all along.
                 </div>
-                <div>
-                    <PrimaryButton @click="startBonusRound()">
-                        Play Bonus Round
+            </GameBubble>
+            <GameBubble>
+                <div class="text-xl font-bold ">Keep the Fun Going!</div>
+                <div  v-if="game.status !== 'done-bonus' ">
+                    <div>
+                        <div class="font-bold mt-2">➕ Bonus Round</div>
+                        Get 10 extra questions pulled from everyone’s earlier answers.
+                    </div>
+                    <div>
+                        <PrimaryButton @click="startBonusRound()">
+                            Play Bonus Round
+                        </PrimaryButton>
+                    </div>
+                </div>
+                <div class="font-bold mt-5">🔁 New Game</div>
+                <div>Start fresh! Players will get 10 new questions to answer before the next round.</div>
+                <div class="font-bold mt-2">
+                    <PrimaryButton @click="restartGame()">
+                        Start New Game
                     </PrimaryButton>
                 </div>
-            </div>
-            <div class="font-bold mt-5">🔁 New Game</div>
-            <div>Start fresh! Players will get 10 new questions to answer before the next round.</div>
-            <div class="font-bold mt-2">
-            <PrimaryButton @click="restartGame()">
-                Start New Game
-            </PrimaryButton>
-            </div>
-        </div>
-    </div>
+            </GameBubble>
+        </BubblesContainer>
+    </BubblesLayout>
+
 </template>

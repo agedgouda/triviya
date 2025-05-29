@@ -25,7 +25,7 @@ const { props: pageProps } = usePage();
 <!--        </template>-->
 
         <template #raw-header>
-            <div class="raw-header mt-8 mb-8">
+            <div class="raw-header mt-8 mb-4">
                 <h3 class="game-author text-center text-white font-bold text-xl" v-text="game.host[0].name"></h3>
                 <h4 class="text-center text-white text-lg">has invited you to play</h4>
                 <div class="extended-logo">
@@ -35,10 +35,11 @@ const { props: pageProps } = usePage();
             </div>
         </template>
 
-<!--        <template #question-header>-->
-<!--            <div class="mb-2 text-center text-3xl font-bold">Welcome {{user.name}}</div>-->
-<!--            <div class="text-center text-lg">Here are your questions for the game Jamie Kramer is hosting at<br/>{{game.location}} on {{ formatDate(game.date_time) }}.</div>-->
-<!--        </template>-->
+        <template #question-header>
+            <div class="mb-2 text-xl font-bold">Welcome {{user.name}}</div>
+            <div class="text-lg mb-2">You’ll answer 10 questions that become the trivia in the game.  Shhh... don’t share your answers—or the questions.</div>
+            <div class="text-lg">And whatever you do, DON’T overthink it.</div>
+        </template>
 
 <!--        <template #question-input>-->
 <!--            <div class="mb-2 text-center text-3xl font-bold">A Reminder</div>-->
@@ -49,24 +50,13 @@ const { props: pageProps } = usePage();
 <!--            </ul>-->
 <!--        </template>-->
 
-        <template #question-input>
-            <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here's how it works</div>
-            <ul class="list-disc mx-12 mb-2">
-                <li class="mb-2">Everyone invited to the game will answer a few questions about themselves</li>
-                <li class="mb-2">During the game, teams will guess who said what</li>
-                <li class="mb-2">Matching the answers to the correct people earns you points</li>
-                <li>The team with the most points wins!</li>
-            </ul>
-
-        </template>
-
 <!--        <template #question-footer>-->
 <!--            The next step is answering your TriviYa survey and should take less than 3 minutes to complete.-->
 <!--        </template>-->
 
         <template #question-buttons>
             <PrimaryButton type="button" class="mt-2" @click="$emit('nextClicked')">
-                <span>Ready To Get Started</span>
+                <span>Next</span>
             </PrimaryButton>
         </template>
     </QuestionsLayout>

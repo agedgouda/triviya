@@ -1,10 +1,15 @@
 <script setup>
 import { formatDate } from '@/utils';
 import { router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import {ref, watch} from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
+import BubblesLayout from "@/Layouts/BubblesLayout.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+import GameBubble from "@/Components/GameBubble.vue";
+import BubblesContainer from "@/Components/BubblesContainer.vue";
+import CountDown from "@/Components/CountDown.vue";
 
 const props = defineProps({
     questions: Object,
@@ -86,65 +91,78 @@ const newQuestion = (increment) => {
     }
 }
 
+const showBubbles = ref(true);
+const showCountdown = ref(false);
+watch(questionNumber, (value, old) => {
+    // console.log("QN Changed :: ", value, old);
+    showBubbles.value = false;
+    setTimeout(() => {
+        showBubbles.value = true;
+    }, 100);
+});
+
+watch(showBubbles, (value, old) => {
+    if(value) {
+        setTimeout(() => {
+            showCountdown.value = true;
+        }, 2000);
+    } else {
+        showCountdown.value = false;
+    }
+});
+
 </script>
 <template>
-    <QuestionsLayout title="Questions" :header-has-background="true">
+
+    <BubblesLayout>
         <template #header>
-            <ApplicationLogo class="flex justify-center block !h-20 mx-auto w-auto" />
-        </template>
-
-        <template #question-header>
-            <div v-if="questionNumber  === 0">
-                <div v-if="game.status !== 'bonus'">
-                    Landing Page Text
-                </div>
-                <div v-else>
-                    Bonus Round Text
-                </div>
-
-            </div>
-            <div v-else>
-                <div v-if="game.status !== 'bonus'">Round {{ round }}</div>
-                <div v-else>Bonus Round</div>
-                <div>Question {{ (questions[questionNumber-1].question_number % 10 === 0) ? 10 : questions[questionNumber-1].question_number % 10  }} of 10</div>
-                {{questions[questionNumber-1].question_text}}
+            <div class="flex content-center">
+                <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-if="game.status !== 'bonus'">Round {{ round }}</div>
+                <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-else>Bonus Round</div>
             </div>
         </template>
 
-        <template #question-input>
-        <div v-if="questionNumber  > 0 && questionNumber  <= 10">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <div><span class="font-bold">Who said...</span></div>
-                    <div>{{questions[questionNumber-1].answer}}</div>
-                </div>
-                <div>
-                    <h2>Timer</h2>
-                    <div>{{  timer/10 }} seconds</div>
+        <template #bubbles>
+            <BubblesContainer v-if="showBubbles">
+                <template v-if="questionNumber === 0">
+                    <GameBubble>
+                        <div v-if="game.status !== 'bonus'">
+                            Landing Page Text
+                        </div>
+                        <div v-else>
+                            Bonus Round Text
+                        </div>
+                    </GameBubble>
+                </template>
+                <template v-else>
+                    <GameBubble slide-in="left">
+                        <div v-if="game.status !== 'bonus'">Round {{ round }}</div>
+                        <div v-else>Bonus Round</div>
+                        <div>Question {{ (questions[questionNumber-1].question_number % 10 === 0) ? 10 : questions[questionNumber-1].question_number % 10  }} of 10</div>
+                        {{questions[questionNumber-1].question_text}}
+                    </GameBubble>
+                    <GameBubble color="white" subtract="left" slide-in="right" slide-in-delay="1500">
+                        <div>
+                            <div>
+                                <div><span class="font-bold">Who said...</span></div>
+                                <div>{{questions[questionNumber-1].answer}}</div>
+                            </div>
+                        </div>
 
-                    <PrimaryButton @click="startCountdown()" class="my-2" v-if="!isRunning">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                        </svg>
-                    </PrimaryButton>
-                    <PrimaryButton @click="togglePauseResume()" class="my-2" v-if="isRunning">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-                        </svg>
-                    </PrimaryButton>
-                    <PrimaryButton @click="resetCountdown()" class="my-2 ml-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z" />
-                        </svg>
-                    </PrimaryButton>
-                </div>
-            </div>
-        </div>
+                    </GameBubble>
+                    <transition name="fade">
+                        <CountDown v-if="showCountdown"></CountDown>
+                    </transition>
+                </template>
+            </BubblesContainer>
         </template>
+
+
+
         <template #question-buttons>
-            <div v-if="questionNumber  === 0">
+            <div v-if="questionNumber === 0">
                 <PrimaryButton @click="questionNumber = 1" class="my-4">
-                        &nbsp;Go to first<span v-if="game.status === 'bonus'">&nbsp;Bonus&nbsp;</span> question
+                    &nbsp;Go to first<span v-if="game.status === 'bonus'">&nbsp;Bonus&nbsp;</span> question
                 </PrimaryButton>
             </div>
             <div v-else>
@@ -162,6 +180,22 @@ const newQuestion = (increment) => {
                 </PrimaryButton>
             </div>
         </template>
-    </QuestionsLayout>
+
+    </BubblesLayout>
+
 </template>
 
+<style scoped>
+.fade-enter-from {
+    opacity: 0;
+}
+
+.fade-enter-to {
+    opacity: 1;
+}
+
+.fade-enter-active {
+    transition: opacity 2.0s linear;
+}
+
+</style>

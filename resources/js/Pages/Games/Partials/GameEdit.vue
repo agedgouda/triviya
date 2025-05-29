@@ -75,27 +75,27 @@ const availableHours = [
 
 
         <form @submit.prevent="submit">
-            <div class="flex">
-                <div class="mr-3">
+            <div class="flex flex-col sm:flex-row">
+                <div class="mr-0 md:mr-3">
                     <InputLabel for="name" value="Game Name" />
                     <TextInput
                         id="name"
                         v-model="form.name"
                         type="text"
-                        class="mt-1 block w-96"
+                        class="mt-1 block w-full sm:w-96"
                         required
                         autocomplete="name"
                     />
                     <InputError class="mt-2" :message="form.errors.name" />
                 </div>
 
-                <div class="mr-3">
+                <div class="mr-0 md:mr-3">
                     <InputLabel for="location" value="Location" />
                     <TextInput
                         id="location"
                         v-model="form.location"
                         type="text"
-                        class="mt-1 block w-96"
+                        class="mt-1 block w-full sm:w-96"
                         required
                     />
                     <InputError class="mt-2" :message="form.errors.location" />
@@ -125,7 +125,7 @@ const availableHours = [
                 </div> -->
             </div>
 
-            <div class="flex mt-3">
+            <div class="flex mt-3 flex-col sm:flex-row">
                 <div class="mr-5">
                     <InputLabel for="date" value="Game Date" />
                     <TextInput

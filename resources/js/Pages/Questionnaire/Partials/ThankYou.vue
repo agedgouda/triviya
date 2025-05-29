@@ -32,12 +32,13 @@ const loginOrRegister = () => {
                         <span class="inline sm:hidden">where<br></span>
                         you are the trivia!
                     </h1>
-                    <p class="mb-4 text-xl">You've answered alll of the questions for {{ game.host[0].first_name }} {{ game.host[0].last_name }}'s TriviYa
+                    <p class="mb-4 text-xl px-4">You've answered all of the questions for {{ game.host[0].first_name }} {{ game.host[0].last_name }}'s TriviYa
                         game on {{  formatDate(game.date_time)  }} at {{ game.location }}
                     </p>
-
+                    <p class="px-4">
                     We are going to put text here. Good text. Text better than you've ever seen before. You'll read it and say "wow, that is some good text."
                     All to get you to click below to <span> {{ user.has_registered ? 'Login': 'Register'}} </span>.
+                    </p>
                     <div class="mt-4">
                         <SecondaryButton type="submit" class="mt-4 mb-4 ml-4" @click="loginOrRegister">{{ user.has_registered ? 'Login': 'Register'}}</SecondaryButton>
                     </div>

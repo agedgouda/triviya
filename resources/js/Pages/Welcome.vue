@@ -70,7 +70,7 @@ function handleImageError() {
                 <div class="justify-center items-center">
                     <ApplicationLogo />
                 </div>
-                <div class="text-center text-3xl pt-10 font-bold text-white">The party game where you become the trivia!</div>
+                <div class="text-center text-3xl pt-10 font-bold text-white px-4">The party game where you become the trivia!</div>
             </main>
 
             <footer class="py-16 text-center text-sm text-white dark:text-white/70">
