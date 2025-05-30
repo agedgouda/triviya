@@ -19,7 +19,7 @@ const startTimer = () => {
         theTimeout = setTimeout(() => {
             secondsLeft.value -= 1;
 
-            if(secondsLeft.value <= 5) {
+            if(secondsLeft.value <= 0) {
                 beep.pause();
                 beep.currentTime = 0;
                 beep.play();
@@ -56,6 +56,9 @@ const resetTimer = () => {
     secondsLeft.value = defaultDuration;
     status.value = 'idle';
 }
+
+defineExpose({resetTimer, status});
+
 
 </script>
 
@@ -123,10 +126,10 @@ const resetTimer = () => {
     width: 13.5px;
     background-size: contain;
     background-repeat: no-repeat;
-    animation-name: hourglass;
-    animation-iteration-count: infinite;
-    animation-duration: 2.0s;
-    animation-timing-function: linear;
+    //animation-name: hourglass;
+    //animation-iteration-count: infinite;
+    //animation-duration: 2.0s;
+    //animation-timing-function: linear;
 }
 
 .idle-container {
