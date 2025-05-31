@@ -157,7 +157,7 @@ watch(showBubbles, (value, old) => {
                     <GameBubble color="white" subtract="left" slide-in="right" slide-in-delay="1000">
                         <div>
                             <div>
-                                <div><span class="font-bold text-triviya-red text-sm">Who said...</span></div>
+                                <div><span class="font-bold text-triviya-red text-sm">Who Said...</span></div>
                                 <div>{{questions[questionNumber-1].answer}}</div>
                             </div>
                         </div>

@@ -41,9 +41,9 @@ watch(questionNumber, (value, old) => {
                     <PrimaryButton @click="newRound(round+1)" v-if="round <= 2 && game.status==='ready' ">
                         &nbsp;Go to Round {{ round+1 }}
                     </PrimaryButton>
-                    <DangerButton @click="endGame" v-else>
-                        &nbsp;End Game
-                    </DangerButton>
+<!--                    <DangerButton @click="endGame" v-else>-->
+<!--                        &nbsp;End Game-->
+<!--                    </DangerButton>-->
                 </div>
             </div>
         </template>
@@ -55,16 +55,20 @@ watch(questionNumber, (value, old) => {
                 </GameBubble>
                 <template v-if="questionNumber > 0 && questionNumber <=10">
                 <GameBubble  :has-background="true" slide-in="left">
-                    <div v-if="game.status !== 'bonus'">Round {{ round }}</div>
-                    <div v-else>Bonus Round</div>
-                    <div>Question {{ (answers[questionNumber-1].question_number % 10 === 0) ? 10 : answers[questionNumber-1].question_number % 10  }}</div>
-                    <div><span class="font-bold">For the question</span> {{ answers[questionNumber-1].question_text }}</div>
+<!--                    <div v-if="game.status !== 'bonus'">Round {{ round }}</div>-->
+<!--                    <div v-else>Bonus Round</div>-->
+                    <div class="text-triviya-red text-sm font-bold">Question {{ (answers[questionNumber-1].question_number % 10 === 0) ? 10 : answers[questionNumber-1].question_number % 10  }} of {{answers.length}}</div>
+                    <div><span class="font-bold">{{ answers[questionNumber-1].question_text }}</span></div>
                 </GameBubble>
-                <GameBubble :has-background="true" slide-in="right" :slide-in-delay="2000">
-                    <div><span class="font-bold">Who answered</span> {{ answers[questionNumber-1].answer }}<span class="font-bold">?</span></div>
+                <GameBubble :has-background="true" slide-in="right">
+                    <div><span class="font-bold text-triviya-red text-sm">Who Said ...</span></div>
+                    <div>
+                        {{ answers[questionNumber-1].answer }}<span class="font-bold">?</span>
+                    </div>
                 </GameBubble>
-                <GameBubble :has-background="true" color="white" subtract="right" slide-in="left" :slide-in-delay="3500">
-                    <div class="font-bold text-red-500">{{ answers[questionNumber-1].player_name }}</div>
+                <GameBubble :has-background="true" color="white" subtract="right" slide-in="left" :slide-in-delay="1000">
+                    <div><span class="font-bold text-triviya-red text-sm">Answer</span></div>
+                    <div class="font-bold text-black text-lg">{{ answers[questionNumber-1].player_name }}</div>
                 </GameBubble>
                 </template>
                 <div v-else>
