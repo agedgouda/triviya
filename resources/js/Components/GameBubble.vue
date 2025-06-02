@@ -21,7 +21,7 @@ const props = defineProps({
     },
 
     slideInDelay: {
-        type: BigInt,
+        type: Number,
         default: 200,
     }
     // game: Object,
