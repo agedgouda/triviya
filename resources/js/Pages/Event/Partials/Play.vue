@@ -31,10 +31,40 @@ const isRunning = ref(false);
 
 const countdown = useTemplateRef('countdown');
 
+const showBubbles = ref(true);
+const showCountdown = ref(false);
+
+const nextPrevActive = ref(false);
+
+
+watch(questionNumber, (value, old) => {
+    // console.log("QN Changed :: ", value, old);
+    showBubbles.value = false;
+    setTimeout(() => {
+        showBubbles.value = true;
+    }, 100);
+});
+
+watch(showBubbles, (value, old) => {
+    // console.log("ShB Changed :: ", value, old);
+
+    if(value) {
+        setTimeout(() => {
+            showCountdown.value = true;
+        }, 1500);
+        setTimeout(() => {
+            nextPrevActive.value = true;
+        }, 1800);
+    } else {
+        showCountdown.value = false;
+    }
+});
+
+
  if(props.round > 1) {
      questionNumber.value = 1;
 }
-
+// console.log("T", questionNumber.value, props.questions);
 
 const endGame = () => {
     router.visit(route('games.endGame', { game: props.questions[0].game_id }));
@@ -100,31 +130,7 @@ const newQuestion = (increment) => {
     }
 }
 
-const showBubbles = ref(true);
-const showCountdown = ref(false);
 
-const nextPrevActive = ref(false);
-
-watch(questionNumber, (value, old) => {
-    // console.log("QN Changed :: ", value, old);
-    showBubbles.value = false;
-    setTimeout(() => {
-        showBubbles.value = true;
-    }, 100);
-});
-
-watch(showBubbles, (value, old) => {
-    if(value) {
-        setTimeout(() => {
-            showCountdown.value = true;
-        }, 1500);
-        setTimeout(() => {
-            nextPrevActive.value = true;
-        }, 1800);
-    } else {
-        showCountdown.value = false;
-    }
-});
 
 </script>
 <template>

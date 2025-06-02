@@ -13,6 +13,8 @@ const props = defineProps({
     round: Number,
     game: Object,
 });
+
+
 const newRound = (round) => {
     router.visit(route('games.startRound', { game: props.answers[0].game_id, round: round }));
 }
