@@ -38,6 +38,7 @@ const startBonusRound = () => {
 
 <template>
     <BubblesLayout>
+        <template #bubbles>
         <BubblesContainer>
             <GameBubble color="white">
                 <div class="mb-5">
@@ -71,6 +72,7 @@ const startBonusRound = () => {
                 </div>
             </GameBubble>
         </BubblesContainer>
+    </template>
     </BubblesLayout>
 
 </template>
