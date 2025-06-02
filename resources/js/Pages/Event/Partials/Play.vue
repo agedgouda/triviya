@@ -160,7 +160,7 @@ const newQuestion = (increment) => {
                         <div class="text-triviya-red text-sm font-bold">Question {{ (questions[questionNumber-1].question_number % 10 === 0) ? 10 : questions[questionNumber-1].question_number % 10  }} of 10</div>
                         {{questions[questionNumber-1].question_text}}
                     </GameBubble>
-                    <GameBubble color="white" subtract="left" slide-in="right" slide-in-delay="1000">
+                    <GameBubble color="white" subtract="left" slide-in="right" :slide-in-delay="1000">
                         <div>
                             <div>
                                 <div><span class="font-bold text-triviya-red text-sm">Who Said...</span></div>
