@@ -235,14 +235,36 @@ class GameController extends Controller
         ];
     }
 
-    public function showQuestions(Game $game, User $user, Request $request)
+    public function showQuestions(Game $game, Request $request)
     {
+
         // Load all necessary relationships for the game
         $game->load(['host', 'questions']);
 
         // Check if the current user is the host
-        $isHost = $game->host->id === auth()->id();
+        $isHost = $game->host->id ;
 
+        if(auth()->id()) {
+            $gameUserQuestions = GameUserQuestions::where('user_id', auth()->id())
+            ->where('game_id', $game->id)
+            ->get();
+            $user = User::find(auth()->id());
+            return Inertia::render('Questionnaire/Show' , [
+                'game' => $game,
+                'questions' => $gameUserQuestions,
+                'user' => $user,
+                'routeName' => request()->route()->getName(),
+                'error' => session('error'),
+            ]);
+        } else {
+            echo "no user";
+            return Inertia::render('Questionnaire/Show' , [
+                'game' => $game,
+                'routeName' => request()->route()->getName(),
+                'error' => session('error'),
+            ]);
+        }
+/*
         // Load GameUser with answers and user relationship
         $gameUserQuestions = GameUserQuestions::where('user_id', $user->id)
             ->where('game_id', $game->id)
@@ -263,6 +285,7 @@ class GameController extends Controller
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);
+        */
     }
 
 

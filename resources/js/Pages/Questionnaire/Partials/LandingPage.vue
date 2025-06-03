@@ -9,7 +9,6 @@ import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
 // Props for game and questions
 const props = defineProps({
     game: Object,
-    user: Object,
 });
 
 const { props: pageProps } = usePage();

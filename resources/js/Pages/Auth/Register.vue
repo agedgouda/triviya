@@ -31,6 +31,8 @@ const form = useForm({
     last_name: props.user.last_name || '',
     email: props.user.email || '',
     redirect_to: props.redirect_to || '',
+    birthday: '',
+    phone_number: '',
     password: '',
     password_confirmation: '',
     terms: false,
@@ -124,6 +126,18 @@ const submit = () => {
                     class="mt-1 block w-full"
                     required
                     autocomplete="username"
+                />
+                <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="birthday" value="Birthday" />
+                <TextInput
+                    id="birthday"
+                    v-model="form.birthday"
+                    type="date"
+                    class="mt-1 block w-full"
+                    required
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>

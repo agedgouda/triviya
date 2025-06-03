@@ -6,7 +6,6 @@ import axios from 'axios';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import Invite from './Invite.vue';
 import Table from '@/Components/Table.vue';
 
 const props = defineProps({
@@ -14,7 +13,7 @@ const props = defineProps({
     players: Array,
 });
 
-const processing = ref(false)
+const processing = ref(false);
 
 const currentDomain = window.location.origin;
 
@@ -30,7 +29,6 @@ const handlePlayerAction = async (player, action, method = 'put', additionalPara
     try {
         // Define the route dynamically based on the action
         const routes = {
-            resendInvite: 'games.resend-invite',
             updateAttendance: 'games.updateAttendance',
             sendQuestions: 'games.sendQuestions',
             removePlayer:'games.removePlayer'
@@ -137,9 +135,9 @@ const copyToClipboard = (game, player) => {
                     &nbsp;Start Game
                 </DangerButton>
             </div>
+            Invite players link {{currentDomain}}/questions/{{ game.id }}
         </div>
     </div>
-    <Invite :gameId="game.id" v-if="$page.props.auth.user.id === $page.props.host.id" />
     <div class="mt-5">
         <span class="text-red-800">{{ $page.props.errors.msg }}</span>
         <Table class="min-w-full table-auto ">
