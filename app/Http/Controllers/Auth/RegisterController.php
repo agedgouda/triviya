@@ -64,17 +64,18 @@ class RegisterController extends Controller
             $validated = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
-                'phone_number' => 'required|string|max:20',
-                'birthday' => ['nullable', 'date'],
+                'birthday' => ['required', 'date', 'before_or_equal:' . now()->subYears(13)->format('Y-m-d')],
                 'email' => 'required|email|max:255|unique:users,email', // Ensure email is unique
                 'password' => 'required|string|min:8|confirmed',
+            ], [
+                'birthday.before_or_equal' => 'You must be at least 13 to register.',
             ]);
 
             $user = User::create([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'email' => $validated['email'],
-                'phone_number' => $validated['phone_number'],
+                'phone_number' => $request->phone_number,
                 'birthday' => $validated['birthday'],
                 'password' => Hash::make($validated['password']),
             ]);

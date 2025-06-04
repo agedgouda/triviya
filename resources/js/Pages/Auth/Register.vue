@@ -140,7 +140,7 @@ const submit = () => {
                     class="mt-1 block w-full"
                     required
                 />
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.birthday" />
             </div>
 
             <div class="mt-4">
@@ -151,7 +151,6 @@ const submit = () => {
                     mask="(###) ###-####"
                     type="tel"
                     class="mt-1 block w-full"
-                    required
                     autocomplete="tel"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
