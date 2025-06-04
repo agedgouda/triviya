@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { MaskInput } from "vue-mask-next";
 
 
 const props = defineProps({
@@ -72,7 +73,7 @@ const submit = () => {
             });
     }
     else {
-        form.post(route('register'), {
+        form.post(route('register.submit'), {
             onFinish: () => form.reset('password', 'password_confirmation'),
         });
     }
@@ -138,6 +139,20 @@ const submit = () => {
                     type="date"
                     class="mt-1 block w-full"
                     required
+                />
+                <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="phone_number" value="Mobile Number" />
+                <MaskInput
+                    id="phone_number"
+                    v-model="form.phone_number"
+                    mask="(###) ###-####"
+                    type="tel"
+                    class="mt-1 block w-full"
+                    required
+                    autocomplete="tel"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>

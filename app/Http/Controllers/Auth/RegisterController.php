@@ -64,6 +64,8 @@ class RegisterController extends Controller
             $validated = $request->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
+                'phone_number' => 'required|string|max:20',
+                'birthday' => ['nullable', 'date'],
                 'email' => 'required|email|max:255|unique:users,email', // Ensure email is unique
                 'password' => 'required|string|min:8|confirmed',
             ]);
@@ -72,6 +74,8 @@ class RegisterController extends Controller
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'email' => $validated['email'],
+                'phone_number' => $validated['phone_number'],
+                'birthday' => $validated['birthday'],
                 'password' => Hash::make($validated['password']),
             ]);
         }
