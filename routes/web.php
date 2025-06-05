@@ -32,9 +32,9 @@ Route::get('/', function () {
     );
 });
 
-Route::get('/register/{game?}/{user?}', [RegisterController::class, 'show'])->name('register.prepopulated');
+Route::get('/register/{game?}', [RegisterController::class, 'show'])->name('register.prepopulated');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.submit');
-Route::post('register/{game?}/{user?}', [RegisterController::class, 'store'])->name('register.submit');
+Route::post('register/{game?}', [RegisterController::class, 'store'])->name('register.submit');
 
 Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prepopulated');
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');

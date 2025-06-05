@@ -15,6 +15,9 @@ const { props: pageProps } = usePage();
 const login = () => {
     router.visit(route('login.prepopulated', props.game.id));
 };
+const register = () => {
+    router.visit(route('register.prepopulated', props.game.id));
+};
 
 
 
@@ -57,14 +60,14 @@ const login = () => {
                 <li class="mb-2">Everyone invited to the game will answer 10 questions about themselves</li>
                 <li class="mb-2">During the game, teams will guess who said what</li>
                 <li class="mb-2">Teams earn points matching the answers to the correct people</li>
-                <li class="mb-2">The team with the most points wins!</li>
-                <li>You must login or register to begin.</li>
+                <li class="mb-2">The team with the most points wins</li>
+                <li>You must login or register to begin</li>
             </ul>
             <div class="mb-2 text-center b-4">
                 <PrimaryButton type="button" class="mt-2" @click="login">
                     <span>Login</span>
                 </PrimaryButton>
-                <PrimaryButton type="button" class="mt-2 ml-2" @click="$emit('nextClicked')">
+                <PrimaryButton type="button" class="mt-2 ml-2" @click="register">
                     <span>Register</span>
                 </PrimaryButton>
             </div>
