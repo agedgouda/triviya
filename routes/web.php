@@ -36,7 +36,7 @@ Route::get('/register/{game?}/{user?}', [RegisterController::class, 'show'])->na
 Route::post('/register', [RegisterController::class, 'store'])->name('register.submit');
 Route::post('register/{game?}/{user?}', [RegisterController::class, 'store'])->name('register.submit');
 
-Route::get('/login/{game?}/{user?}', [LoginController::class, 'show'])->name('login.prepopulated');
+Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prepopulated');
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
 
 

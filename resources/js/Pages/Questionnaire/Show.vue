@@ -1,7 +1,9 @@
 <script setup>
-
-import Questions from './Partials/Questions.vue';
+import { ref } from 'vue';
 import ThankYou from './Partials/ThankYou.vue';
+import LandingPage from './Partials/LandingPage.vue';
+import PlayerQuestions from './Partials/PlayerQuestions.vue';
+
 
 // Props for game and questions
 const props = defineProps({
@@ -12,10 +14,10 @@ const props = defineProps({
     routeName: String,
 });
 
-
 </script>
 
 <template>
-    <Questions :questions="questions" :game="game" :user="user" v-if="routeName === 'questions.showQuestions'"/>
+    <LandingPage :game="game" v-if=" !user && routeName === 'questions.showQuestions'"/>
+    <PlayerQuestions :questions="questions" :game="game" :user="user"  v-if=" user && routeName === 'questions.showQuestions'"/>
     <ThankYou :game="game" :user="user" v-if="routeName === 'questions.showThankYou'"/>
 </template>

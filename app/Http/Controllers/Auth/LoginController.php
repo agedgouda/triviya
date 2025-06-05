@@ -13,14 +13,13 @@ class LoginController extends Controller
     /**
      * Show the login form with a prepopulated email address.
      */
-    public function show(Game $game, User $user)
+    public function show(Game $game)
     {
+        $redirectTo = request()->input('redirect_to', route('questions.showQuestions', ['game' => $game->id]));
 
-        $redirectTo = request()->input('redirect_to', route('games.show', ['game' => $game->id]));
 
         return inertia('Auth/Login', [
             'game' => $game,
-            'user' => $user,
             'redirect_to' => $redirectTo
         ]);
     }
@@ -35,7 +34,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended($redirectTo)->with('message', 'Your Answers Were Saved');
+            return redirect()->intended($redirectTo)->with('message', 'Sample Text');
         }
 
         return back()->withErrors([

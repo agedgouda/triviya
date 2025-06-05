@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
-import { formatDate } from '@/utils';
+import { router } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
@@ -13,7 +12,11 @@ const props = defineProps({
 
 const { props: pageProps } = usePage();
 
-    // console.log(props);
+const login = () => {
+    router.visit(route('login.prepopulated', props.game.id));
+};
+
+
 
 </script>
 
@@ -51,22 +54,21 @@ const { props: pageProps } = usePage();
         <template #question-input>
             <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here's how it works</div>
             <ul class="list-disc mx-12 mb-2">
-                <li class="mb-2">Everyone invited to the game will answer a few questions about themselves</li>
+                <li class="mb-2">Everyone invited to the game will answer 10 questions about themselves</li>
                 <li class="mb-2">During the game, teams will guess who said what</li>
-                <li class="mb-2">Matching the answers to the correct people earns you points</li>
-                <li>The team with the most points wins!</li>
+                <li class="mb-2">Teams earn points matching the answers to the correct people</li>
+                <li class="mb-2">The team with the most points wins!</li>
+                <li>You must login or register to begin.</li>
             </ul>
-
+            <div class="mb-2 text-center b-4">
+                <PrimaryButton type="button" class="mt-2" @click="login">
+                    <span>Login</span>
+                </PrimaryButton>
+                <PrimaryButton type="button" class="mt-2 ml-2" @click="$emit('nextClicked')">
+                    <span>Register</span>
+                </PrimaryButton>
+            </div>
         </template>
 
-<!--        <template #question-footer>-->
-<!--            The next step is answering your TriviYa survey and should take less than 3 minutes to complete.-->
-<!--        </template>-->
-
-        <template #question-buttons>
-            <PrimaryButton type="button" class="mt-2" @click="$emit('nextClicked')">
-                <span>Ready To Get Started</span>
-            </PrimaryButton>
-        </template>
     </QuestionsLayout>
 </template>

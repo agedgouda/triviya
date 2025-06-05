@@ -245,10 +245,24 @@ class GameController extends Controller
         $isHost = $game->host->id ;
 
         if(auth()->id()) {
+            $user = User::find(auth()->id());
+            $isPlaying = $game->players()->where('user_id', $user->id)->exists();
+
+            //check if the user has been added to the game yet
+            if (!$isPlaying) {
+                //user has not been add to the game. see how much clearer using has makes the sentence?
+                //add the user to the game and then assign questions
+                $game->players()->attach($user->id, [
+                    'status' => 'Joined Game',
+                ]);
+                $questionResult = GameActions::AssignPlayerQuestionsAction($game, $user);
+            }
+
             $gameUserQuestions = GameUserQuestions::where('user_id', auth()->id())
             ->where('game_id', $game->id)
             ->get();
-            $user = User::find(auth()->id());
+
+            //dd($gameUserQuestions);
             return Inertia::render('Questionnaire/Show' , [
                 'game' => $game,
                 'questions' => $gameUserQuestions,
@@ -257,7 +271,6 @@ class GameController extends Controller
                 'error' => session('error'),
             ]);
         } else {
-            echo "no user";
             return Inertia::render('Questionnaire/Show' , [
                 'game' => $game,
                 'routeName' => request()->route()->getName(),
