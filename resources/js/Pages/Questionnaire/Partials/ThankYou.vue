@@ -1,8 +1,8 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
-import { formatDate } from '@/utils';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 // Props for game and questions
 const props = defineProps({
@@ -10,39 +10,33 @@ const props = defineProps({
     user: Object,
 });
 
-const loginOrRegister = () => {
-    if(!props.user.has_registered) {
-        router.visit(route('register.prepopulated', { game: props.game.id,user: props.user.id  }))
-    } else {
-        router.visit(route('login.prepopulated', { game: props.game.id,user: props.user.id  }))
-    }
-}
-
-
 
 </script>
 
 <template>
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-triviyaRegular text-white">
-            <div class="pt-3 text-center max-w-2xl">
-                <div class="mb-4">
-                    <ApplicationLogo class="flex justify-center block h-24 mx-auto w-auto" />
-                    <h1 class="mb-4 text-2xl font-bold">The party game
-                        <span class="hidden sm:inline">where </span>
-                        <span class="inline sm:hidden">where<br></span>
-                        you are the trivia!
-                    </h1>
-                    <p class="mb-4 text-xl px-4">You've answered all of the questions for {{ game.host[0].first_name }} {{ game.host[0].last_name }}'s TriviYa
-                        game on {{  formatDate(game.date_time)  }} at {{ game.location }}
-                    </p>
-                    <p class="px-4">
-                    We are going to put text here. Good text. Text better than you've ever seen before. You'll read it and say "wow, that is some good text."
-                    All to get you to click below to <span> {{ user.has_registered ? 'Login': 'Register'}} </span>.
-                    </p>
-                    <div class="mt-4">
-                        <SecondaryButton type="submit" class="mt-4 mb-4 ml-4" @click="loginOrRegister">{{ user.has_registered ? 'Login': 'Register'}}</SecondaryButton>
-                    </div>
+    <QuestionsLayout title="Well Done!" :header-has-background="false">
+
+        <template #raw-header>
+            <div class="raw-header mt-8 mb-8">
+                <div class="extended-logo">
+                    <ApplicationLogo class="flex justify-center block !h-32 mx-auto w-auto" />
+                    <div class="extended-logo-text text-center text-white text-xl font-bold">the game where you<br />are the trivia!</div>
                 </div>
             </div>
-        </div>
+        </template>
+
+
+
+        <template #question-input>
+            <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Well Done!</div>
+            <div class="mb-2 mt-2 ">
+                <p class="mb-2 mt-2 ">You're all set! TriviYA is working its magic, turning everone's answers into your custom trivia game.</p>
+                <p>When the game starts, the host will ask the questions? Your job? Guess who said what!</p>
+            </div>
+            <div class="text-center">
+                    <PrimaryButton type="submit" class="mt-4 mb-4 ml-4" @click="router.visit(route('games.show', { game: props.game.id }))">View Game </PrimaryButton>
+            </div>
+        </template>
+
+    </QuestionsLayout>
 </template>
