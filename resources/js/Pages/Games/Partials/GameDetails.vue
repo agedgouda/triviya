@@ -81,7 +81,7 @@ const startGame = () => {
 };
 
 const copyToClipboard = (game   ) => {
-    const invitationUrl = `Jamie has invited you to play TriviYa. Click this link to get started: ${currentDomain}/questions/${game.id}`;
+    const invitationUrl = `I’m hosting a game of TriviYa and you’re invited. It’s personal, unpredictable and all about us. Click the link to help create the game.  ${currentDomain}/questions/${game.id}`;
     if (navigator.clipboard && window.isSecureContext) {
         // Preferred method (only works in secure contexts)
         navigator.clipboard.writeText(invitationUrl)
@@ -169,7 +169,6 @@ const copyToClipboard = (game   ) => {
         <Table class="min-w-full table-auto ">
             <template #header>
                     <th class="px-4 py-2 text-left">Name</th>
-                    <th class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">Email</th>
                     <th class="px-4 py-2 text-center">Status</th>
                     <th class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id"></th>
             </template>
@@ -186,7 +185,6 @@ const copyToClipboard = (game   ) => {
                 <img class="w-8 h-8 rounded-full object-cover" :src="player.profile_photo_url" alt="Player Photo" />
                 <span>{{ player.name }}</span>
             </td>
-                <td class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">{{ player.email }}</td>
                 <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === player.id && player.status === 'Questions Answered'">
                     Review & Edit<br/>Your Answers
                 </td>
