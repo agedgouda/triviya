@@ -32,7 +32,6 @@ const handlePlayerAction = async (player, action, method = 'put', additionalPara
             updateAttendance: 'games.updateAttendance',
             sendQuestions: 'games.sendQuestions',
             removePlayer:'games.removePlayer'
-
         };
 
         // Ensure the action is valid
@@ -82,7 +81,7 @@ const startGame = () => {
 };
 
 const copyToClipboard = (game   ) => {
-    const invitationUrl = currentDomain+'/questions/'+game.id
+    const invitationUrl = `Jamie has invited you to play TriviYa. Click this link to get started: ${currentDomain}/questions/${game.id}`;
     if (navigator.clipboard && window.isSecureContext) {
         // Preferred method (only works in secure contexts)
         navigator.clipboard.writeText(invitationUrl)
@@ -103,22 +102,44 @@ const copyToClipboard = (game   ) => {
 </script>
 
 <template>
-    <div class="text-lg font-bold">{{ game.name }}</div>
-    <!--<div><span class="font-bold">Mode: </span>{{ game.mode.name }}</div>-->
-    <div><span class="font-bold">Location: </span>{{ game.location }}</div>
-    <div>{{ formatDate(game.date_time) }}</div>
-    <div v-if="$page.props.auth.user.id === $page.props.host.id" >
+    <div class="flex justify-between items-start gap-4">
+        <!-- Left column with game info and edit button -->
+        <div class="flex items-start gap-2">
+            <div class="text-lg">
+                <span class="font-bold">Game Name:</span> {{ game.name }}<br>
+                <span class="font-bold">Location:</span> {{ game.location }}
+            </div>
 
-        <div>
-            <PrimaryButton @click="goToEditPage" class="mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                </svg>
-
-                &nbsp;Edit
-            </PrimaryButton>
+            <div v-if="$page.props.auth.user.id === $page.props.host.id">
+                <DangerButton @click="goToEditPage" class="ml-2 mt-7 pl-1 pr-1 pt-1 pb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor" class="h-3 w-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5
+                            4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5
+                            4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                    </svg>
+                </DangerButton>
+            </div>
         </div>
 
+        <!-- Right column with Start Game button -->
+        <div class="flex-1 flex justify-center mt-2">
+            <PrimaryButton @click="startGame" v-if="questionsAnsweredCount === players.length">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9
+                        9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0
+                        1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9
+                        9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
+                </svg>
+                &nbsp;Start Game
+            </PrimaryButton>
+        </div>
+    </div>
+
+    <div v-if="$page.props.auth.user.id === $page.props.host.id" >
         <div class="mt-34">
             <div v-if="players.length < 4">
                 TriviYa is best played with a group! As the host, you have automatically been added.
@@ -128,19 +149,19 @@ const copyToClipboard = (game   ) => {
                 <div v-if="questionsAnsweredCount < players.length">
                     Still waiting for {{ players.length - questionsAnsweredCount }} more player<span v-if="players.length - questionsAnsweredCount > 1">s</span> to answer their questions before the game can begin.
                 </div>
-                <DangerButton @click="startGame" v-if="questionsAnsweredCount === players.length">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
-                    </svg>
-                    &nbsp;Start Game
-                </DangerButton>
             </div>
-            <SecondaryButton @click="copyToClipboard(game)" >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-                </svg>
-                &nbsp;Copy Link
-            </SecondaryButton>
+            <div v-if="game.status === 'new'" class="mt-2">
+                <div class="font-bold">Invitation Link:</div>
+                Click to copy link below then paste it into an email, text, or group chat—whatever works best for you!
+                <div>
+                <SecondaryButton class="mt-2" @click="copyToClipboard(game)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                    </svg>
+                    &nbsp;Copy Link
+                </SecondaryButton>
+            </div>
+            </div>
         </div>
     </div>
     <div class="mt-5">
@@ -150,7 +171,6 @@ const copyToClipboard = (game   ) => {
                     <th class="px-4 py-2 text-left">Name</th>
                     <th class="px-4 py-2 text-left" v-if="$page.props.auth.user.id === $page.props.host.id">Email</th>
                     <th class="px-4 py-2 text-center">Status</th>
-                    <th class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id"></th>
                     <th class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id"></th>
             </template>
             <template #default="{ rowClass }">
@@ -172,27 +192,6 @@ const copyToClipboard = (game   ) => {
                 </td>
                 <td class="px-4 py-2 text-center" v-else>
                     {{ player.status }}
-                </td>
-                <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id && player.id != $page.props.host.id" >
-                    <div>
-                        Hold this space
-                    </div>
-                </td>
-                <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id && player.id === $page.props.host.id" >
-                    <div>
-                        <SecondaryButton v-if="player.status.includes('Invitation') || player.status ==='Error sending invitation'" >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                            </svg>
-                            &nbsp;Take Quiz
-                        </SecondaryButton>
-                        <SecondaryButton v-if="player.status === 'Questions Answered'" >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                            </svg>
-                            &nbsp;Edit Quiz
-                        </SecondaryButton>
-                    </div>
                 </td>
                 <td class="px-4 py-2 text-center" v-if="$page.props.auth.user.id === $page.props.host.id" >
                     <div v-if="$page.props.auth.user.id != player.id">
