@@ -106,7 +106,7 @@ const copyToClipboard = (game   ) => {
         <!-- Left column with game info and edit button -->
         <div class="flex items-start gap-2">
             <div class="text-lg">
-                <span class="font-bold">Game Name:</span> {{ game.name }}<br>
+                <span class="font-bold">Game Names:</span> {{ game.name }}<br>
                 <span class="font-bold">Location:</span> {{ game.location }}
             </div>
 
