@@ -47,7 +47,7 @@ class StoreGameAction
                 // Attach questions to the game
                 $game->questions()->attach($questions->pluck('id')->toArray());
 
-                $hostResult = GameActions::CreateUserAndInviteAction($game, $hostData);
+                $hostResult = GameActions::CreateUserForGameAction($game, $hostData);
                 if ($hostResult['status'] !== 'success') {
                     throw new Exception('Failed to add host: ' . $hostResult['message']);
                 }
