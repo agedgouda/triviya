@@ -52,6 +52,20 @@ class StoreGameAction
                     throw new Exception('Failed to add host: ' . $hostResult['message']);
                 }
 
+                $player = $hostResult['player'];
+
+                $questionResult = GameActions::AssignPlayerQuestionsAction($game, $player);
+
+                if ($questionResult['status'] !== 'success') {
+                    // Rollback: detach the player from the game
+                    $game->players()->detach($player->id);
+
+                    return [
+                        'status' => 'error',
+                        'message' => $questionResult['message'] . ' Rolled back player assignment.',
+                    ];
+                }
+
                 return [
                     'status' => 'success',
                     'game' => $game,
