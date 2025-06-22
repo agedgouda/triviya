@@ -25,11 +25,6 @@ class Game extends Model
                     ->withPivot('id','status', 'is_host');
     }
 
-    public function attendingPlayers()
-    {
-        return $this->players()->whereIn('game_user.status', ['Questions Answered', 'Questions Sent']);
-    }
-
     public function host()
     {
         return $this->belongsToMany(User::class, 'game_user')

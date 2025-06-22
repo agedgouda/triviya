@@ -8,7 +8,7 @@ class FetchGames
 {
     public function handle(bool $hosted): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $query = Game::withCount(['players', 'attendingPlayers']);
+        $query = Game::withCount(['players']);
 
         if ($hosted) {
             $query->hostedBy(auth()->id());

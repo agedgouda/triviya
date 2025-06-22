@@ -1,8 +1,6 @@
 <script setup>
 
-import { formatDate } from '@/utils';
-import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import Table from '@/Components/Table.vue';
 
 
@@ -28,9 +26,7 @@ const fetchPage = (url) => {
     <Table :hasHover="true">
         <template #header>
             <th class="px-4 py-2 text-left">Game Name</th>
-            <th class="px-4 py-2 text-center">Date and Time</th>
             <th class="px-4 py-2 text-center"># Invited</th>
-            <th class="px-4 py-2 text-center"># Attending</th>
         </template>
         <!-- Use v-slot to access the slot props -->
         <template #default="{ rowClass }">
@@ -41,9 +37,7 @@ const fetchPage = (url) => {
                 @click="goToGame(game.id)"
             >
                 <td class="px-4 py-2">{{ game.name }}</td>
-                <td class="px-4 py-2 text-center">{{ formatDate(game.date_time) }}</td>
                 <td class="px-4 py-2 text-center">{{ game.players_count }}</td>
-                <td class="px-4 py-2 text-center">{{ game.attending }}</td>
             </tr>
         </template>
     </Table>

@@ -18,32 +18,27 @@ const props = defineProps({
 const form = useForm({
     name: props.game?.name || '',
     location: props.game?.location || '',
-    date: props.game ? props.game.date_time.split(' ')[0] : '',
-    time: props.game ? props.game.date_time.split(' ')[1] : '',
     date_time: props.game?.date_time || '',
     mode_id: props.game?.mode_id || 1,
 });
 
 const submit = async () => {
     // Combine the date and time into a single field
-    form.date_time = `${form.date}T${form.time}`;
-
-
-        try {
-            // Submit the form
-            if(props.routeName == 'games.create') {
-                await form.post(route('games.store'), {
-                    preserveScroll: true, // Prevent scroll reset
-                });
-            } else {
-                await form.put(route('games.update',props.game), {
-                    preserveScroll: true, // Prevent scroll reset
-                });
-            }
-            // No further action needed; the server will redirect to games.show
-        } catch (error) {
-            console.error('Error submitting form:', error);
+    try {
+        // Submit the form
+        if(props.routeName == 'games.create') {
+            await form.post(route('games.store'), {
+                preserveScroll: true, // Prevent scroll reset
+            });
+        } else {
+            await form.put(route('games.update',props.game), {
+                preserveScroll: true, // Prevent scroll reset
+            });
         }
+        // No further action needed; the server will redirect to games.show
+    } catch (error) {
+        console.error('Error submitting form:', error);
+    }
 
 };
 
@@ -100,6 +95,12 @@ const availableHours = [
                     />
                     <InputError class="mt-2" :message="form.errors.location" />
                 </div>
+
+                <div class="flex items-center mt-10">
+                    <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        {{ routeName == 'games.create' ? 'Continue' : 'Update Game'  }}
+                    </PrimaryButton>
+                </div>
                 <!--
                 <div class="mr-3">
                     <InputLabel for="mode_id" value="Mode" />
@@ -125,7 +126,7 @@ const availableHours = [
                 </div> -->
             </div>
 
-            <div class="flex mt-3 flex-col sm:flex-row">
+            <!-- <div class="flex mt-3 flex-col sm:flex-row">
                 <div class="mr-5">
                     <InputLabel for="date" value="Game Date" />
                     <TextInput
@@ -153,12 +154,7 @@ const availableHours = [
                     </select>
                     <InputError class="mt-2" :message="form.errors.time" />
                 </div>
-                <div class="flex items-center mt-6">
-                    <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        {{ routeName == 'games.create' ? 'Continue' : 'Update Game'  }}
-                    </PrimaryButton>
-                </div>
-            </div>
+            </div> -->
         </form>
     </div>
 </template>
