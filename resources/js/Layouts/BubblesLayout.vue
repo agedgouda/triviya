@@ -31,8 +31,10 @@ import {Head} from "@inertiajs/vue3";
                 </div>
             </main>
         </div>
-                <!-- Bottom button bar (dark purple background) -->
-        <div class="w-full bg-triviya-darkPurple p-6 flex justify-center" style="background-image: linear-gradient(to bottom, #A93390 3px, transparent 3px);">
+
+        <!-- Bottom button bar (fixed to bottom on mobile) -->
+        <div class="fixed bottom-0 left-0 right-0 z-50 bg-triviya-darkPurple p-6 flex justify-center"
+            style="background-image: linear-gradient(to bottom, #A93390 3px, transparent 3px);">
             <slot name="question-buttons" />
         </div>
 
