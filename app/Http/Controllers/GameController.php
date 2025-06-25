@@ -235,11 +235,49 @@ class GameController extends Controller
         ];
     }
 
+    public function showQuestionLanding(Game $game, Request $request)
+    {
+        $game->load(['host', 'questions','players']);
+        // Check if the current user is the host
+        $isHost = $game->host->id ;
+
+        if(auth()->id()) {
+            $user = User::find(auth()->id());
+            $gameUser = GameUser::where('user_id', auth()->id())
+            ->where('game_id', $game->id)
+            ->exists();
+
+            if($gameUser) {
+                $gameUserQuestions = GameUserQuestions::where('user_id', auth()->id())
+                ->where('game_id', $game->id)
+                ->get();
+
+                return Inertia::render('Questionnaire/Show' , [
+                    'game' => $game,
+                    'questions' => $gameUserQuestions,
+                    'user' => $user,
+                    'routeName' => 'questions.showQuestions',
+                    'error' => session('error'),
+                ]);
+            }
+
+        } else {
+            $user = null;
+        }
+
+        return Inertia::render('Questionnaire/Show' , [
+            'game' => $game,
+            'user' => $user,
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);
+    }
+
     public function showQuestions(Game $game, Request $request)
     {
 
         // Load all necessary relationships for the game
-        $game->load(['host', 'questions']);
+        $game->load(['host', 'questions','players']);
 
         // Check if the current user is the host
         $isHost = $game->host->id ;
@@ -256,13 +294,13 @@ class GameController extends Controller
                     'status' => 'Joined Game',
                 ]);
                 $questionResult = GameActions::AssignPlayerQuestionsAction($game, $user);
+                $game->load(['players']);
             }
 
             $gameUserQuestions = GameUserQuestions::where('user_id', auth()->id())
             ->where('game_id', $game->id)
             ->get();
 
-            //dd($gameUserQuestions);
             return Inertia::render('Questionnaire/Show' , [
                 'game' => $game,
                 'questions' => $gameUserQuestions,
@@ -277,28 +315,6 @@ class GameController extends Controller
                 'error' => session('error'),
             ]);
         }
-/*
-        // Load GameUser with answers and user relationship
-        $gameUserQuestions = GameUserQuestions::where('user_id', $user->id)
-            ->where('game_id', $game->id)
-            ->get();
-        if (!$gameUserQuestions) {
-            // Handle error: Player not found in this game
-            abort(404, 'Player not found in this game.');
-        }
-
-        // Determine the correct page to render
-        $page = $request->route()->getName() === 'questions.showQuestions' ? 'Questionnaire/Show' : 'Games/Index';
-
-
-        return Inertia::render($page, [
-            'game' => $game,
-            'questions' => $gameUserQuestions,
-            'user' => $user,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-        */
     }
 
 

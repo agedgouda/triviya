@@ -213,8 +213,8 @@ const changeQuestion = (increment) => {
                     Previous
                 </SecondaryButton>
 
-                <PrimaryButton type="submit" class="mt-2" :disabled="question.answer == NULL || question.answer.length === 0 ">
-                    <span v-if="questionNumber + 1 < props.questions.length">Next</span>
+                <PrimaryButton type="submit" class="mt-2" :disabled="question.answer === null || question.answer.length === 0 ">
+                    <span v-if="questionNumber + 1 < questions.length">Next</span>
                     <span v-else>End</span>
                 </PrimaryButton>
             </form>

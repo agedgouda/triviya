@@ -11,7 +11,7 @@ use App\Models\Game;
 class LoginController extends Controller
 {
     /**
-     * Show the login form with a prepopulated email address.
+     * Login to answer questions for a game
      */
     public function show(Game $game)
     {

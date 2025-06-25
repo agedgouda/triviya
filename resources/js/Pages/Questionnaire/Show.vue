@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
 import ThankYou from './Partials/ThankYou.vue';
 import LandingPage from './Partials/LandingPage.vue';
 import PlayerQuestions from './Partials/PlayerQuestions.vue';
@@ -17,7 +17,8 @@ const props = defineProps({
 </script>
 
 <template>
-    <LandingPage :game="game" v-if=" !user && routeName === 'questions.showQuestions'"/>
-    <PlayerQuestions :questions="questions" :game="game" :user="user"  v-if=" user && routeName === 'questions.showQuestions'"/>
+    <LandingPage :game="game" :user="user" v-if="routeName === 'questions.showQuestionLanding'"/>
+    <PlayerQuestions :questions="questions" :game="game" :user="user"  v-if="routeName === 'questions.showQuestions'"/>
     <ThankYou :game="game" :user="user" v-if="routeName === 'questions.showThankYou'"/>
 </template>
+
