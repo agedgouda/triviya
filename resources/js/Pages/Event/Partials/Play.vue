@@ -147,10 +147,10 @@ const newQuestion = (increment) => {
             <BubblesContainer v-if="showBubbles">
                 <template v-if="questionNumber === 0">
                     <GameBubble color="white" >
-                        <div v-if="game.status !== 'bonus'">
+                        <div  v-if="game.status !== 'bonus'">
                             <div v-if="round === 1">
                                 <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">How it works</div>
-                                <ul class="list-disc mx-12 mb-2">
+                                <ul class="list-disc mx-9 mb-2">
                                     <li class="mb-2">The game has 3 rounds</li>
                                     <li class="mb-2">Each round has 10 questions</li>
                                     <li class="mb-2">As host, you’ll read each question out loud</li>

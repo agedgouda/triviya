@@ -60,9 +60,6 @@ watch(questionNumber, (value, old) => {
 
         <template #bubbles>
             <BubblesContainer v-if="showBubbles">
-                <GameBubble v-if="questionNumber === 0" :has-background="true">
-                    Begin Showing Answers
-                </GameBubble>
                 <template v-if="questionNumber > 0 && questionNumber <=10">
                 <GameBubble  :has-background="true" slide-in="left">
 <!--                    <div v-if="game.status !== 'bonus'">Round {{ round }}</div>-->
@@ -82,11 +79,23 @@ watch(questionNumber, (value, old) => {
                 </GameBubble>
                 </template>
                 <div v-else>
-                    <GameBubble v-if="game.status !== 'bonus'" :has-background="true" color="white">
-                        Next Round
+                    <GameBubble v-if="round === 1 && game.status !== 'bonus'" :has-background="true" color="white">
+                        <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Let's see how you did</div>
+                        Teams, don’t forget to keep track of your scores. If you have a TriviYa scorecard, great—otherwise an envelope,
+                        scratch paper, anything will work.
                     </GameBubble>
-                    <GameBubble v-else :has-background="false" color="white">
-                        Bonus Round
+                    <GameBubble v-if="round === 2 && game.status !== 'bonus'" :has-background="true" color="white">
+                        <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Let's check Round {{round}}</div>
+                        Teams, you know the drill—scorecard, envelope, scrap paper.
+                        <br/>Let’s go.
+                    </GameBubble>
+                    <GameBubble v-if="round === 3 && game.status !== 'bonus'" :has-background="true" color="white">
+                        <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Let's check Round {{round}}</div>
+                        Last round—this one seals the deal. The team with highest score after this round wins it all.
+                    </GameBubble>
+                    <GameBubble  v-if="game.status === 'bonus'" :has-background="false" color="white">
+                        <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Bonus Round</div>
+                        This one's for all the marbles, so if you lost yours get ready!
                     </GameBubble>
                 </div>
             </BubblesContainer>
