@@ -124,7 +124,7 @@ const copyToClipboard = (game   ) => {
         </div>
 
         <!-- Right column with Start Game button -->
-        <div class="flex-1 flex justify-center mt-2"> {{  }}
+        <div class="flex-1 flex justify-center mt-2" v-if="!game.status.includes('done') ">
             <PrimaryButton @click="startGame" v-if="questionsAnsweredCount === players.length && players.length >= 4 && $page.props.auth.user.id === $page.props.host.id">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
@@ -136,6 +136,9 @@ const copyToClipboard = (game   ) => {
                 </svg>
                 &nbsp;Start Game
             </PrimaryButton>
+        </div>
+        <div class="flex-1 flex justify-center mt-2 text-4xl font-bold" v-else>
+            GAME COMPLETE TEXT
         </div>
     </div>
 

@@ -36,7 +36,7 @@ const fetchPage = (url) => {
                 :class="rowClass"
                 @click="goToGame(game.id)"
             >
-                <td class="px-4 py-2">{{ game.name }}</td>
+                <td class="px-4 py-2">{{ game.name }} {{ game.status }}</td>
                 <td class="px-4 py-2 text-center">{{ game.players_count }}</td>
             </tr>
         </template>

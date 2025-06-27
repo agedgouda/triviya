@@ -47,7 +47,7 @@ const startBonusRound = () => {
                 </div>
             </GameBubble>
             <GameBubble>
-                <div class="border border-triviya-red sm:rounded-lg p-4  mb-5"  v-if="game.status !== 'done-bonus' ">
+                <div class="border border-triviya-red sm:rounded-lg p-4  mb-5"  v-if="!game.status.includes('done') ">
                     <div class="text-xl font-bold ">Keep the Fun Going!</div>
                     <div class="font-bold mt-2">➕ Bonus Round</div>
                     Get 10 extra questions pulled from everyone’s earlier answers.
