@@ -25,12 +25,21 @@ class StoreAnswerAction
             ->count();
 
         if ($numberAnswered === $totalQuestions && $totalQuestions > 0) {
-            $status = 'All Questions Answered';
+            $status = 'Quiz Complete';
         } else {
             $status = $numberAnswered . ' ' . ($numberAnswered === 1 ? 'Question' : 'Questions') . ' Answered';
         }
 
         $game->players()->updateExistingPivot($user->id, ['status' => $status]);
+
+        //check to see if there are at least 4 players and they all have completed their quiz
+        if (
+            $game->players()->count() >= 4 &&
+            $game->players()->where('status', '!=', 'Quiz Complete')->doesntExist()
+        ) {
+            $game->status = 'start';
+            $game->save();
+        }
 
         return ['status' => 'success', 'message' => $status];
     }

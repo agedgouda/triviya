@@ -30,7 +30,7 @@ class CreateUserForGameAction
         }
 
         $game->players()->attach($user->id, [
-            'status' => 'Joined Game',
+            'status' => 'Quiz Available',
             'is_host' => $data['is_host'] ?? false,
         ]);
 
