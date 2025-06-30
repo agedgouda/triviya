@@ -88,7 +88,7 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <div v-if="flash" class="mb-4 font-medium text-sm text-triviyaPink">
+        <div v-if="flash" class="mb-2 font-medium text-sm text-triviyaPink">
             {{ flash.message }}
         </div>
 
@@ -99,83 +99,70 @@ const submit = () => {
                     id="first_name"
                     v-model="form.first_name"
                     type="text"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                     autocomplete="first_name"
                 />
                 <InputError class="mt-2" :message="form.errors.first_name" />
             </div>
-            <div class="mt-4">
+            <div class="mt-3">
                 <InputLabel for="last_name" value="Last Name" />
                 <TextInput
                     id="last_name"
                     v-model="form.last_name"
                     type="text"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                     autocomplete="last_name"
                 />
                 <InputError class="mt-2" :message="form.errors.first_name" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-3">
                 <InputLabel for="email" value="Email" />
                 <TextInput
                     id="email"
                     v-model="form.email"
                     type="email"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                     autocomplete="username"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-3">
                 <InputLabel for="birthday" value="Birthday" />
                 <TextInput
                     id="birthday"
                     v-model="form.birthday"
                     type="date"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                 />
                 <InputError class="mt-2" :message="form.errors.birthday" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="phone_number" value="Mobile Number" />
-                <MaskInput
-                    id="phone_number"
-                    v-model="form.phone_number"
-                    mask="(###) ###-####"
-                    type="tel"
-                    class="mt-1 block w-full"
-                    autocomplete="tel"
-                />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
+            <div class="mt-3">
                 <InputLabel for="password" value="Password" />
                 <TextInput
                     id="password"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                     autocomplete="new-password"
                 />
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-3">
                 <InputLabel for="password_confirmation" value="Confirm Password" />
                 <TextInput
                     id="password_confirmation"
                     v-model="form.password_confirmation"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                     autocomplete="new-password"
                 />

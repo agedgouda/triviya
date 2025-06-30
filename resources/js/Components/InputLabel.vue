@@ -3,13 +3,13 @@ defineProps({
     value: String,
     sizeClass: {
         type: String,
-        default: 'text-3xl'
+        default: 'text-lg font-bold'
     }
 });
 </script>
 
 <template>
-    <label class="block font-medium" :class="[sizeClass]">
+    <label class="block" :class="[sizeClass]">
         <span v-if="value">{{ value }}</span>
         <span v-else><slot /></span>
     </label>

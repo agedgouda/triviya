@@ -54,10 +54,10 @@ const submit = () => {
             <AuthenticationCardLogo />
         </template>
 
-        <div v-if="status" class="mb-4 font-medium text-sm">
+        <div v-if="status" class="mb-2 font-medium text-sm">
             {{ status }}
         </div>
-        <div v-if="flash" class="mb-4 font-medium text-sm">
+        <div v-if="flash" class="mb-2 font-medium text-sm">
             {{ flash.message }}
         </div>
 
@@ -70,27 +70,27 @@ const submit = () => {
                     id="email"
                     v-model="form.email"
                     type="email"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                     autocomplete="username"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
+            <div class="mt-2">
                 <InputLabel for="password" value="Password" />
                 <TextInput
                     id="password"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                     required
                     autocomplete="current-password"
                 />
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
-            <div class="block mt-4">
+            <div class="block mt-2">
                 <label class="flex items-center">
                     <Checkbox v-model:checked="form.remember" name="remember" />
                     <span class="ms-2 text-sm text-triviyaRegular">Remember me</span>
