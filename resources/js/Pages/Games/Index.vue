@@ -79,14 +79,14 @@ const createGame = () => {
                         <GamesList :games="games " />
                     </div>
                     <div class="flex items-center mb-5" v-if="games.data.length === 0">
-                        <span>Welcome to TriviYa. Click on NEW GAME to get started.</span>
+                        <span>Welcome to TriviYa. Click on CREATE A NEW GAME to get started.</span>
                         <PrimaryButton class="ml-4" @click="createGame">
                             New Game
                         </PrimaryButton>
                         </div>
                         <div v-else class="flex justify-end">
                             <PrimaryButton class="my-5"  @click="createGame" >
-                                New Game
+                                Create A New Game
                             </PrimaryButton>
                         </div>
                 </template>

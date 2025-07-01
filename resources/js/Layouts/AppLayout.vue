@@ -50,7 +50,7 @@ const logout = () => {
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('games')" :active="route().current('games*')" :hasSubnav="false">
-                                    Games
+                                    My Games
                                     <template #subnav>
                                         <Link :href="route('games.create')" class="hover:text-amber-700" >Add Game</Link>
                                     </template>
@@ -157,6 +157,9 @@ const logout = () => {
                         </div>
 
                         <div class="mt-3 space-y-1">
+                            <ResponsiveNavLink :href="route('games.create')" :active="route().current('games.create')">
+                                My Games
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
                             </ResponsiveNavLink>
@@ -189,7 +192,7 @@ const logout = () => {
             <main>
                 <div class="">
                     <div class="mx-auto sm:px-6 lg:px-8">
-                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 text-black-900 sm:rounded-lg">
+                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 border-2 border-triviya-red text-black-900 sm:rounded-lg">
                             <slot />
                         </div>
                     </div>

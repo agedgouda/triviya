@@ -25,8 +25,6 @@ const props = defineProps({
             </div>
         </template>
 
-
-
         <template #question-input>
             <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Well Done!</div>
             <div class="mb-2 mt-2 ">

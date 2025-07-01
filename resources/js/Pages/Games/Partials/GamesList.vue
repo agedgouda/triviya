@@ -23,26 +23,31 @@ const fetchPage = (url) => {
 </script>
 
 <template>
-    <Table :hasHover="true">
-        <template #header>
-            <th class="px-4 py-2 text-left">Game Name</th>
-            <th class="px-4 py-2 text-center"># Invited</th>
-        </template>
-        <!-- Use v-slot to access the slot props -->
-        <template #default="{ rowClass }">
-            <tr
-                v-for="game in gamesList"
-                :key="game.id"
-                :class="rowClass"
-                @click="goToGame(game.id)"
-            >
-                <td class="px-4 py-2">{{ game.name }} {{ game.status }}</td>
-                <td class="px-4 py-2 text-center">{{ game.players_count }}</td>
-            </tr>
-        </template>
-    </Table>
+    <div class="grid grid-cols-3 text-triviya-darkPurple w-full max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="px-4 py-2 font-bold text-left">Your Games</div>
+    <div class="px-4 py-2 font-bold text-center"># Playing</div>
+    <div class="px-4 py-2 font-bold text-right">Status</div>
 
-        <div v-if="links.length > 3">
+    <!-- Rows -->
+    <template v-for="game in gamesList" :key="game.id">
+    <div
+        class="px-4 pt-2 col-span-3 cursor-pointer transition-all"
+        @click="goToGame(game.id)"
+    >
+        <div class="grid grid-cols-3 border-b-2 border-transparent hover:border-triviya-darkPurple leading-none mb-4">
+        <div class="text-left">{{ game.name }}</div>
+        <div class="text-center">{{ game.players_count }}</div>
+        <div class="text-right">{{ game.status }}</div>
+        </div>
+    </div>
+    </template>
+
+    </div>
+
+
+
+    <div v-if="links.length > 3">
         <!-- Pagination Links -->
         <div class="mt-4 flex justify-center">
             <nav class="inline-flex rounded-md shadow">
