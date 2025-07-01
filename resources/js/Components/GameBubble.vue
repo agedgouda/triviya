@@ -57,7 +57,7 @@ onMounted(() => {
                             ]"
             ><slot /></div>
             <div v-else-if="color==='white'">
-                <div class="bg-white shadow-md sm:rounded-lg p-6 mb-6 mx-auto max-w-xl rounded-xl relative">
+                <div class="bg-white shadow-md sm:rounded-lg p-6 mb-6 border-2 mx-auto max-w-xl rounded-xl border-triviya-red relative">
                     <slot />
                     <div v-if="subtract === 'left'" style="position: absolute; bottom:-20px;left:10px;width: 26px;height:20px;background-image: url(/images/subtract.png);background-repeat: no-repeat;background-size: contain;"></div>
                     <div v-if="subtract === 'right'" style="position: absolute; bottom:-20px;right:10px;transform:scaleX(-1); width: 26px;height:20px;background-image: url(/images/subtract.png);background-repeat: no-repeat;background-size: contain;"></div>

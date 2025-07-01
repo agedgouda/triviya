@@ -104,11 +104,11 @@ watch(questionNumber, (value, old) => {
         <template #question-buttons>
             <div v-if="questionNumber  === 0">
                 <PrimaryButton @click="questionNumber = 1" class="my-4">
-                    &nbsp;Go to first question
+                    &nbsp;Reveal First Answer
                 </PrimaryButton>
             </div>
             <div v-if="questionNumber > 0 && questionNumber <10">
-                <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber -= 1" :class="['my-2 mr-2', { 'opacity-50 cursor-not-allowed': questionNumber === 1 }]">
+                <PrimaryButton :disabled="!buttonsEnabled || questionNumber === 1" @click="questionNumber -= 1" :class="['my-2 mr-2', { 'opacity-50 cursor-not-allowed': questionNumber === 1 }]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>

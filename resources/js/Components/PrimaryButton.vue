@@ -27,9 +27,9 @@ const props = defineProps({
     :disabled="props.disabled || props.processing"
     v-bind="$attrs"
     :class="[
-      'inline-flex items-center px-4 py-2 bg-triviya-red border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-triviya-red focus:ring-offset-2 transition ease-in-out duration-150',
-      (props.disabled || props.processing)
-        ? 'opacity-25 cursor-not-allowed'
+    'inline-flex items-center px-4 py-2 bg-triviya-red border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-triviya-red focus:ring-offset-2 transition ease-in-out duration-150',
+    (props.disabled || props.processing)
+        ? 'opacity-25 cursor-not-allowed pointer-events-none'
         : 'hover:bg-triviya-redHover focus:bg-triviya-redHover active:bg-triviya-redPress'
     ]"
   >

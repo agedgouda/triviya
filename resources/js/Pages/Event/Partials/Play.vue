@@ -1,12 +1,8 @@
 <script setup>
-import { formatDate } from '@/utils';
 import { router } from '@inertiajs/vue3';
 import {ref, useTemplateRef, watch} from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
 import BubblesLayout from "@/Layouts/BubblesLayout.vue";
-import DangerButton from "@/Components/DangerButton.vue";
 import GameBubble from "@/Components/GameBubble.vue";
 import BubblesContainer from "@/Components/BubblesContainer.vue";
 import CountDown from "@/Components/CountDown.vue";
@@ -59,16 +55,6 @@ watch(showBubbles, (value, old) => {
         showCountdown.value = false;
     }
 });
-
-
- if(props.round > 1) {
-     questionNumber.value = 1;
-}
-// console.log("T", questionNumber.value, props.questions);
-
-const endGame = () => {
-    router.visit(route('games.endGame', { game: props.questions[0].game_id }));
-};
 
 
 const startCountdown = (onComplete) => {
@@ -138,8 +124,8 @@ const newQuestion = (increment) => {
     <BubblesLayout>
         <template #header>
             <div class="flex content-center">
-                <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-if="game.status !== 'bonus'">Round {{ round }}</div>
-                <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-else>Bonus Round</div>
+                <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-if="game.status !== 'bonus'">Round {{ round }} Questions</div>
+                <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-else>Bonus Round Questions</div>
             </div>
         </template>
 
@@ -161,10 +147,25 @@ const newQuestion = (increment) => {
                                     <li class="mb-2">The team with the most points wins!</li>
                                 </ul>
                             </div>
+                            <div v-if="round === 2">
+                                <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here Comes Round 2</div>
+                                New round, same teams, different questions. Grab a [ snack / drink / product plug here], get comfy, and let’s roll.
+                            </div>
+                            <div v-if="round === 3">
+                                <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here Comes Round 3 - The Grand Finale</div>
+                                It all comes down to this. The team with the highest score after this round takes the win!
+                            </div>
 
                         </div>
                         <div v-else>
-                            Bonus Round Text
+                            <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Same Rules Apply!</div>
+                            <ul class="list-disc mx-9 mb-2">
+                                <li class="mb-2">As host, you’ll read each question out loud</li>
+                                <li class="mb-2">Teams secretly guess who said what</li>
+                                <li class="mb-2">After 10 questions, TriviYa reveals the answers for you to share</li>
+                                <li class="mb-2">Teams keep track of how many they get right</li>
+                                <li class="mb-2">The team with the most points wins the Bonus Round</li>
+                            </ul>
                         </div>
                     </GameBubble>
                 </template>
@@ -198,7 +199,7 @@ const newQuestion = (increment) => {
                 </PrimaryButton>
             </div>
             <div v-else>
-                <PrimaryButton :disabled="!nextPrevActive" @click="newQuestion(-1)" class="my-2 mr-2 " :class="['my-2 mr-2', { 'opacity-50 cursor-not-allowed': questionNumber === 1 }]">
+                <PrimaryButton :disabled="!nextPrevActive || questionNumber === 1 " @click="newQuestion(-1)" class="my-2 mr-2 " :class="['my-2 mr-2', { 'opacity-50 cursor-not-allowed': questionNumber === 1 }]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>
