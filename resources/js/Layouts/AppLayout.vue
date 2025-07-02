@@ -192,7 +192,7 @@ const logout = () => {
             <main>
                 <div class="">
                     <div class="mx-auto sm:px-6 lg:px-8">
-                        <div class="bg-blue-50 overflow-hidden shadow-xl pt-6 px-3 border-2 border-triviya-red text-black-900 sm:rounded-lg">
+                        <div class="bg-triviya-lightBackground overflow-hidden shadow-xl pt-6 px-3 border-2 border-triviya-red text-black-900 sm:rounded-lg">
                             <slot />
                         </div>
                     </div>

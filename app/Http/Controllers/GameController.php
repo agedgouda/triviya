@@ -91,36 +91,46 @@ class GameController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Game $game)
-    {
+public function show(Game $game)
+{
+    $gameDetails = GameActions::fetchGameDetails($game, auth()->id());
 
-        $gameDetails =  GameActions::fetchGameDetails($game, auth()->id());
-
-        // Handle redirect if the user has questions sent
-        if (isset($gameDetails['redirect'])) {
-            return redirect($gameDetails['redirect']);
-        }
-
-        // Render the view with the fetched game details
-        return Inertia::render('Games/Index', [
-            'game' => $gameDetails['game'],
-            'players' => $gameDetails['players']->map(function ($player) {
-                return [
-                    'id' => $player->id,
-                    'first_name' => $player->first_name,
-                    'last_name' => $player->last_name,
-                    'name' => $player->name,
-                    'profile_photo_url' => $player->profile_photo_url,
-                    'email' => $player->email,
-                    'status' => $player->pivot->status,  // Ensures the 'status' is passed
-                    'message' => session('message'),
-                ];
-            }),
-            'host' => $gameDetails['host'],
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
+    // Handle redirect if the user has questions sent
+    if (isset($gameDetails['redirect'])) {
+        return redirect($gameDetails['redirect']);
     }
+
+    // Get current user's ID for comparison
+    $currentUserId = auth()->id();
+
+    return Inertia::render('Games/Index', [
+        'game' => $gameDetails['game'],
+        'players' => $gameDetails['players']->map(function ($player) use ($currentUserId) {
+            $isSelf = $player->id === $currentUserId;
+
+            $profilePhotoUrl = $player->profile_photo_path
+                ? $player->profile_photo_url
+                : 'https://ui-avatars.com/api/?name=' . urlencode($player->name) .
+                    '&color=' . ($isSelf ? 'FFFFFF' : 'A93390').
+                    '&background=' . ($isSelf ? 'A93390' : 'FFFFFF') ;
+
+            return [
+                'id' => $player->id,
+                'first_name' => $player->first_name,
+                'last_name' => $player->last_name,
+                'name' => $player->name,
+                'email' => $player->email,
+                'profile_photo_url' => $profilePhotoUrl,
+                'status' => $player->pivot->status ?? null,
+                'message' => session('message'),
+            ];
+        }),
+        'host' => $gameDetails['host'],
+        'routeName' => request()->route()->getName(),
+        'error' => session('error'),
+    ]);
+}
+
 
     /**
      * Show the form for editing the specified resource.

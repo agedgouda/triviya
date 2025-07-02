@@ -16,7 +16,7 @@ const isHovered = ref(false);
 const classes = computed(() => {
     return props.active
         ? 'inline-flex items-center px-1 pt-1 text-sm font-bold leading-5 text-white  focus:outline-none focus:border-triviyaRegular transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-bold leading-5 text-blue-50 hover:text-triviyaLight hover:border-triviyaLight focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
+        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-triviya-lightRed text-sm font-bold leading-5 text-blue-50 hover:text-triviya-red hover:border-triviya-red focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
 });
 </script>
 

@@ -27,6 +27,7 @@ export default {
                     700: '#a94ec7',
                 },
                 triviya: {
+                    lightBackground: '#E6E7F6',
                     red: '#FB38B0',
                     lightRed: '#FFB2E1',
                     darkRed: '#D30082',

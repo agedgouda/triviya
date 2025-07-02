@@ -28,8 +28,8 @@ class FetchGameDetails
 
         // Eager load relationships only when necessary
         $game = $game->load([
-            'players:id,first_name,last_name,email',
-            'host:id,first_name,last_name,email',
+            'players:id,first_name,last_name,email,profile_photo_path',
+            'host:id,first_name,last_name,email,profile_photo_path',
             'mode',
         ]);
 
