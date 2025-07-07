@@ -184,7 +184,7 @@ const copyToClipboard = (game   ) => {
             >
                 <td class="px-4 py-2 flex items-center space-x-2  ">
                     <img class="w-8 h-8 rounded-full object-cover border-triviyaRegular border-2" :src="player.profile_photo_url" alt="Player Photo" />
-                    <span>{{ player.name }}</span>
+                    <span>{{ player.name }}3</span>
                 </td>
 
                 <td class="px-4 py-2 text-center">

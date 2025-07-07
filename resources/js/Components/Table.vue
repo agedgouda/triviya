@@ -26,7 +26,7 @@ const props = defineProps({
 });
 
 const rowClass = computed(() => [
-    'border-b-8 mx-5 border-triviya-lightBackground bg-white',
+    'border-b-8 3 border-triviya-lightBackground bg-white',
     props.hasHover || props.hasPointer
         ? 'cursor-pointer hover:bg-triviyaLight hover:text-red-600'
         : '',

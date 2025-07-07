@@ -157,7 +157,7 @@ const clearPhotoFileInput = () => {
                 />
                 <InputError :message="form.errors.last_name" class="mt-2" />
             </div>
-            
+
             <!-- Email -->
             <div class="col-span-6 sm:col-span-4">
                 <InputLabel for="email" value="Email" />
@@ -200,7 +200,6 @@ const clearPhotoFileInput = () => {
                     mask="(###) ###-####"
                     type="tel"
                     class="mt-1 block w-full"
-                    required
                     autocomplete="tel"
                 />
                 <InputError :message="form.errors.phone_number" class="mt-2" />
