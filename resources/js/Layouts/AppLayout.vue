@@ -51,9 +51,6 @@ const logout = () => {
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('games')" :active="route().current('games*')" :hasSubnav="false">
                                     My Games
-                                    <template #subnav>
-                                        <Link :href="route('games.create')" class="hover:text-amber-700" >Add Game</Link>
-                                    </template>
                                 </NavLink>
                                 <NavLink :href="route('questions')" :active="route().current('questions*')" :hasSubnav="false" v-if="$page.props.auth.user.is_admin">
                                     Questions
@@ -110,7 +107,7 @@ const logout = () => {
 
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center sm:hidden">
-                            <button class="inline-flex items-center justify-center p-2 rounded-md text-amber-400 hover:text-gray-500 hover:bg-amber-100 focus:outline-none focus:bg-amber-100 focus:text-amber-500 transition duration-150 ease-in-out" @click="showingNavigationDropdown = ! showingNavigationDropdown">
+                            <button class="inline-flex items-center justify-center p-2 rounded-md text-triviya-red hover:text-gray-500 hover:bg-triviya-lightRed focus:outline-none focus:bg-lightRed focus:text-triviya-red transition duration-150 ease-in-out" @click="showingNavigationDropdown = ! showingNavigationDropdown">
                                 <svg
                                     class="size-6"
                                     stroke="currentColor"
@@ -147,17 +144,17 @@ const logout = () => {
                             </div>
 
                             <div>
-                                <div class="font-medium text-base text-triviyaRegular">
+                                <div class="font-medium text-base text-white">
                                     {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}
                                 </div>
-                                <div class="font-medium text-sm text-triviyaRegular">
+                                <div class="font-medium text-sm text-white">
                                     {{ $page.props.auth.user.email }}
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('games.create')" :active="route().current('games.create')">
+                            <ResponsiveNavLink :href="route('games')" :active="route().current('games*')">
                                 My Games
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
