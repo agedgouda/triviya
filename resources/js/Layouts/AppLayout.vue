@@ -160,6 +160,7 @@ const logout = () => {
                             <ResponsiveNavLink :href="route('games')" :active="route().current('games*')">
                                 My Games
                             </ResponsiveNavLink>
+
                             <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
                             </ResponsiveNavLink>
