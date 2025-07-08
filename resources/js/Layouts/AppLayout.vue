@@ -52,9 +52,6 @@ const logout = () => {
                                 <NavLink :href="route('games')" :active="route().current('games*')" :hasSubnav="false">
                                     My Games
                                 </NavLink>
-                                <NavLink :href="route('questions')" :active="route().current('questions*')" :hasSubnav="false" v-if="$page.props.auth.user.is_admin">
-                                    Questions
-                                </NavLink>
                             </div>
                         </div>
 
@@ -79,6 +76,12 @@ const logout = () => {
                                     </template>
 
                                     <template #content>
+                                        <DropdownLink :href="route('games')">
+                                            My Games
+                                        </DropdownLink>
+
+                                        <div class="border-t border-gray-200" />
+
                                         <!-- Account Management -->
                                         <div class="block px-4 py-2 text-xs text-triviyaRegular">
                                             Manage Account
