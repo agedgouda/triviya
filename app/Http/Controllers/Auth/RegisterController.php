@@ -54,7 +54,8 @@ class RegisterController extends Controller
 
         // Log the user in
         auth()->login($user);
-        $redirectTo = request()->input('redirect_to', route('games'));
+
+        $redirectTo = request()->input('redirect_to') ?: route('games');
 
         return redirect()->intended($redirectTo)->with('message', 'Congratulations! You have registered with TriviYa and your answers have been saved.');
     }
