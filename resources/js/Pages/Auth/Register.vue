@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import PasswordInput from '@/Components/PasswordInput.vue';
 
 const props = defineProps({
     game: {
@@ -143,24 +144,24 @@ const submit = () => {
 
             <div class="mt-3">
                 <InputLabel for="password" value="Password" />
-                <TextInput
+
+                <PasswordInput
                     id="password"
                     v-model="form.password"
-                    type="password"
                     class="block w-full"
                     required
                     autocomplete="new-password"
                 />
+
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-3">
                 <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
+                <PasswordInput
                     id="password_confirmation"
+                    name="password_confirmation"
                     v-model="form.password_confirmation"
-                    type="password"
-                    class="block w-full"
                     required
                     autocomplete="new-password"
                 />
