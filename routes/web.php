@@ -32,6 +32,15 @@ Route::get('/', function () {
     );
 });
 
+
+Route::get('/home', function () {
+    if (auth()->check()) {
+        return redirect()->route('games');
+    }
+
+    return Inertia::render('Home');
+});
+
 Route::get('/register/{game?}', [RegisterController::class, 'show'])->name('register.prepopulated');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.submit');
 Route::post('register/{game?}', [RegisterController::class, 'store'])->name('register.submit');
