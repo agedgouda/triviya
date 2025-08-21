@@ -1,0 +1,5 @@
+integrations:
+  forge:
+    triviya.kidevelopment.com:
+      server-id: 732227
+      site-id: 2734491

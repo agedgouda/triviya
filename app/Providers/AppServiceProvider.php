@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Services\GameActions;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('view-event-questions', function ($user, Game $game) {
             return $user->is_admin || $game->host()->where('user_id', $user->id)->exists();
         });
+
+        Inertia::share([
+            'stripeKey' => config('services.stripe.key'),
+        ]);
     }
 }

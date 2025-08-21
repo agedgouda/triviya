@@ -1,9 +1,13 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { computed, ref, onMounted } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { loadStripe } from '@stripe/stripe-js';
+import { usePage } from '@inertiajs/vue3'
+
 
 const props = defineProps({
     game: {
@@ -15,15 +19,21 @@ const props = defineProps({
     routeName: String,
 });
 
+const page = usePage();
+const cardElement = ref(null);
+const stripe = ref(null);
+const stripePublicKey = computed(() => page.props.stripeKey);
+
+
 const form = useForm({
     name: props.game?.name || '',
+    cc_name: page.props.auth.user.first_name+' '+page.props.auth.user.last_name,
     location: props.game?.location || '',
     date_time: props.game?.date_time || '',
     mode_id: props.game?.mode_id || 1,
 });
 
 const submit = async () => {
-    // Combine the date and time into a single field
     try {
         // Submit the form
         if(props.routeName == 'games.create') {
@@ -41,22 +51,81 @@ const submit = async () => {
     }
 
 };
+/*
+onMounted(async () => {
+  // Load Stripe.js asynchronously
+    stripe.value = await loadStripe(stripePublicKey.value);
+    const elements = stripe.value.elements();
+    cardElement.value = elements.create('card'); // Assign the created card element to the ref
+    cardElement.value.mount('#card-element');
+});
+*/
+onMounted(async () => {
+    // Load Stripe.js asynchronously
+    stripe.value = await loadStripe(stripePublicKey.value);
+    const elements = stripe.value.elements();
 
-const availableHours = [
-            { value: "09:00:00", label: "9:00 AM" },
-            { value: "10:00:00", label: "10:00 AM" },
-            { value: "11:00:00", label: "11:00 AM" },
-            { value: "12:00:00", label: "12:00 PM" },
-            { value: "13:00:00", label: "1:00 PM" },
-            { value: "14:00:00", label: "2:00 PM" },
-            { value: "15:00:00", label: "3:00 PM" },
-            { value: "16:00:00", label: "4:00 PM" },
-            { value: "17:00:00", label: "5:00 PM" },
-            { value: "18:00:00", label: "6:00 PM" },
-            { value: "19:00:00", label: "7:00 PM" },
-            { value: "20:00:00", label: "8:00 PM" },
-            { value: "21:00:00", label: "9:00 PM" },
-        ];
+    // --- Card Element ---
+    cardElement.value = elements.create('card');
+    cardElement.value.mount('#card-element');
+
+    // --- Payment Request (Apple Pay / Google Pay) ---
+    const paymentRequest = stripe.value.paymentRequest({
+        country: 'US',
+        currency: 'usd',
+        total: {
+            label: 'Game Payment',
+            amount: 2000, // in cents, update dynamically if needed
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+    });
+
+    const result = await paymentRequest.canMakePayment();
+    if (result) {
+        const prButton = elements.create('paymentRequestButton', {
+            paymentRequest,
+            style: {
+                paymentRequestButton: {
+                    type: 'default',
+                    theme: 'dark',
+                    height: '40px',
+                },
+            },
+        });
+        prButton.mount('#payment-request-button');
+
+        paymentRequest.on('paymentmethod', async ev => {
+            try {
+                // Confirm the payment on the server
+                const res = await fetch('/payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                    },
+                    body: JSON.stringify({ amount: 2000 }), // pass dynamic amount if needed
+                });
+                const { clientSecret } = await res.json();
+
+                const { error } = await stripe.value.confirmCardPayment(clientSecret, {
+                    payment_method: ev.paymentMethod.id,
+                });
+
+                if (error) {
+                    ev.complete('fail');
+                    alert(error.message);
+                } else {
+                    ev.complete('success');
+                    alert('✅ Payment successful!');
+                }
+            } catch (err) {
+                ev.complete('fail');
+                alert('❌ Payment failed: ' + err.message);
+            }
+        });
+    }
+});
 
 </script>
 
@@ -95,66 +164,49 @@ const availableHours = [
                     />
                     <InputError class="mt-2" :message="form.errors.location" />
                 </div>
-
+            </div>
+            <div class="flex flex-col sm:flex-row mt-3" v-if="routeName == 'games.create' ">
+                <div class="mr-0 md:mr-3">
+                    <InputLabel for="cc_name" value="Name" />
+                    <TextInput
+                        id="location"
+                        v-model="form.cc_name"
+                        type="text"
+                        class="mt-1 block w-full sm:w-96"
+                        required
+                    />
+                    <InputError class="mt-2" :message="form.errors.cc_name" />
+                </div>
+                <div class="flex-auto mr-2" >
+                    <InputLabel for="card-element" value="Card Number" />
+                    <div id="card-element"></div>
+                    <InputError class="mt-2" />
+                </div>
+                <div class="mt-3">
+                    <div id="payment-request-button"></div>
+                    <p class="text-sm text-gray-500 mt-2">Or pay with your card:</p>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row">
                 <div class="flex items-center mt-10">
                     <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         {{ routeName == 'games.create' ? 'Continue' : 'Update Game'  }}
                     </PrimaryButton>
                 </div>
-                <!--
-                <div class="mr-3">
-                    <InputLabel for="mode_id" value="Mode" />
-                    <select
-                        id="mode_id"
-                        v-model="form.mode_id"
-                        class="mt-1 block w-96 text-black"
-                        required
-                        >
-                        <option value="" disabled>Select a Mode</option>
-
-
-                        <option
-                            v-for="mode in modes"
-                            :key="mode.id"
-                            :value="mode.id"
-                        >
-                            {{ mode.name }}
-                        </option>
-                    </select>
-
-                    <InputError class="mt-2" :message="form.errors.mode_id" />
-                </div> -->
             </div>
-
-            <!-- <div class="flex mt-3 flex-col sm:flex-row">
-                <div class="mr-5">
-                    <InputLabel for="date" value="Game Date" />
-                    <TextInput
-                        id="date"
-                        v-model="form.date"
-                        type="date"
-                        class="mt-1 block w-full"
-                        required
-                    />
-                    <InputError class="mt-2" :message="form.errors.date" />
-                </div>
-
-                <div class="mr-5">
-                    <InputLabel for="time" value="Game Time" />
-                    <select
-                        id="time"
-                        v-model="form.time"
-                        class="mt-1 block w-36 text-black border rounded p-2"
-                        required
-                    >
-                        <option disabled value="">Select a time</option>
-                        <option v-for="hour in availableHours" :key="hour.value" :value="hour.value">
-                            {{ hour.label }}
-                        </option>
-                    </select>
-                    <InputError class="mt-2" :message="form.errors.time" />
-                </div>
-            </div> -->
         </form>
     </div>
 </template>
+
+<style>
+#card-element {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  padding: 12px;
+}
+
+</style>
