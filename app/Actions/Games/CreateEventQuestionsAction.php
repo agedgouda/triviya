@@ -5,100 +5,204 @@ namespace App\Actions\Games;
 use App\Models\Game;
 use App\Models\GameUserQuestions;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class CreateEventQuestionsAction
 {
-    public function handle(Game $game, $reset = null)
-{
-    // Handle reset cases first.
-    if ($reset === 1) {
-        // Reset all question_numbers to null for this game.
+    /**
+     * Main entry point
+     */
+    public function handle(Game $game, ?int $reset = null)
+    {
+        return DB::transaction(function () use ($game, $reset) {
+            if ($reset === 1) {
+                return $this->resetQuestions($game);
+            }
+
+            if ($reset === -1) {
+                return $this->bonusRound($game);
+            }
+
+            // Use existing event questions if available
+            $eventQuestions = $this->getExistingEventQuestions($game);
+
+            // If none exist, generate new ones
+            return $eventQuestions->isEmpty()
+                ? $this->generateEventQuestions($game)
+                : $eventQuestions;
+        });
+    }
+
+    /**
+     * Reset all question_numbers to null for this game.
+     */
+    protected function resetQuestions(Game $game)
+    {
         GameUserQuestions::where('game_id', $game->id)
             ->update(['question_number' => null]);
-        $eventQuestions = collect();
-    } elseif ($reset === -1) {
-        //Bonus round so update games table with proper status
-        $game->status = 'bonus';
-        $game->save();
-        // Mark all questions with a positive question_number as -1.
+
+        return collect();
+    }
+
+    /**
+     * Handle bonus round.
+     */
+    protected function bonusRound(Game $game)
+    {
+        $game->update(['status' => 'bonus']);
+
         GameUserQuestions::where('game_id', $game->id)
             ->where('question_number', '>', 0)
             ->update(['question_number' => -1]);
 
-        // Select 10 new questions (from those that are not assigned yet)
-        $selectedQuestions = GameUserQuestions::where('game_id', $game->id)
+        $selected = GameUserQuestions::where('game_id', $game->id)
             ->whereNull('question_number')
             ->inRandomOrder()
             ->limit(10)
             ->get();
 
-        $eventQuestions = $this->assignQuestionNumbers($selectedQuestions);
-    } else {
-        // Use existing questions that have been assigned a number (and not -1).
-        $eventQuestions = GameUserQuestions::where('game_id', $game->id)
+        return $this->assignQuestionNumbers($selected);
+    }
+
+    /**
+     * Get existing questions that are not reset (-1).
+     */
+    protected function getExistingEventQuestions(Game $game)
+    {
+        return GameUserQuestions::where('game_id', $game->id)
             ->whereNotNull('question_number')
             ->where('question_number', '<>', -1)
             ->orderBy('question_number')
             ->get();
     }
 
-    // If no event questions exist, then generate them.
-    if ($eventQuestions->isEmpty()) {
+    /**
+     * Generate new event questions if none exist.
+     */
+    protected function generateEventQuestions(Game $game)
+    {
         $players = $game->players()->withPivot('id')->get();
+
+        if ($players->isEmpty()) {
+            abort(400, 'No players in the game');
+        }
+
         $playerCount = $players->count();
-        if ($playerCount === 0) {
-            return response()->json(['error' => 'No players in the game'], 400);
-        }
+        $questionsPerPlayer = intdiv(30, $playerCount);
 
-        // Calculate how many questions per player (assuming a total of 30 needed)
-        $questionsToAddPerPlayer = intdiv(30, $playerCount);
-        $selectedQuestions = collect();
+        $selected = collect();
 
-        // For each player, retrieve a random set of unanswered questions.
+        // Pick questions per player
         foreach ($players as $player) {
-            $playerQuestions = GameUserQuestions::where('game_id', $game->id)
-                ->where('user_id', $player->id)
-                ->inRandomOrder()
-                ->limit($questionsToAddPerPlayer)
-                ->get();
-
-            $selectedQuestions = $selectedQuestions->merge($playerQuestions);
+            $selected = $selected->merge(
+                GameUserQuestions::where('game_id', $game->id)
+                    ->where('user_id', $player->id)
+                    ->inRandomOrder()
+                    ->limit($questionsPerPlayer)
+                    ->get()
+            );
         }
 
-        // If we have fewer than 30 questions, pull additional random questions.
-        if ($selectedQuestions->count() < 30) {
-            $questionsNeeded = 30 - $selectedQuestions->count();
-            $additionalQuestions = GameUserQuestions::where('game_id', $game->id)
-                ->whereNotIn('id', $selectedQuestions->pluck('id'))
+        // Fill remaining if less than 30
+        $remaining = 30 - $selected->count();
+        if ($remaining > 0) {
+            $additional = GameUserQuestions::where('game_id', $game->id)
+                ->whereNotIn('id', $selected->pluck('id'))
                 ->inRandomOrder()
-                ->limit($questionsNeeded)
+                ->limit($remaining)
                 ->get();
-            $selectedQuestions = $selectedQuestions->merge($additionalQuestions);
+
+            $selected = $selected->merge($additional);
         }
 
-        $eventQuestions = $this->assignQuestionNumbers($selectedQuestions);
+        return $this->assignQuestionNumbers($selected);
     }
 
-    return $eventQuestions;
+    /**
+     * Shuffle a collection of questions, assign sequential question numbers starting at 1.
+     */
+    protected function assignQuestionNumbers2($questions)
+    {
+        $grouped = $questions->groupBy('user_id')->map->values();
+        $userIds = $grouped->keys()->shuffle()->values();
+
+        $result = collect();
+
+        // Round-robin shuffle
+        while ($grouped->flatten()->isNotEmpty()) {
+            foreach ($userIds->shuffle() as $uid) {
+                if (!empty($grouped[$uid]) && $grouped[$uid]->isNotEmpty()) {
+                    $result->push($grouped[$uid]->shift());
+                }
+            }
+        }
+
+        // Assign sequential numbers in bulk
+        foreach ($result as $index => $question) {
+            $newNumber = $index + 1;
+            $question->updateQuietly(['question_number' => $newNumber]);
+            $question->question_number = $newNumber;
+        }
+
+        return $result;
+    }
+
+    protected function assignQuestionNumbers($questions)
+    {
+        $grouped = $questions->groupBy('user_id')->map(fn($qs) => $qs->values());
+        $userIds = $grouped->keys()->all();
+        $numPlayers = count($userIds);
+
+        $result = collect();
+        $lastUid = null;
+
+        // Loop until all questions are used
+        while ($grouped->flatten()->isNotEmpty()) {
+            $round = [];
+            $availableIds = $userIds;
+
+            while (!empty($availableIds)) {
+                // Filter candidates with questions remaining
+                $candidates = array_filter($availableIds, fn($id) => isset($grouped[$id]) && $grouped[$id]->isNotEmpty());
+
+                if (empty($candidates)) {
+                    break; // nothing left to pick in this round
+                }
+
+                // Prefer candidates that are not equal to lastUid
+                $safeCandidates = array_filter($candidates, fn($id) => $id !== $lastUid);
+
+                if (!empty($safeCandidates)) {
+                    $candidates = $safeCandidates;
+                }
+
+                // Pick one randomly
+                $uid = $candidates[array_rand($candidates)];
+                $round[] = $uid;
+                $lastUid = $uid;
+
+                // Remove from availableIds to avoid duplicates in same round
+                $availableIds = array_diff($availableIds, [$uid]);
+            }
+
+            // Take one question from each user in this round
+            foreach ($round as $uid) {
+                if (isset($grouped[$uid]) && $grouped[$uid]->isNotEmpty()) {
+                    $result->push($grouped[$uid]->shift());
+                }
+            }
+        }
+
+        // Assign sequential question numbers and update DB
+        foreach ($result as $index => $question) {
+            $number = $index + 1;
+            $question->updateQuietly(['question_number' => $number]);
+            $question->question_number = $number;
+        }
+
+        return $result;
+    }
+
+
+
+
 }
-
-/**
- * Shuffle a collection of questions, assign sequential question numbers starting at 1,
- * update each record in the database, and return the updated collection.
- */
-protected function assignQuestionNumbers($questions)
-{
-    $shuffled = $questions->shuffle();
-    $shuffled->each(function ($question, $index) {
-        $newNumber = $index + 1;
-        $question->update(['question_number' => $newNumber]);
-        // Also update the model instance to reflect the new number.
-        $question->question_number = $newNumber;
-    });
-
-    return $shuffled;
-}
-
-}
-
