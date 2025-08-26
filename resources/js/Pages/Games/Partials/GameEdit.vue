@@ -20,9 +20,9 @@ const props = defineProps({
 });
 
 const page = usePage();
-const cardElement = ref(null);
-const stripe = ref(null);
-const stripePublicKey = computed(() => page.props.stripeKey);
+//const cardElement = ref(null);
+//const stripe = ref(null);
+//const stripePublicKey = computed(() => page.props.stripeKey);
 
 
 const form = useForm({
@@ -59,7 +59,7 @@ onMounted(async () => {
     cardElement.value = elements.create('card'); // Assign the created card element to the ref
     cardElement.value.mount('#card-element');
 });
-*/
+
 onMounted(async () => {
     // Load Stripe.js asynchronously
     stripe.value = await loadStripe(stripePublicKey.value);
@@ -126,7 +126,7 @@ onMounted(async () => {
         });
     }
 });
-
+*/
 </script>
 
 
@@ -165,6 +165,7 @@ onMounted(async () => {
                     <InputError class="mt-2" :message="form.errors.location" />
                 </div>
             </div>
+            <!-- CC PROCESSING
             <div class="flex flex-col sm:flex-row mt-3" v-if="routeName == 'games.create' ">
                 <div class="mr-0 md:mr-3">
                     <InputLabel for="cc_name" value="Name" />
@@ -187,6 +188,8 @@ onMounted(async () => {
                     <p class="text-sm text-gray-500 mt-2">Or pay with your card:</p>
                 </div>
             </div>
+            END CC PROCESSING
+            -->
             <div class="flex flex-col sm:flex-row">
                 <div class="flex items-center mt-10">
                     <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
