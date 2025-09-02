@@ -150,54 +150,14 @@ const changeQuestion = (increment) => {
 
         <template #question-input>
             <div>
-                <template v-if="question.question_type === 'text'">
-                    <TextInput
-                        :id="'question-' + question.id"
-                        type="text"
-                        placeholder="Enter your answer"
-                        v-model="question.answer"
-                        required
-                        class="mt-1 block w-full"
-                    />
-                </template>
-
-                <template v-else-if="question.question_type === 'date'">
-                    <div class="flex">
-                        <!-- Month -->
-                        <select
-                            :id="'month-' + question.id"
-                            v-model="questionDateValues[question.id].selectedMonth"
-                            class="mt-1 block w-34 text-black"
-                        >
-                            <option v-for="(month, index) in months" :key="index" :value="index + 1">
-                                {{ month }}
-                            </option>
-                        </select>
-
-                        <!-- Day -->
-                        <select
-                            :id="'day-' + question.id"
-                            v-model="questionDateValues[question.id].selectedDay"
-                            class="mt-1 block w-24 text-black ml-2"
-                        >
-                            <option v-for="day in daysInMonth(question.id)" :key="day" :value="day">
-                                {{ day }}
-                            </option>
-                        </select>
-
-                        <!-- Year -->
-                        <select
-                            :id="'year-' + question.id"
-                            v-model="questionDateValues[question.id].selectedYear"
-                            class="mt-1 block w-32 text-black ml-2"
-                        >
-                            <option v-for="year in years" :key="year" :value="year">
-                                {{ year }}
-                            </option>
-                        </select>
-                    </div>
-                </template>
-
+                <TextInput
+                    :id="'question-' + question.id"
+                    type="text"
+                    placeholder="Enter your answer"
+                    v-model="question.answer"
+                    required
+                    class="mt-1 block w-full"
+                />
                 <InputError :message="form.errors" class="mt-2" />
             </div>
         </template>
