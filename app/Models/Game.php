@@ -61,4 +61,19 @@ class Game extends Model
         return $this->belongsToMany(Question::class);
     }
 
+    public function updateStatusIfReady(): void
+    {
+
+        if (
+            $this->players()->count() >= 4 &&
+            $this->players()->where('status', '!=', 'Quiz Complete')->doesntExist()
+        ) {
+            $this->status = 'start';
+            $this->save();
+        } elseif ($this->status === 'start') {
+            $this->status = 'new';
+            $this->save();
+        }
+    }
+
 }

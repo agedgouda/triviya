@@ -30,9 +30,17 @@ class StoreAnswerAction
             $status = $numberAnswered . ' ' . ($numberAnswered === 1 ? 'Question' : 'Questions') . ' Answered';
         }
 
-        $game->players()->updateExistingPivot($user->id, ['status' => $status]);
+        //$game->players()->updateExistingPivot($user->id, ['status' => $status]);
+        $gameUser = GameUser::where('game_id', $game->id)
+                    ->where('user_id', $user->id)
+                    ->firstOrFail();
+
+        // Update status and fire observer
+        $gameUser->status = $status;
+        $gameUser->save();
 
         //check to see if there are at least 4 players and they all have completed their quiz
+        /*
         if (
             $game->players()->count() >= 4 &&
             $game->players()->where('status', '!=', 'Quiz Complete')->doesntExist()
@@ -40,7 +48,7 @@ class StoreAnswerAction
             $game->status = 'start';
             $game->save();
         }
-
+        */
         return ['status' => 'success', 'message' => $status];
     }
 }

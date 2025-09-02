@@ -3,7 +3,9 @@
 namespace App\Providers;
 use App\Models\User;
 use App\Models\Game;
+use App\Models\GameUser;
 
+use App\Observers\GameUserObserver;
 use App\Services\GameActions;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -33,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         Inertia::share([
             'stripeKey' => config('services.stripe.key'),
         ]);
+
+        GameUser::observe(GameUserObserver::class);
     }
 }

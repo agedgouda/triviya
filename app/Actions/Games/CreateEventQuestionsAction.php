@@ -202,7 +202,4 @@ class CreateEventQuestionsAction
         return $result;
     }
 
-
-
-
 }

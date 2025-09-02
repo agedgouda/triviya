@@ -14,10 +14,11 @@ class RemoveUserAndResetQuestions
 
         $deleted = GameUser::where('game_id', $game->id)
             ->where('user_id', $user->id)
+            ->get()
+            ->each
             ->delete();
 
         if ($deleted) {
-
             $removeUserQuestions = GameUserQuestions::where('game_id', $game->id)
             ->where('user_id', $user->id)
             ->delete();
@@ -27,7 +28,6 @@ class RemoveUserAndResetQuestions
                 ->update(['question_number' => null]);
             return ['status' => 'success', 'message' => 'User removed'];
         }
-
         else {
 
             return ['status' => 'error', 'message' => 'No User Found'];

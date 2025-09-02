@@ -283,49 +283,6 @@ public function show(Game $game)
         ]);
     }
 
-    public function showQuestions(Game $game, Request $request)
-    {
-
-        // Load all necessary relationships for the game
-        $game->load(['host', 'questions','players']);
-
-        // Check if the current user is the host
-        $isHost = $game->host->id ;
-
-        if(auth()->id()) {
-            $user = User::find(auth()->id());
-            $isPlaying = $game->players()->where('user_id', $user->id)->exists();
-
-            //check if the user has been added to the game yet
-            if (!$isPlaying) {
-                //user has not been add to the game. see how much clearer using has makes the sentence?
-                //add the user to the game and then assign questions
-                $game->players()->attach($user->id, [
-                    'status' => 'Joined Game',
-                ]);
-                $questionResult = GameActions::AssignPlayerQuestionsAction($game, $user);
-                $game->load(['players']);
-            }
-
-            $gameUserQuestions = GameUserQuestions::where('user_id', auth()->id())
-            ->where('game_id', $game->id)
-            ->get();
-
-            return Inertia::render('Questionnaire/Show' , [
-                'game' => $game,
-                'questions' => $gameUserQuestions,
-                'user' => $user,
-                'routeName' => request()->route()->getName(),
-                'error' => session('error'),
-            ]);
-        } else {
-            return Inertia::render('Questionnaire/Show' , [
-                'game' => $game,
-                'routeName' => request()->route()->getName(),
-                'error' => session('error'),
-            ]);
-        }
-    }
 
 
     public function showThankYou(Game $game, User $user) {
@@ -356,6 +313,36 @@ public function show(Game $game)
         return redirect()->route('questions.showThankYou', [
             'game' => $game->id,
             'user' => $user->id,
+        ]);
+    }
+
+    public function showQuestions(Game $game, Request $request)
+    {
+        $game->load(['host', 'questions', 'players']);
+
+        $user = auth()->user();
+        $isHost = $game->host?->id;
+
+        if ($user) {
+            // Add the user to the game and assign questions
+            GameActions::AddUserToGameAction($game, $user);
+
+            // Get the current user's questions
+            $gameUserQuestions = GameActions::GetUserGameQuestionsAction($game, $user);
+
+            return Inertia::render('Questionnaire/Show', [
+                'game' => $game,
+                'questions' => $gameUserQuestions,
+                'user' => $user,
+                'routeName' => $request->route()->getName(),
+                'error' => session('error'),
+            ]);
+        }
+
+        return Inertia::render('Questionnaire/Show', [
+            'game' => $game,
+            'routeName' => $request->route()->getName(),
+            'error' => session('error'),
         ]);
     }
 
