@@ -384,6 +384,8 @@ public function show(Game $game)
     {
 
         $response = GameActions::CreateEventQuestionsAction($game,$reset);
+        $game->status = 'in progress';
+        $game->update();
 
         return Inertia::render('Event/Show', [
             'questions' => $response,
@@ -441,7 +443,7 @@ public function show(Game $game)
 
         $response = GameActions::RemoveUserAndResetQuestions($game, $user);
 
-        return ['status' => $response["status"], 'message' => $response["message"] ];
+        return ['status' => $response["status"], 'message' => $response["message"] , 'game_status' => $response["game_status"] ];
 
     }
 
