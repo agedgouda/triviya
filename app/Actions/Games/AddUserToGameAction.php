@@ -5,6 +5,7 @@ namespace App\Actions\Games;
 use App\Models\Game;
 use App\Models\GameUser;
 use App\Models\User;
+use App\Facades\GameActions;
 
 class AddUserToGameAction
 {
@@ -23,7 +24,7 @@ class AddUserToGameAction
             ]);
 
             // Assign questions to the player
-            \App\Actions\AssignPlayerQuestionsAction::execute($game, $user);
+            GameActions::AssignPlayerQuestionsAction($game, $user);
 
             // Reload players relationship
             $game->load('players');
