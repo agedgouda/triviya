@@ -41,6 +41,10 @@ const register = () => {
           <span class="font-bold mt-2 text-center text-triviya-red text-xl">3</span>
           Invite players — share your unique link via email or group chat – whatever works best!
         </div>
+        <div>
+          <span class="font-bold mt-2 text-center text-triviya-red text-xl">4</span>
+          Take the quiz - you’re not just the host, you’re also a player!
+        </div>
 
         <div class="mb-2 text-center mb-4">
           <PrimaryButton type="button" class="mt-2" @click="login">

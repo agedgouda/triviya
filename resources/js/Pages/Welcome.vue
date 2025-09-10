@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 defineProps({
     canLogin: {
@@ -64,18 +65,38 @@ function handleImageError() {
                         </template>
                         -->
                     </nav>
-                </header>
-        <div class="relative min-h-screen flex flex-col items-center justify-center ">
-            <main class="h-96">
-                <div class="justify-center items-center">
-                    <ApplicationLogo />
-                </div>
-                <div class="text-center text-3xl pt-10 font-bold text-white px-4">The party game where you become the trivia!</div>
-            </main>
-
-            <footer class="py-16 text-center text-sm text-white dark:text-white/70">
-                TriviYa Copyright ©{{ new Date().getFullYear() }}
-            </footer>
+        </header>
+<div class="relative min-h-screen flex flex-col items-center">
+    <main>
+        <div class="justify-center items-center">
+            <ApplicationLogo />
         </div>
+        <div class="bg-white shadow-md sm:rounded-lg p-6 mb-10 mx-auto max-w-xl rounded-xl text-black text-center">
+            <div class="mb-5 text-2xl font-bold">
+                Early Access Bonus!
+            </div>
+
+            <div class="mb-5">
+                During Early Access all games are <span class="font-bold">FREE.</span><br/>
+                Later, you'll choose a Game Pack -<br/>
+                but for now, enjoy unlimited play!<br/>
+            </div>
+
+            <div class="mb-2 text-center mb-4">
+                <Link href="/home">
+                <PrimaryButton type="button" class="mt-2">
+                    <span>Get Started</span>
+                </PrimaryButton>
+                </Link>
+            </div>
+        </div>
+    </main>
+
+    <!-- Move footer outside of main / white card -->
+    <footer class="py-16 text-center text-sm text-white dark:text-white/70">
+        TriviYa Copyright ©{{ new Date().getFullYear() }}
+    </footer>
+</div>
+
     </div>
 </template>
