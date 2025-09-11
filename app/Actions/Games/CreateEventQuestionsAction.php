@@ -114,6 +114,11 @@ class CreateEventQuestionsAction
             $selected = $selected->merge($additional);
         }
 
+        $game->status = 'in progress';
+        $game->update();
+
+
+
         return $this->assignQuestionNumbers($selected);
     }
 

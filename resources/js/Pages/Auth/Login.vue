@@ -11,7 +11,10 @@ import TextInput from '@/Components/TextInput.vue';
 import PasswordInput from '@/Components/PasswordInput.vue';
 
 const props = defineProps({
-    canResetPassword: Boolean,
+    canResetPassword:  {
+        Boolean,
+        default: 1
+    },
     status: String,
     flash: Object,
     game: {

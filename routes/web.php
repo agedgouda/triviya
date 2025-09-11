@@ -6,6 +6,8 @@ use Laravel\Jetstream\Http\Controllers\Inertia\PrivacyPolicyController;
 use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\GameEventController;
+use App\Http\Controllers\GameInviteController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
@@ -70,10 +72,6 @@ Route::middleware([
     Route::prefix('games')->group(function () {
         Route::get('/', [GameController::class, 'index'])->name('games');
         Route::get('/{game}/answers', [GameController::class, 'showAnswers'])->name('games.showAnswers');
-        Route::get('/{game}/start/{reset?}', [GameController::class, 'startGame'])->name('games.startGame');
-        Route::get('/{game}/round/{round}', [GameController::class, 'startRound'])->name('games.startRound');
-        Route::get('/{game}/end', [GameController::class, 'endGame'])->name('games.endGame');
-        Route::get('/{game}/end/{round}', [GameController::class, 'endRound'])->name('games.endRound');
         Route::get('/create', [GameController::class, 'create'])->name('games.create');
         Route::get('/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
         Route::get('/{game}/{user}/questions', [GameController::class, 'showQuestions'])->name('games.showQuestions');
@@ -89,8 +87,17 @@ Route::middleware([
         Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
-        //Route::get('/showquestions/{game}', [GameController::class, 'showGameQuestions'])->name('games.showEventQuestions');
     });
+
+    // Events
+    Route::prefix('games/{game}/event')->group(function () {
+        Route::get('/start/{reset?}', [GameEventController::class, 'startGame'])->name('games.startGame');
+        Route::get('/round/{round}', [GameEventController::class, 'startRound'])->name('games.startRound');
+        Route::get('/end', [GameEventController::class, 'endGame'])->name('games.endGame');
+        Route::get('/end/{round}', [GameEventController::class, 'endRound'])->name('games.endRound');
+    });
+
+
 
 });
 

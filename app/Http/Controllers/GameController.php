@@ -179,21 +179,7 @@ public function show(Game $game)
         $gameData = $game->toArray();
         unset($gameData['id'], $gameData['created_at'], $gameData['updated_at'],$gameData['status']);
         $gameData['name'] .= ' - ' . Carbon::now()->format('m/d/Y');
-        $gameData['date_time'] = Carbon::now($clientTimeZone);
         $response = GameActions::StoreGameAction($gameData);
-        if ($response['status'] !== 'success') {
-            return redirect()->back()->withErrors(['error' => 'Failed to create game ']);
-        }
-
-        foreach($game->players as $player)
-        {
-
-            $emailStatus = GameActions::createUserAndInviteAction($response["game"],$player->toArray());
-            //dd($emailStatus['status'] );
-            if ($emailStatus['status'] !== 'success') {
-                return redirect()->back()->withErrors(['error' => 'Failed to add user ' . $player->name]);
-            }
-        }
         return Redirect::route('games.show', $response["game"]->id)->with('flash', [
             'message' => 'Game created successfully!',
         ]);
@@ -380,65 +366,6 @@ public function show(Game $game)
 
     }
 
-    public function startGame(Game $game, Int $reset = null)
-    {
-
-        $response = GameActions::CreateEventQuestionsAction($game,$reset);
-        $game->status = 'in progress';
-        $game->update();
-
-        return Inertia::render('Event/Show', [
-            'questions' => $response,
-            'game' => $game,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-    }
-
-    public function startRound(Game $game, Int $round)
-    {
-        $lastQuestion = $round*10;
-        $firstQuestion = $lastQuestion-9;
-        $questions = GameUserQuestions::where('game_id',$game->id)
-        ->where('question_number','>=',$firstQuestion)
-        ->where('question_number','<=',$lastQuestion)
-        ->orderBy('question_number')
-        ->get();
-
-        return Inertia::render('Event/Show', [
-            'game' => $game,
-            'questions' => $questions,
-            'round' => $round,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-    }
-
-    public function endRound(Game $game, Int $round)
-    {
-        $response = GameActions::CreateEventAnswerListAction($game,$round);
-        return Inertia::render('Event/Show', [
-            'answers' => $response,
-            'round' => $round,
-            'game' => $game,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-    }
-
-    public function endGame(Game $game)
-    {
-        //$response = GameActions::CreateEventAnswerListAction($game);
-        $game->status = $game->status == 'start' ? 'done-bonus' : 'done';
-        $game->save();
-
-        return Inertia::render('Event/Show', [
-            'game' => $game->load(['host']),
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-    }
-
     public function removePlayer(Game $game, User $user) {
 
         $response = GameActions::RemoveUserAndResetQuestions($game, $user);
@@ -451,24 +378,6 @@ public function show(Game $game)
     {
         $response = GameActions::createGameQuestions($game);
         return ['status' => 'success', 'message' => $response ];
-    }
-
-    public function showGameQuestions(Game $game) {
-
-        if (! Gate::allows('view-event-questions', $game)) {
-            abort(403);
-        }
-
-
-        $questions = DB::table('game_user_question')->where('game_id', $game->id)->get();
-        if(!count($questions)){
-            $questions = GameActions::createGameQuestions($game);
-        }
-
-        return Inertia::render('Event/Show', [
-            'questions' => $questions->shuffle(),
-        ]);
-
     }
 
 }
