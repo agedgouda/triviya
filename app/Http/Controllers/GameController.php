@@ -7,20 +7,13 @@ use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\User;
 use App\Models\Mode;
-use App\Models\Question;
-use App\Models\Answer;
-use App\Models\GameUser;
-use App\Models\GameUserQuestions;
 use App\Http\Requests\GameRequest;
-use App\Http\Requests\InvitePlayerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Mail\InvitePlayer;
 use App\Actions\Games;
 use Carbon\Carbon;
 
@@ -83,45 +76,19 @@ class GameController extends Controller
     /**
      * Display the specified resource.
      */
-public function show(Game $game)
-{
-    $gameDetails = GameActions::fetchGameDetails($game, auth()->id());
+    public function show(Game $game)
+    {
+        $userId = auth()->id();
+        $gameDetails = app(\App\Actions\Games\FetchGameDetails::class)->handle($game, $userId);
 
-    // Handle redirect if the user has questions sent
-    if (isset($gameDetails['redirect'])) {
-        return redirect($gameDetails['redirect']);
+        return Inertia::render('Games/Index', [
+            'game' => $gameDetails['game'],
+            'players' => $gameDetails['players'],
+            'host' => $gameDetails['host'],
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);
     }
-
-    // Get current user's ID for comparison
-    $currentUserId = auth()->id();
-
-    return Inertia::render('Games/Index', [
-        'game' => $gameDetails['game'],
-        'players' => $gameDetails['players']->map(function ($player) use ($currentUserId) {
-            $isSelf = $player->id === $currentUserId;
-
-            $profilePhotoUrl = $player->profile_photo_path
-                ? $player->profile_photo_url
-                : 'https://ui-avatars.com/api/?name=' . urlencode($player->name) .
-                    '&color=' . ($isSelf ? 'FFFFFF' : 'A93390').
-                    '&background=' . ($isSelf ? 'A93390' : 'FFFFFF') ;
-
-            return [
-                'id' => $player->id,
-                'first_name' => $player->first_name,
-                'last_name' => $player->last_name,
-                'name' => $player->name,
-                'email' => $player->email,
-                'profile_photo_url' => $profilePhotoUrl,
-                'status' => $player->pivot->status ?? null,
-                'message' => session('message'),
-            ];
-        }),
-        'host' => $gameDetails['host'],
-        'routeName' => request()->route()->getName(),
-        'error' => session('error'),
-    ]);
-}
 
 
     /**
@@ -179,54 +146,6 @@ public function show(Game $game)
 
 
 
-    public function showQuestionLanding(Game $game, Request $request)
-    {
-        $game->load(['host', 'questions','players']);
-        // Check if the current user is the host
-        $isHost = $game->host->id ;
-
-        if(auth()->id()) {
-            $user = User::find(auth()->id());
-            $gameUser = GameUser::where('user_id', auth()->id())
-            ->where('game_id', $game->id)
-            ->exists();
-
-            if($gameUser) {
-                $gameUserQuestions = GameUserQuestions::where('user_id', auth()->id())
-                ->where('game_id', $game->id)
-                ->get();
-
-                return Inertia::render('Questionnaire/Show' , [
-                    'game' => $game,
-                    'questions' => $gameUserQuestions,
-                    'user' => $user,
-                    'routeName' => 'questions.showQuestions',
-                    'error' => session('error'),
-                ]);
-            }
-
-        } else {
-            $user = null;
-        }
-
-        return Inertia::render('Questionnaire/Show' , [
-            'game' => $game,
-            'user' => $user,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-    }
-
-
-
-    public function showThankYou(Game $game, User $user) {
-        return Inertia::render('Questionnaire/Show' , [
-            'game' => $game->load(['host']),
-            'user' => $user,
-            'routeName' => request()->route()->getName(),
-        ]);
-    }
-
 
     public function storeAnswers(Request $request, Game $game, User $user)
     {
@@ -248,70 +167,6 @@ public function show(Game $game)
             'game' => $game->id,
             'user' => $user->id,
         ]);
-    }
-
-    public function showQuestions(Game $game, Request $request)
-    {
-        $game->load(['host', 'questions', 'players']);
-
-        $user = auth()->user();
-        $isHost = $game->host?->id;
-
-        if ($user) {
-            // Add the user to the game and assign questions
-            GameActions::AddUserToGameAction($game, $user);
-
-            // Get the current user's questions
-            $gameUserQuestions = GameActions::GetUserGameQuestionsAction($game, $user);
-
-            return Inertia::render('Questionnaire/Show', [
-                'game' => $game,
-                'questions' => $gameUserQuestions,
-                'user' => $user,
-                'routeName' => $request->route()->getName(),
-                'error' => session('error'),
-            ]);
-        }
-
-        return Inertia::render('Questionnaire/Show', [
-            'game' => $game,
-            'routeName' => $request->route()->getName(),
-            'error' => session('error'),
-        ]);
-    }
-
-
-
-    public function storeAnswer(Request $request, Game $game, User $user)
-    {
-        $response = GameActions::storeAnswerAction($game, $user, $request->question);
-
-        return $response;
-    }
-
-    public function showAnswers(Game $game)
-    {
-        if (auth()->id() !== $game->host->id) {
-            session()->flash('message', 'Cheaters never prosper!');
-            return redirect()->back();
-        }
-
-        $questions = Question::whereHas('games', function ($query) use ($game) {
-            $query->where('games.id', $game->id);
-        })
-        ->with(['answers' => function ($query) use ($game) {
-            $query->whereHas('gameUser', function ($subQuery) use ($game) {
-                $subQuery->where('game_id', $game->id);
-            })->with('gameUser.user');
-        }])
-        ->get();
-
-        return Inertia::render('Games/Index', [
-            'questions' => $questions,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-
     }
 
     public function removePlayer(Game $game, User $user) {

@@ -3,41 +3,53 @@
 namespace App\Actions\Games;
 
 use App\Models\Game;
-use App\Models\GameUser;
 
 class FetchGameDetails
 {
     public function handle(Game $game, string $userId): array
     {
-        // Check if the user has questions sent
-        $hasQuestions = GameUser::where('game_id', $game->id)
-            ->where('user_id', $userId)
-            ->where('status', 'like', '%invitation%')
-            ->where('is_host',0)
-            ->exists();
-
-
-        if ($hasQuestions) {
-            return [
-                'redirect' => route('games.showQuestions', [
-                    'game' => $game->id,
-                    'user' => $userId,
-                ]),
-            ];
-        }
-
-        // Eager load relationships only when necessary
-        $game = $game->load([
+        $game->load([
             'players:id,first_name,last_name,email,profile_photo_path',
             'host:id,first_name,last_name,email,profile_photo_path',
             'mode',
         ]);
 
+        $players = $game->players->map(function ($player) use ($userId) {
+            return $this->transformUser($player, $userId);
+        });
+
+        $host = $this->transformUser($game->host, $userId);
+
         return [
             'game' => $game,
-            'players' => $game->players,
+            'players' => $players,
             'invitees' => $game->invitees,
-            'host' => $game->host,
+            'host' => $host,
+        ];
+    }
+
+    /**
+     * Transform a user model into a JSON-friendly array
+     */
+    private function transformUser($user, string $currentUserId): array
+    {
+        $isSelf = $user->id === $currentUserId;
+
+        $profilePhotoUrl = $user->profile_photo_path
+            ? $user->profile_photo_url
+            : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) .
+                '&color=' . ($isSelf ? 'FFFFFF' : 'A93390').
+                '&background=' . ($isSelf ? 'A93390' : 'FFFFFF');
+
+        return [
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'name' => $user->name,
+            'email' => $user->email,
+            'profile_photo_url' => $profilePhotoUrl,
+            'status' => $user->pivot->status ?? null,
+            'message' => session('message'),
         ];
     }
 }

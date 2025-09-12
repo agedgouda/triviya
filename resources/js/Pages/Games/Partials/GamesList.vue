@@ -28,7 +28,8 @@ const fetchPage = (url) => {
         <template #header>
                 <th class="px-4 py-2 text-left">Your Games</th>
                 <th class="px-4 py-2 text-center"># Playing</th>
-                <th class="px-4 py-2 text-center">Status</th>
+                <th class="px-4 py-2 text-center">Your Status</th>
+                <th class="px-4 py-2 text-center">Game Status</th>
         </template>
 
             <template #default="{ rowClass }">
@@ -41,7 +42,8 @@ const fetchPage = (url) => {
             >
                 <td class="text-left">{{ game.name }}</td>
                 <td class="text-center">{{ game.players_count }}</td>
-                <td class="text-right">{{ game.status }}</td>
+                <td class="text-center">{{ game.current_user_status }}</td>
+                <td class="text-center">{{ game.status }}</td>
 
             </tr>
         </template>

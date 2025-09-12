@@ -212,7 +212,7 @@ const copyToClipboard = (game   ) => {
                             Start Quiz
                         </span>
                         <span v-else-if="player.status !== 'Quiz Complete'">
-                            Finnish Quiz
+                            Finish Quiz
                         </span>
                         <span v-else>
                             Review Quiz

@@ -15,14 +15,11 @@ use App\Http\Requests\GameRequest;
 use App\Http\Requests\InvitePlayerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Mail\InvitePlayer;
 use App\Actions\Games;
-use Carbon\Carbon;
 
 
 class GameEventController extends Controller

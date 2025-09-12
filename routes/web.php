@@ -8,6 +8,7 @@ use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameEventController;
 use App\Http\Controllers\GameInviteController;
+use App\Http\Controllers\GameQuestionsController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
@@ -46,19 +47,9 @@ Route::get('/home', function () {
 Route::get('/register/{game?}', [RegisterController::class, 'show'])->name('register.prepopulated');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.submit');
 Route::post('register/{game?}', [RegisterController::class, 'store'])->name('register.submit');
-
 Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prepopulated');
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
 
-
-//Show questions form without logging in, only works if no questions have been answered
-Route::prefix('questions')->group(function () {
-    Route::get('/{game}/show', [GameController::class, 'showQuestions'])->name('questions.showQuestions');
-    Route::get('/{game}', [GameController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
-    Route::get('/{game}/{user}/complete', [GameController::class, 'showThankYou'])->name('questions.showThankYou');
-    Route::post('/answer/{game}/{user}', [GameController::class, 'storeAnswer'])->name('questions.playerAnswer');
-    Route::post('/answers/{game}/{user}', [GameController::class, 'storeAnswers'])->name('questions.playerAnswers');
-});
 
 Route::middleware([
     'auth:sanctum',
@@ -80,10 +71,20 @@ Route::middleware([
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
         Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
-        Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
+        //Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
     });
+
+
+Route::prefix('questions/{game}')->group(function () {
+    Route::get('/show', [GameQuestionsController::class, 'showQuestions'])->name('questions.showQuestions');
+    Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
+    Route::get('/{user}/complete', [GameQuestionsController::class, 'showThankYou'])->name('questions.showThankYou');
+    Route::post('/answer/{user}', [GameQuestionsController::class, 'storeAnswer'])->name('questions.playerAnswer');
+    Route::post('/answers/{user}', [GameQuestionsController::class, 'storeAnswers'])->name('questions.playerAnswers');
+});
+
 
     // Events
     Route::prefix('games/{game}/event')->group(function () {
