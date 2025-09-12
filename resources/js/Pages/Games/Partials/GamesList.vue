@@ -23,29 +23,29 @@ const fetchPage = (url) => {
 </script>
 
 <template>
-    <div class="grid grid-cols-3 text-triviya-darkPurple w-full max-w-3xl mx-auto">
-    <!-- Header -->
-    <div class="px-4 py-2 font-bold text-left">Your Games</div>
-    <div class="px-4 py-2 font-bold text-center"># Playing</div>
-    <div class="px-4 py-2 font-bold text-right">Status</div>
 
-    <!-- Rows -->
-    <template v-for="game in gamesList" :key="game.id">
-    <div
-        class="px-4 pt-2 col-span-3 cursor-pointer transition-all"
-        @click="goToGame(game.id)"
-    >
-        <div class="grid grid-cols-3 border-b-2 border-transparent hover:border-triviya-darkPurple leading-none mb-4">
-        <div class="text-left">{{ game.name }}</div>
-        <div class="text-center">{{ game.players_count }}</div>
-        <div class="text-right">{{ game.status }}</div>
-        </div>
-    </div>
-    </template>
+    <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true">
+        <template #header>
+                <th class="px-4 py-2 text-left">Your Games</th>
+                <th class="px-4 py-2 text-center"># Playing</th>
+                <th class="px-4 py-2 text-center">Status</th>
+        </template>
 
-    </div>
+            <template #default="{ rowClass }">
+            <tr v-for="game in gamesList"
+                :key="game.id"
+                :class="[
+                    rowClass
+                ]"
+                @click="goToGame(game.id)"
+            >
+                <td class="text-left">{{ game.name }}</td>
+                <td class="text-center">{{ game.players_count }}</td>
+                <td class="text-right">{{ game.status }}</td>
 
-
+            </tr>
+        </template>
+    </Table>
 
     <div v-if="links.length > 3">
         <!-- Pagination Links -->
