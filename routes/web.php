@@ -80,10 +80,6 @@ Route::middleware([
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
         Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
-        Route::post('/{game}/send-invites', [GameController::class, 'sendInvitations'])->name('games.sendInvites');
-        Route::post('/{game}/resend-invite/{user}', [GameController::class, 'resendInvite'])
-            ->name('games.resend-invite');
-        Route::post('/{game}/invite', [GameController::class, 'createUserAndInvite'])->name('games.invite');
         Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
@@ -96,6 +92,19 @@ Route::middleware([
         Route::get('/end', [GameEventController::class, 'endGame'])->name('games.endGame');
         Route::get('/end/{round}', [GameEventController::class, 'endRound'])->name('games.endRound');
     });
+
+    /*******************************************
+    *
+    *   DEPRECATED
+    *
+    ********************************************/
+    // Invitations
+    // Route::prefix('games/{game}/event')->group(function () {
+    //     Route::post('/{game}/send-invites', [GameInviteController::class, 'sendInvitations'])->name('games.sendInvites');
+    //     Route::post('/{game}/resend-invite/{user}', [GameInviteController::class, 'resendInvite'])
+    //         ->name('games.resend-invite');
+    //     Route::post('/{game}/invite', [GameInviteController::class, 'createUserAndInvite'])->name('games.invite');
+    // });
 
 
 
