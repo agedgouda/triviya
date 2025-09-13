@@ -75,9 +75,12 @@ const createGame = () => {
                     {{ $page.props.flash.message }}
                 </div>
                 <template v-if="routeName === 'games'">
+                    <div v-if="games.data.length" class="mt-5 pb-3">
+                        <GamesList :games="games " />
+                    </div>
                     <div class="mb-5" v-if="games.data.length === 0">
                         <div class="mb-1 font-bold">Let’s Do This!</div>
-                        <div class="mb-2">Click New Game to set it up and invite friends</div>
+                        <div class="mb-2">Click new game to get started</div>
                         <div class="flex justify-center">
                             <PrimaryButton @click="createGame">
                                 New Game

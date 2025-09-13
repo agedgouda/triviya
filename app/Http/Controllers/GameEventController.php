@@ -72,7 +72,7 @@ class GameEventController extends Controller
     public function endGame(Game $game)
     {
 
-        $game->status = $game->status !== 'done-bonus' ? 'done-bonus' : 'done';
+        $game->status = $game->status === 'in progress' ? 'done-bonus' : 'done';
         $game->save();
 
         return Inertia::render('Event/Show', [

@@ -78,8 +78,8 @@ function handleImageError() {
 
             <div class="mb-5">
                 For a limited time, play TriviYa for <span class="font-bold">FREE.</span><br/>
-                Later, you'll choose a Game Pack -<br/>
-                but for now, enjoy unlimited play!<br/>
+<!--                Later, you'll choose a Game Pack -<br/>
+                but for now, enjoy unlimited play!<br/>-->
             </div>
 
             <div class="mb-2 text-center mb-4">

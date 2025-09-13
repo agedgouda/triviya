@@ -40,6 +40,9 @@ class DuplicateGameAction
             $newGame->players()->attach($otherPlayers);
         }
 
+        $game->status = 'done';
+        $game->update();
+
         return $newGame;
     }
 }

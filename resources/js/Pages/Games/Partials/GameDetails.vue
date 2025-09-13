@@ -14,13 +14,12 @@ const props = defineProps({
     players: Array,
 });
 
-const processing = ref(false);
+const flashMessage = ref('');
+const flashVisible = ref(false);
 
 const currentDomain = window.location.origin;
-
 const page = usePage();
 const host = page.props.host;
-const hostName = host.first_name+' '+host.last_name;
 
 const questionsAnsweredCount = computed(() =>
   props.players.filter(player => (player.status === 'Questions Answered' || player.status === 'Quiz Complete')).length
@@ -86,28 +85,49 @@ const startGame = () => {
     router.visit(route('games.startGame', { game: props.game.id }));
 };
 
-const copyToClipboard = (game   ) => {
-    const invitationUrl = currentDomain+'/questions/'+game.id;
+const copyToClipboard = (game) => {
+    const invitationUrl = `${currentDomain}/questions/${game.id}`;
+
+    const showFlash = (message) => {
+        flashMessage.value = message;
+        flashVisible.value = true;
+        setTimeout(() => {
+            flashVisible.value = false;
+        }, 3000); // visible for 3 seconds
+    };
+
     if (navigator.clipboard && window.isSecureContext) {
-        // Preferred method (only works in secure contexts)
         navigator.clipboard.writeText(invitationUrl)
-        .then(() => alert('Copied invite link to clipboard; you have to share this link with other players to invite them to the game.'))
-        .catch(err => console.error('Failed to copy:', err));
+            .then(() => showFlash('Copied invite link to clipboard! Share it with all players.'))
+            .catch(err => console.error('Failed to copy:', err));
     } else {
-        // Fallback for insecure contexts
+        // fallback
         const textArea = document.createElement('textarea');
         textArea.value = invitationUrl;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        alert('Invitation link copied to clipboard');
+        showFlash('Copied invite link to clipboard! Share it with other players.');
     }
 };
+
 
 </script>
 
 <template>
+    <transition
+        enter-active-class="transition-all duration-500 ease-out"
+        enter-from-class="opacity-0 -translate-y-12"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition-all duration-500 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-12"
+    >
+        <div v-if="flashVisible" class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-triviya-red text-white px-4 py-2 rounded-b shadow-lg z-50">
+            {{ flashMessage }}
+        </div>
+    </transition>
     <div class="flex justify-between items-start gap-4">
         <!-- Left column with game info and edit button -->
         <div class="flex gap-4">
