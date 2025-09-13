@@ -50,6 +50,10 @@ Route::post('register/{game?}', [RegisterController::class, 'store'])->name('reg
 Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prepopulated');
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
 
+Route::prefix('questions/{game}')->group(function () {
+    Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
+});
+
 
 Route::middleware([
     'auth:sanctum',
@@ -59,6 +63,16 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return redirect()->route('games');
     })->name('dashboard');
+
+    Route::prefix('questions/{game}')->group(function () {
+        Route::get('/show', [GameQuestionsController::class, 'showQuestions'])->name('questions.showQuestions');
+        Route::get('/{user}/complete', [GameQuestionsController::class, 'showThankYou'])->name('questions.showThankYou');
+        Route::post('/answer/{user}', [GameQuestionsController::class, 'storeAnswer'])->name('questions.playerAnswer');
+        Route::post('/answers/{user}', [GameQuestionsController::class, 'storeAnswers'])->name('questions.playerAnswers');
+    });
+
+
+
     // Games Routes Group
     Route::prefix('games')->group(function () {
         Route::get('/', [GameController::class, 'index'])->name('games');
@@ -71,19 +85,10 @@ Route::middleware([
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
         Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
+        //Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
     });
-
-
-Route::prefix('questions/{game}')->group(function () {
-    Route::get('/show', [GameQuestionsController::class, 'showQuestions'])->name('questions.showQuestions');
-    Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
-    Route::get('/{user}/complete', [GameQuestionsController::class, 'showThankYou'])->name('questions.showThankYou');
-    Route::post('/answer/{user}', [GameQuestionsController::class, 'storeAnswer'])->name('questions.playerAnswer');
-    Route::post('/answers/{user}', [GameQuestionsController::class, 'storeAnswers'])->name('questions.playerAnswers');
-});
-
 
     // Events
     Route::prefix('games/{game}/event')->group(function () {

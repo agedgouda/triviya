@@ -87,11 +87,11 @@ const startGame = () => {
 };
 
 const copyToClipboard = (game   ) => {
-    const invitationUrl = `I’m hosting a game of TriviYa and you’re invited.\n\nAnswer 10 quick questions — then together we’ll compete to guess who said what.\n\nJoin here:\n${currentDomain}/questions/${game.id}\n\nSent by your host ${hostName} — TriviYa only gets your info once you register.`;
+    const invitationUrl = currentDomain+'/questions/'+game.id;
     if (navigator.clipboard && window.isSecureContext) {
         // Preferred method (only works in secure contexts)
         navigator.clipboard.writeText(invitationUrl)
-        .then(() => alert('Invitation link copied to clipboard'))
+        .then(() => alert('Copied invite link to clipboard; you have to share this link with other players to invite them to the game.'))
         .catch(err => console.error('Failed to copy:', err));
     } else {
         // Fallback for insecure contexts
@@ -113,7 +113,7 @@ const copyToClipboard = (game   ) => {
         <div class="flex gap-4">
             <!-- Left column: stacked name + location -->
             <div class="flex flex-col justify-center">
-                <div class="flex items-center text-3xl text-triviyaRegular font-bold">
+                <div class="flex items-center text-2xl text-triviyaRegular font-bold">
                     {{ game.name }}
                     <PrimaryButton v-if="$page.props.auth.user.id === host.id" @click="goToEditPage" class="ml-2 pl-1 pr-1 pt-1 pb-1">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -170,7 +170,7 @@ const copyToClipboard = (game   ) => {
             </div>
             <div v-if="game.status === 'new' || game.status === 'start'" class="mt-3 flex flex-col gap-2">
                 <div class="font-bold text-triviyaRegular italic">
-                    TriviYa doesn’t send invites or store players emails – you control who gets your link.
+                    TriviYa doesn’t send invites – you control who gets your link.
                 </div>
                 <div>
                     <SecondaryButton @click="copyToClipboard(game)">

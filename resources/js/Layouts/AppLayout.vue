@@ -183,7 +183,7 @@ const logout = () => {
 
                 <!-- Page Heading -->
                 <header v-if="$slots.header">
-                    <div class="max-w-7xl py-5 px-5 sm:px-6 lg:px-10 text-blue-50">
+                    <div class="max-w-7xl px-5 sm:px-6 lg:px-10 text-blue-50">
                         <h2 class="font-semibold text-xl">
                             <slot name="header" />
                         </h2>
