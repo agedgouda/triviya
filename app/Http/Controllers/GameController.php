@@ -25,16 +25,13 @@ class GameController extends Controller
      */
     public function index()
     {
-        //$gamesHosted = GameActions::fetchGames(true);
         $games = GameActions::fetchGames(false);
-
 
         return Inertia::render('Games/Index', [
             'games' => $games,
             'routeName' => request()->route()->getName(),
         ]);
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -55,9 +52,7 @@ class GameController extends Controller
      */
     public function store(GameRequest $request)
     {
-        $validated = $request->validated();
-
-        $response = GameActions::StoreGameAction($validated);
+        $response = GameActions::StoreGameAction($request->validated());
 
         if($response["status"] === 'success') {
 
@@ -78,8 +73,7 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-        $userId = auth()->id();
-        $gameDetails = app(\App\Actions\Games\FetchGameDetails::class)->handle($game, $userId);
+       $gameDetails = GameActions::FetchGameDetails($game, auth()->id());
 
         return Inertia::render('Games/Index', [
             'game' => $gameDetails['game'],
@@ -112,9 +106,7 @@ class GameController extends Controller
      */
     public function update(GameRequest $request, Game $game)
     {
-        $validated = $request->validated();
-
-        $game->update($validated);
+        $game->update($request->validated());
 
         return Redirect::route('games.show', $game->id)->with('flash', [
             'message' => 'Game updated successfully!',
@@ -134,45 +126,16 @@ class GameController extends Controller
      */
     public function duplicate(Game $game, Request $request)
     {
-        $clientTimeZone = $request->input('timeZone', 'UTC');
-        $gameData = $game->toArray();
-        unset($gameData['id'], $gameData['created_at'], $gameData['updated_at'],$gameData['status']);
-        $gameData['name'] .= ' - ' . Carbon::now()->format('m/d/Y');
-        $response = GameActions::StoreGameAction($gameData);
-        return Redirect::route('games.show', $response["game"]->id)->with('flash', [
-            'message' => 'Game created successfully!',
-        ]);
+        $newGame = GameActions::DuplicateGameAction($game, $request->input('timeZone', 'UTC'));
+
+        return redirect()->route('games.show', $newGame->id)
+            ->with('flash', ['message' => 'Game duplicated successfully!']);
     }
 
-
-
-
-    public function storeAnswers(Request $request, Game $game, User $user)
-    {
-        $validated = $request->validate([
-            'answers' => 'required|array',
-        ]);
-
-        $response = GameActions::storeAnswersAction($game, $user, $validated);
-
-        //$response = array('status' => 'test');
-
-        if($response['status'] === 'error') {
-            return redirect()->back()->withErrors([
-                'message' => $response["message"],
-            ]);
-        }
-
-        return redirect()->route('questions.showThankYou', [
-            'game' => $game->id,
-            'user' => $user->id,
-        ]);
-    }
 
     public function removePlayer(Game $game, User $user) {
 
         $response = GameActions::RemoveUserAndResetQuestions($game, $user);
-
         return ['status' => $response["status"], 'message' => $response["message"] , 'game_status' => $response["game_status"] ];
 
     }

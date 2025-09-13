@@ -71,7 +71,6 @@ Route::middleware([
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
         Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
-        //Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
     });

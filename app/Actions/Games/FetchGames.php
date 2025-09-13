@@ -11,27 +11,25 @@ class FetchGames
     {
         $userId = auth()->id();
 
-        $query = Game::with(['players' => function ($q) use ($userId) {
-            // Only include pivot status for the current user
-            $q->where('user_id', $userId);
-        }])->withCount(['players']);
+        // Base query
+        $query = Game::withCount('players')
+            ->with(['players' => function ($q) use ($userId) {
+                // Only load pivot info for the current user
+                $q->where('user_id', $userId)
+                  ->select('users.id'); // minimal select
+            }]);
 
-        if ($hosted) {
-            $query->hostedBy($userId);
-        } else {
-            $query->attendedBy($userId);
-        }
+        // Filter by hosted/attended
+        $query = $hosted ? $query->hostedBy($userId) : $query->attendedBy($userId);
 
         // Paginate
         $games = $query->paginate(10);
 
-        // Add current user's status to each game for easier front-end consumption
-        $games->getCollection()->transform(function ($game) use ($userId) {
-            $game->current_user_status = optional(
-                $game->players->first()?->pivot
-            )->status ?? null;
+        // Add current user's status for frontend
+        $games->getCollection()->transform(function ($game) {
+            $game->current_user_status = optional($game->players->first()?->pivot)->status ?? null;
 
-            // Remove the players collection to avoid sending redundant data
+            // Remove unnecessary players collection
             unset($game->players);
 
             return $game;
