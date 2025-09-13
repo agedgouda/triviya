@@ -73,11 +73,11 @@ function handleImageError() {
         </div>
         <div class="bg-white shadow-md sm:rounded-lg p-6 mb-10 mx-auto max-w-xl rounded-xl text-black text-center">
             <div class="mb-5 text-2xl font-bold">
-                Early Access Bonus!
+                Welcome to Early Access!
             </div>
 
             <div class="mb-5">
-                During Early Access all games are <span class="font-bold">FREE.</span><br/>
+                For a limited time, play TriviYa for <span class="font-bold">FREE.</span><br/>
                 Later, you'll choose a Game Pack -<br/>
                 but for now, enjoy unlimited play!<br/>
             </div>
