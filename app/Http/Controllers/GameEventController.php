@@ -38,7 +38,20 @@ class GameEventController extends Controller
         ]);
     }
 
-    public function startRound(Game $game, Int $round)
+    public function startRound(Game $game, int $round)
+    {
+        $questions = GameActions::GetRoundQuestionsAction($game, $round);
+
+        return Inertia::render('Event/Show', [
+            'game' => $game,
+            'questions' => $questions,
+            'round' => $round,
+            'routeName' => request()->route()->getName(),
+            'error' => session('error'),
+        ]);
+    }
+
+    public function startRound2(Game $game, Int $round)
     {
         $lastQuestion = $round*10;
         $firstQuestion = $lastQuestion-9;
