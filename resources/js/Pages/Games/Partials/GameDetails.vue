@@ -1,281 +1,220 @@
 <script setup>
-import { formatDate } from '@/utils';
-import { router } from '@inertiajs/vue3';
-import { ref,computed } from 'vue';
+import { ref, computed } from 'vue';
+import { router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Table from '@/Components/Table.vue';
-import { usePage } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
+import { useFlash } from '@/Composables/useFlash';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
+import StartGameIcon from '@/Components/Icons/StartGameIcon.vue';
+import RemovePlayerIcon from '@/Components/Icons/RemovePlayerIcon.vue';
 
 const props = defineProps({
-    game: Object,
-    players: Array,
+  game: Object,
+  players: Array,
 });
 
-const flashMessage = ref('');
-const flashVisible = ref(false);
-
+const { flashMessage, setFlash } = useFlash();
 const currentDomain = window.location.origin;
 const page = usePage();
 const host = page.props.host;
 
+// Computed helpers
 const questionsAnsweredCount = computed(() =>
-  props.players.filter(player => (player.status === 'Questions Answered' || player.status === 'Quiz Complete')).length
+  props.players.filter(p => p.status === 'Questions Answered' || p.status === 'Quiz Complete').length
 );
 
-const goToEditPage = () => {
-    router.visit(route('games.edit', props.game.id));
+const playersRemainingToAnswer = computed(() => props.players.length - questionsAnsweredCount.value);
+
+const isHost = computed(() => page.props.auth.user.id === host.id);
+
+const showRemoveModal = ref(false);
+const playerToRemove = ref(null);
+
+// Helper functions
+const goToEditPage = () => router.visit(route('games.edit', props.game.id));
+const startGame = () => router.visit(route('games.startGame', { game: props.game.id }));
+
+const quizButtonText = (player) => {
+  if (player.status === 'Quiz Available') return 'Start Quiz';
+  if (player.status !== 'Quiz Complete') return 'Finish Quiz';
+  return 'Review Quiz';
 };
 
-const handlePlayerAction = async (player, action, method = 'put', additionalParams = {}) => {
+const copyText = async (text, successMessage) => {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+    setFlash(successMessage);
+  } catch {
+    setFlash('Failed to copy.');
+  }
+};
+
+const copyToClipboard = (game) =>
+  copyText(`${currentDomain}/questions/${game.id}`, 'Copied invite link to clipboard! Share it with all players.');
+
+const promptRemovePlayer = (player) => {
+    playerToRemove.value = player;
+    showRemoveModal.value = true;
+};
+
+
+const confirmRemovePlayer = async () => {
+    if (!playerToRemove.value) return;
+
     try {
-        // Define the route dynamically based on the action
-        const routes = {
-            updateAttendance: 'games.updateAttendance',
-            sendQuestions: 'games.sendQuestions',
-            removePlayer:'games.removePlayer'
-        };
-
-        // Ensure the action is valid
-        if (!routes[action]) {
-            throw new Error(`Invalid action: ${action}`);
-        }
-
-        // Show confirmation dialog if removing a player
-        if (action === 'removePlayer') {
-            const confirmed = confirm(`Are you sure you want to remove ${player.email} from the game?`);
-            if (!confirmed) return;
-        }
-
-        // Construct the route with additional parameters
-        const response = await axios[method](
-            route(routes[action], { game: props.game.id, user: player.id, ...additionalParams })
-        );
-
-        // Handle success response
+        const response = await axios.delete(route('games.removePlayer', { game: props.game.id, user: playerToRemove.value.id }));
         if (response.data.status === 'success') {
-            // Update the player's status in the UI
-            player.status = response.data.message;
-            if(response.data.message === 'Questions Sent') {
-                router.visit(route('games.showQuestions', { game: props.game.id, user: player.id }));
-            }
-            if(response.data.message === 'User removed'){
-                const index = props.players.findIndex(player => player.status === "User removed");
-                if (index !== -1) props.players.splice(index, 1);
-                props.game.status = response.data.game_status;
-            }
-
+            const index = props.players.findIndex(p => p.id === playerToRemove.value.id);
+            if (index !== -1) props.players.splice(index, 1);
+            setFlash('Player removed successfully!');
         } else {
-            // Handle a failure response
-            console.error(`Action '${action}' failed:`, response.data.message);
+            setFlash(`Error: ${response.data.message}`);
         }
     } catch (error) {
-        // Handle errors
-        console.error(`Error performing action '${action}':`, error);
-        return {
-            success: false,
-            message: error.response?.data?.message || `Failed to perform action '${action}'.`,
-        };
+        console.error(error);
+        setFlash('Failed to remove player.');
+    } finally {
+        showRemoveModal.value = false;
+        playerToRemove.value = null;
     }
 };
-
-const startGame = () => {
-    router.visit(route('games.startGame', { game: props.game.id }));
-};
-
-const copyToClipboard = (game) => {
-    const invitationUrl = `${currentDomain}/questions/${game.id}`;
-
-    const showFlash = (message) => {
-        flashMessage.value = message;
-        flashVisible.value = true;
-        setTimeout(() => {
-            flashVisible.value = false;
-        }, 3000); // visible for 3 seconds
-    };
-
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(invitationUrl)
-            .then(() => showFlash('Copied invite link to clipboard! Share it with all players.'))
-            .catch(err => console.error('Failed to copy:', err));
-    } else {
-        // fallback
-        const textArea = document.createElement('textarea');
-        textArea.value = invitationUrl;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showFlash('Copied invite link to clipboard! Share it with other players.');
-    }
-};
-
 
 </script>
 
 <template>
-    <transition
-        enter-active-class="transition-all duration-500 ease-out"
-        enter-from-class="opacity-0 -translate-y-12"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="transition-all duration-500 ease-in"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-12"
-    >
-        <div v-if="flashVisible" class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-triviya-red text-white px-4 py-2 rounded-b shadow-lg z-50">
-            {{ flashMessage }}
-        </div>
-    </transition>
-    <div class="flex justify-between items-start gap-4">
-        <!-- Left column with game info and edit button -->
-        <div class="flex gap-4">
-            <!-- Left column: stacked name + location -->
-            <div class="flex flex-col justify-center">
-                <div class="flex items-center text-2xl text-triviyaRegular font-bold">
-                    {{ game.name }}
-                    <PrimaryButton v-if="$page.props.auth.user.id === host.id" @click="goToEditPage" class="ml-2 pl-1 pr-1 pt-1 pb-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor" class="h-3 w-3">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5
-                                4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5
-                                4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                        </svg>
-                    </PrimaryButton>
-                </div>
-                <div class="text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
-            </div>
 
-            <!-- Right column: vertically centered button -->
+<Modal
+    :show="showRemoveModal"
+    title="Remove Player?"
+    @close="showRemoveModal = false"
+>
+    <p>Are you sure you want to remove this player from the game?</p>
+    <div class="mt-4 flex justify-end gap-2">
+    <PrimaryButton @click="confirmRemovePlayer(player)">
+        Yes, remove
+    </PrimaryButton>
+    <SecondaryButton @click="showRemoveModal = false">
+        Cancel
+    </SecondaryButton>
+    </div>
+</Modal>
 
-        </div>
 
-        <!-- Right column with Start Game button -->
-        <div class="flex justify-end mt-2" v-if="game.status === 'start' || game.status === 'in progress'  && $page.props.auth.user.id === host.id">
-            <PrimaryButton @click="startGame">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9
-                        9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0
-                        1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9
-                        9 0 0 0-6.208-.682L3 4.5M3 15V4.5" />
-                </svg>
-                &nbsp;
-                <span v-if="game.status === 'in progress'">Continue Playing</span>
-                <span v-else>Start Game</span>
+  <!-- Game Header -->
+  <div class="flex justify-between items-start gap-4">
+    <div class="flex gap-4">
+      <div class="flex flex-col justify-center">
+        <div class="flex items-center text-2xl text-triviyaRegular font-bold">
+            {{ game.name }}
+            <PrimaryButton
+            v-if="isHost"
+            @click="goToEditPage"
+            class="ml-2 p-1"
+            >
+                <EditIcon class="h-3 w-3" />
             </PrimaryButton>
         </div>
-        <div class="flex-1 flex justify-center mt-2 text-4xl font-bold" v-if="game.status.includes('done') ">
-            GAME COMPLETE
-        </div>
+        <div class="text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
+      </div>
     </div>
 
-    <div v-if="$page.props.auth.user.id === host.id" >
-        <div class="mt-4">
-            <div v-if="players.length < 4">
-                Congrats, you’re the host of TriviYa. You’ll need to:
-                <ul class="list-disc pl-4 ml-0">
-                    <li>Invite at least {{4 - players.length}} more players to join.</li>
-                    <li>Share your unique game invite link via email, text, or group chat — whatever works best for you</li>
-                    <li>Players’ names and status will appear below once they’ve registered</li>
-                </ul>
-            </div>
-            <div v-if="players.length >= 4">
-                <div v-if="questionsAnsweredCount < players.length">
-                    Still waiting for {{ players.length - questionsAnsweredCount }} more player<span v-if="players.length - questionsAnsweredCount > 1">s</span> to answer their questions before the game can begin.
-                </div>
-            </div>
-            <div v-if="game.status === 'new' || game.status === 'start'" class="mt-3 flex flex-col gap-2">
-                <div class="font-bold text-triviyaRegular italic">
-                    TriviYa doesn’t send invites – you control who gets your link.
-                </div>
-                <div>
-                    <SecondaryButton @click="copyToClipboard(game)">
-                        &nbsp;Copy Link
-                    </SecondaryButton>
-                </div>
-            </div>
-        </div>
+    <div class="flex justify-end mt-2" v-if="(game.status === 'start' || game.status === 'in progress') && isHost">
+      <PrimaryButton @click="startGame">
+            <StartGameIcon class="h-4 w-4" />
+        &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>
+      </PrimaryButton>
     </div>
 
-    <div class="mt-5">
-        <span class="text-red-800">{{ $page.props.errors.msg }}</span>
-        <Table class="min-w-full table-auto ">
-            <template #header>
-                    <th class="px-4 py-2 text-left">Name</th>
-                    <th class="px-4 py-2 text-center">Questions</th>
-                    <th class="px-4 py-2 text-center"></th>
-            </template>
-            <template #default="{ rowClass }">
-            <tr v-for="player in players"
-                :key="player.id"
-                :class="[
-                    rowClass
-                ]"
+    <div class="flex-1 flex justify-center mt-2 text-4xl font-bold" v-if="game.status.includes('done')">GAME COMPLETE</div>
+  </div>
+
+  <!-- Host Instructions -->
+  <div v-if="isHost" class="mt-4">
+    <div v-if="players.length < 4">
+      Congrats, you’re the host of TriviYa. You’ll need to:
+      <ul class="list-disc pl-4 ml-0">
+        <li>Invite at least {{ 4 - players.length }} more players to join.</li>
+        <li>Share your unique game invite link via email, text, or group chat — whatever works best for you</li>
+        <li>Players’ names and status will appear below once they’ve registered</li>
+      </ul>
+    </div>
+
+    <div v-else-if="questionsAnsweredCount < players.length">
+      Still waiting for {{ playersRemainingToAnswer }} more player<span v-if="playersRemainingToAnswer > 1">s</span> to answer their questions before the game can begin.
+    </div>
+
+    <div v-if="game.status === 'new' || game.status === 'start'" class="mt-3 flex flex-col gap-2">
+    <div class="mt-3 flex flex-col gap-2">
+        <div class="font-bold text-triviyaRegular italic">
+            TriviYa doesn’t send invites – you control who gets your link.
+        </div>
+        <div class="flex justify-start">
+            <SecondaryButton @click="copyToClipboard(game)">
+            &nbsp;Copy Link
+            </SecondaryButton>
+        </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- Players Table -->
+  <div class="mt-5">
+    <span class="text-red-800">{{ $page.props.errors.msg }}</span>
+    <Table class="min-w-full table-auto">
+      <template #header>
+        <th class="px-4 py-2 text-left">Name</th>
+        <th class="px-4 py-2 text-center">Questions</th>
+        <th class="px-4 py-2 text-center"></th>
+      </template>
+
+      <template #default="{ rowClass }">
+        <tr v-for="player in players" :key="player.id" :class="[rowClass]">
+          <td class="px-4 py-2 flex items-center space-x-2">
+            <img class="w-8 h-8 rounded-full object-cover border-triviyaRegular border-2" :src="player.profile_photo_url" alt="Player Photo" />
+            <span>{{ player.name }}</span>
+          </td>
+          <td class="px-4 py-2 text-center">{{ player.status }}</td>
+          <td class="px-4 py-2 text-center">
+            <PrimaryButton
+              v-if="$page.props.auth.user.id === player.id && game.status === 'new'"
+              :class="{ 'pulse-button': player.status === 'Quiz Available' }"
+              @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
             >
-                <td class="px-4 py-2 flex items-center space-x-2  ">
-                    <img class="w-8 h-8 rounded-full object-cover border-triviyaRegular border-2" :src="player.profile_photo_url" alt="Player Photo" />
-                    <span>{{ player.name }}</span>
-                </td>
+              {{ quizButtonText(player) }}
+            </PrimaryButton>
 
-                <td class="px-4 py-2 text-center">
-                    {{ player.status }}
-                </td>
-                <td class="px-4 py-2 text-center">
-                    <PrimaryButton @click="($page.props.auth.user.id === player.id) && $inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
-                        v-if="$page.props.auth.user.id === player.id && game.status === 'new'"
-                        :class="{'pulse-button': player.status === 'Quiz Available'}"
-                        >
-                        <span v-if="player.status === 'Quiz Available'">
-                            Start Quiz
-                        </span>
-                        <span v-else-if="player.status !== 'Quiz Complete'">
-                            Finish Quiz
-                        </span>
-                        <span v-else>
-                            Review Quiz
-                        </span>
-                    </PrimaryButton>
-                    <div v-if="$page.props.auth.user.id != player.id && $page.props.auth.user.id === host.id && (game.status === 'new' ||  game.status === 'start')">
-                        <DangerButton @click="handlePlayerAction(player, 'removePlayer', 'delete')" class="ml-2" >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                            </svg>
-                        </DangerButton>
-                    </div>
-
-                </td>
-            </tr>
-        </template>
-        </Table>
-    </div>
-
+            <div v-else-if="isHost && $page.props.auth.user.id !== player.id && (game.status === 'new' || game.status === 'start')">
+                <DangerButton @click="promptRemovePlayer(player)" class="ml-2">
+                    <RemovePlayerIcon class="h-4" />
+                </DangerButton>
+            </div>
+          </td>
+        </tr>
+      </template>
+    </Table>
+  </div>
 </template>
+
 <style scoped>
-
-
 @keyframes pulse-scale {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); } /* adjust scale as needed */
-}
-
-
-@keyframes pulse-color {
-  0%, 100% {
-    background-color: #E63946; /* base color */
-  }
-  50% {
-    background-color: #EC6ABA; /* highlight color */
-  }
+  50% { transform: scale(1.05); }
 }
 
 .pulse-button {
   animation: pulse-scale 1s ease-in-out infinite;
-  /*animation: pulse-color 1s infinite;*/
 }
 </style>
-
-

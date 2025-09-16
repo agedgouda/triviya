@@ -51,9 +51,8 @@ Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prep
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
 
 Route::prefix('questions/{game}')->group(function () {
-    Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
+    Route::get('/', [GameQuestionsController::class, 'showQuestionLandings'])->name('questions.showQuestionLanding');
 });
-
 
 Route::middleware([
     'auth:sanctum',

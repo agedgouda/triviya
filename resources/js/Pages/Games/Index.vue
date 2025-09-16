@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref, onMounted } from 'vue';
+import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
@@ -9,6 +9,7 @@ import PlayerQuestions from '@/Pages/Questionnaire/Partials/PlayerQuestions.vue'
 import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formatDate } from '@/utils';
+import { useFlash } from '@/Composables/useFlash';
 
 const props = defineProps({
     games: Object,
@@ -21,29 +22,43 @@ const props = defineProps({
     error: String
 });
 
-const flashMessage = ref(null);
-const fadeOut = ref(false);
+// Flash handling
+const { flashMessage, fadeOut, setFlash } = useFlash();
 
-onMounted(() => {
-            flashMessage.value = localStorage.getItem('flashMessage');
-            if (flashMessage.value) {
-                // Clear the message from localStorage after it's displayed
-                localStorage.removeItem('flashMessage');
-            }
-            setTimeout(() => {
-            fadeOut.value = true; // Trigger fade-out class
-            setTimeout(() => {
-                    flashMessage.value = null; // Remove message after fade-out
-                }, 1000); // Match the fade-out duration (1 second)
-            }, 2000); // 2 seconds before fade-out starts
-        });
+// Compute props for dynamic components
+const currentProps = computed(() => {
+    switch (props.routeName) {
+        case 'games':
+            return { games: props.games };
+        case 'games.show':
+            return { game: props.game, players: props.players };
+        case 'games.create':
+            return { modes: props.modes, routeName: props.routeName };
+        case 'games.edit':
+            return { modes: props.modes, game: props.game, routeName: props.routeName };
+        case 'games.showQuestions':
+            return { questions: props.questions, game: props.game, user: $page.props.auth.user };
+        case 'games.showAnswers':
+            return { questions: props.questions };
+        default:
+            return {};
+    }
+});
 
-const goBack = () => {
-    router.visit(route('games'));
+// Map routes to components
+const routeComponents = {
+    'games': GamesList,
+    'games.show': GameDetails,
+    'games.create': GameEdit,
+    'games.edit': GameEdit,
+    'games.showQuestions': PlayerQuestions,
+    'games.showAnswers': AllPlayerAnswers
 };
 
-const createGame = () => {
-    router.visit(route('games.create'));
+const CurrentComponent = computed(() => routeComponents[props.routeName] || null);
+
+const navigate = (routeName) => {
+    router.visit(route(routeName));
 };
 
 </script>
@@ -51,86 +66,41 @@ const createGame = () => {
 <template>
     <AppLayout title="Games">
         <template #header>
-            <div v-if="routeName === 'games.showQuestions'">
-                <div >{{game.name}}</div>
-                <div class="text-base">Hosted by {{ game.host[0].first_name }} {{ game.host[0].last_name }}</div>
-                <div class="text-base">{{ formatDate(game.date_time) }}</div>
-                <div class="text-base">{{ game.location }}</div>
+            <div v-if="props.routeName === 'games.showQuestions'">
+                <div>{{ props.game.name }}</div>
+                <div class="text-base">
+                    Hosted by {{ props.game.host[0].first_name }} {{ props.game.host[0].last_name }}
+                </div>
+                <div class="text-base">{{ formatDate(props.game.date_time) }}</div>
+                <div class="text-base">{{ props.game.location }}</div>
             </div>
         </template>
 
-        <div>
+        <div class="mx-5">
+            <!-- Dynamic page content -->
+            <component :is="CurrentComponent" v-bind="currentProps" />
 
-            <div class="mx-5">
-                <div
-                    v-if="flashMessage"
-                    :class="['transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
-                >
-                    {{ flashMessage }}
+            <!-- Special buttons for games routes -->
+            <div v-if="props.routeName === 'games'">
+                <div v-if="props.games.data.length === 0" class="mb-5 text-center">
+                    <div class="mb-1 font-bold">Let’s Do This!</div>
+                    <div class="mb-2">Click new game to get started</div>
+                    <PrimaryButton @click="navigate('games.create')">New Game</PrimaryButton>
                 </div>
-                <div
-                    v-if="$page.props.flash.message"
-                    :class="['transition-opacity duration-1000', { 'opacity-0': fadeOut }]"
-                >
-                    {{ $page.props.flash.message }}
+                <div v-else class="flex justify-end my-5">
+                    <PrimaryButton @click="navigate('games.create')">Create A New Game</PrimaryButton>
                 </div>
-                <template v-if="routeName === 'games'">
-                    <div v-if="games.data.length" class="mt-5 pb-3">
-                        <GamesList :games="games " />
-                    </div>
-                    <div class="mb-5" v-if="games.data.length === 0">
-                        <div class="mb-1 font-bold">Let’s Do This!</div>
-                        <div class="mb-2">Click new game to get started</div>
-                        <div class="flex justify-center">
-                            <PrimaryButton @click="createGame">
-                                New Game
-                            </PrimaryButton>
-                        </div>
-                    </div>
-                    <div v-else class="flex justify-end">
-                        <PrimaryButton class="my-5"  @click="createGame" >
-                            Create A New Game
-                        </PrimaryButton>
-                    </div>
-                </template>
-                <template v-if="routeName === 'games.show'">
+            </div>
 
-                <GameDetails :game="game" :players="players"/>
-
-                <PrimaryButton class="my-5"  @click="goBack" >
+            <div v-if="props.routeName === 'games.show'" class="flex justify-end my-5">
+                <PrimaryButton @click="navigate('games')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                     </svg>
                     &nbsp;Back To All Games
                 </PrimaryButton>
-
-                </template>
-                <template v-if="routeName === 'games.create'">
-                    <GameEdit :modes="modes" :routeName="routeName" />
-                </template>
-                <template v-if="routeName === 'games.edit'">
-                    <GameEdit :modes="modes" :game="game" :routeName="routeName"  />
-                </template>
-                <template v-if="routeName === 'games.showQuestions'">
-                    <PlayerQuestions :questions="questions" :game="game" :user="$page.props.auth.user"/>
-                </template>
-                <template v-if="routeName === 'games.showAnswers'">
-                    <AllPlayerAnswers :questions="questions"   />
-                </template>
             </div>
+
         </div>
     </AppLayout>
 </template>
-<style scoped>
-/* You can add your custom styles here */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 8px 12px;
-}
-th {
-  background-color: #f4f4f4;
-}
-</style>

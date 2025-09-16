@@ -14,8 +14,10 @@ class HandleUserShowQuestionsAction
         $game->load(['host', 'questions', 'players']);
 
         if ($user) {
+
             // Delegate to existing actions
             GameActions::AddUserToGameAction($game, $user);
+
             $questions = GameActions::GetUserGameQuestionsAction($game, $user);
 
             return [

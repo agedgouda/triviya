@@ -27,7 +27,6 @@ class GameEventController extends Controller
 
     public function startGame(Game $game, Int $reset = null)
     {
-
         $response = GameActions::CreateEventQuestionsAction($game,$reset);
 
         return Inertia::render('Event/Show', [

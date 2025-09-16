@@ -48,6 +48,37 @@ class GameQuestionsController extends Controller
         ]));
     }
 
+    //Keep this in case something broke
+    // public function showQuestions(Game $game, Request $request)
+    // {
+    //     $game->load(['host', 'questions', 'players']);
+
+    //     $user = auth()->user();
+    //     $isHost = $game->host?->id;
+
+    //     if ($user) {
+    //         // Add the user to the game and assign questions
+    //         GameActions::AddUserToGameAction($game, $user);
+
+    //         // Get the current user's questions
+    //         $gameUserQuestions = GameActions::GetUserGameQuestionsAction($game, $user);
+
+    //         return Inertia::render('Questionnaire/Show', [
+    //             'game' => $game,
+    //             'questions' => $gameUserQuestions,
+    //             'user' => $user,
+    //             'routeName' => $request->route()->getName(),
+    //             'error' => session('error'),
+    //         ]);
+    //     }
+
+    //     return Inertia::render('Questionnaire/Show', [
+    //         'game' => $game,
+    //         'routeName' => $request->route()->getName(),
+    //         'error' => session('error'),
+    //     ]);
+    // }
+
     public function showThankYou(Game $game, User $user) {
         return Inertia::render('Questionnaire/Show' , [
             'game' => $game->load(['host']),

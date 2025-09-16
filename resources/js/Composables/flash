@@ -1,0 +1,15 @@
+import { ref } from 'vue';
+
+export const flashMessage = ref(null);
+export const fadeOut = ref(false);
+
+export function setFlash(message, duration = 2000, fadeDuration = 1000) {
+    flashMessage.value = message;
+    setTimeout(() => {
+        fadeOut.value = true;
+        setTimeout(() => {
+            flashMessage.value = null;
+            fadeOut.value = false;
+        }, fadeDuration);
+    }, duration);
+}

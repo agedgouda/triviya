@@ -8,6 +8,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import NavDropdown from '@/Components/NavDropdown.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import Flash from '@/Components/Flash.vue';
 
 defineProps({
     title: String,
@@ -30,6 +31,7 @@ const logout = () => {
 
 <template>
     <div>
+        <Flash />
         <Head :title="title" />
 
         <Banner />

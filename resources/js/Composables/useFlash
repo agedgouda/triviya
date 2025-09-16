@@ -1,0 +1,22 @@
+import { ref, onMounted } from 'vue';
+
+export const flashMessage = ref(null);
+
+export function useFlash() {
+    const setFlash = (message, duration = 2000) => {
+        flashMessage.value = message;
+        setTimeout(() => {
+            flashMessage.value = null;
+        }, duration);
+    };
+
+    onMounted(() => {
+        const message = localStorage.getItem('flashMessage');
+        if (message) {
+            localStorage.removeItem('flashMessage');
+            setFlash(message);
+        }
+    });
+
+    return { flashMessage, setFlash };
+}
