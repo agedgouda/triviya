@@ -46,4 +46,10 @@ return [
         'key' => env('STRIPE_KEY'),
     ],
 
+    'mailchimp' => [
+        'key' => env('MAILCHIMP_API_KEY'),
+        'server_prefix' => env('MAILCHIMP_SERVER_PREFIX'), // e.g., "us20"
+        'list_id' => env('MAILCHIMP_LIST_ID'),
+    ],
+
 ];

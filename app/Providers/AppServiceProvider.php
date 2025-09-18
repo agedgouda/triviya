@@ -6,6 +6,7 @@ use App\Models\Game;
 use App\Models\GameUser;
 
 use App\Observers\GameUserObserver;
+use App\Observers\UserObserver;
 use App\Services\GameActions;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -37,5 +38,6 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         GameUser::observe(GameUserObserver::class);
+        User::observe(UserObserver::class);
     }
 }

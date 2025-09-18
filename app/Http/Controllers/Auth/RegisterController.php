@@ -32,7 +32,6 @@ class RegisterController extends Controller
     public function store(Request $request, Game $game = null)
     {
 
-        // Case 2: Register a new user
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
