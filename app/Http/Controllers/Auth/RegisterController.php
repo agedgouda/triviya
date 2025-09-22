@@ -56,6 +56,6 @@ class RegisterController extends Controller
 
         $redirectTo = request()->input('redirect_to') ?: route('games');
 
-        return redirect()->intended($redirectTo)->with('message', 'Congratulations! You have registered with TriviYa and your answers have been saved.');
+        return redirect()->intended($redirectTo)->with('flashMessage', 'Congratulations! You have registered with TriviYa.');
     }
 }

@@ -35,6 +35,9 @@ class AppServiceProvider extends ServiceProvider
 
         Inertia::share([
             'stripeKey' => config('services.stripe.key'),
+            'flashMessage' => function () {
+                return session('flashMessage');
+            },
         ]);
 
         GameUser::observe(GameUserObserver::class);

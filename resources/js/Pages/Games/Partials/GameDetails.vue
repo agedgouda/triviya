@@ -17,7 +17,7 @@ const props = defineProps({
   players: Array,
 });
 
-const { flashMessage, setFlash } = useFlash();
+const { setFlash } = useFlash();
 const currentDomain = window.location.origin;
 const page = usePage();
 const host = page.props.host;

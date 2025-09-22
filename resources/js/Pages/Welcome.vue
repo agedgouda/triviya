@@ -12,11 +12,11 @@ defineProps({
     },
     laravelVersion: {
         type: String,
-        required: true,
+        required: false,
     },
     phpVersion: {
         type: String,
-        required: true,
+        required: false,
     },
 });
 

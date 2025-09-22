@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { computed } from 'vue';
+import { computed,onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
@@ -19,11 +19,12 @@ const props = defineProps({
     players: Array,
     routeName: String,
     modes: Array,
+    flashMessage: String,
     error: String
 });
 
 // Flash handling
-const { flashMessage, fadeOut, setFlash } = useFlash();
+const { setFlash } = useFlash();
 
 // Compute props for dynamic components
 const currentProps = computed(() => {
@@ -60,6 +61,13 @@ const CurrentComponent = computed(() => routeComponents[props.routeName] || null
 const navigate = (routeName) => {
     router.visit(route(routeName));
 };
+
+onMounted(() => {
+  if (props.flashMessage) {
+    setFlash(props.flashMessage)
+  }
+})
+
 
 </script>
 
