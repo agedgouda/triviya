@@ -23,6 +23,10 @@ class GameQuestionsController extends Controller
 
     public function showQuestionLanding(Game $game, Request $request)
     {
+        ($game->status);
+        if ($game->status !== "new") {
+            return redirect()->intended(route('games'))->with('flashMessage', 'This game is closed.');
+        }
         $data = GameActions::FetchQuestionLandingAction($game, auth()->id());
 
         $routeName = $data['hasGameUser']
