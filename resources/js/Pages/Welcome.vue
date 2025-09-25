@@ -1,9 +1,12 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Flash from '@/Components/Flash.vue';
+import { useFlash } from '@/Composables/useFlash';
 
-defineProps({
+const props = defineProps({
     canLogin: {
         type: Boolean,
     },
@@ -18,7 +21,17 @@ defineProps({
         type: String,
         required: false,
     },
+    flashMessage: String,
 });
+
+
+const { setFlash } = useFlash();
+
+onMounted(() => {
+  if (props.flashMessage) {
+    setFlash(props.flashMessage)
+  }
+})
 
 function handleImageError() {
     document.getElementById('screenshot-container')?.classList.add('!hidden');
@@ -29,6 +42,7 @@ function handleImageError() {
 </script>
 
 <template>
+    <Flash />
     <Head title="Welcome" />
 
     <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-triviyaRegular" style="background-image: url('/images/triviya-bg-cover.png');">

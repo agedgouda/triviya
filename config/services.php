@@ -51,5 +51,6 @@ return [
         'server_prefix' => env('MAILCHIMP_SERVER_PREFIX'), // e.g., "us20"
         'list_id' => env('MAILCHIMP_LIST_ID'),
     ],
+    'max_players' => env('MAX_GAME_PLAYERS', 12),
 
 ];

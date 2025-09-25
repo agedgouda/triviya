@@ -16,7 +16,8 @@ class Game extends Model
         'date_time',
         'mode_id',
         'location',
-        'status'
+        'status',
+        'is_full',
     ];
 
     public function players()
@@ -46,6 +47,21 @@ class Game extends Model
         });
     }
 
+    public function isFull(): bool
+    {
+        return $this->is_full;
+    }
+
+    public function hasSpace(): bool
+    {
+        return $this->players()->count() < config('game.max_players');
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->is_full || !in_array($this->status, ['new', 'ready']);
+    }
+
     public function getHostAttribute()
     {
         return $this->host()->first();
@@ -68,12 +84,17 @@ class Game extends Model
             $this->players()->count() >= 4 &&
             $this->players()->where('status', '!=', 'Quiz Complete')->doesntExist()
         ) {
-            $this->status = 'start';
+            $this->status = 'ready';
             $this->save();
-        } elseif ($this->status === 'start') {
+        } elseif ($this->status === 'ready') {
             $this->status = 'new';
             $this->save();
         }
     }
 
+    public function updateFullStatus(): void
+    {
+        $this->is_full = $this->players()->count() >= config('game.max_players');
+        $this->save();
+    }
 }

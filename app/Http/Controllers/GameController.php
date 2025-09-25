@@ -23,8 +23,10 @@ class GameController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $maxPlayers = config('game.max_players');
+
         $games = GameActions::fetchGames(false);
 
         return Inertia::render('Games/Index', [
@@ -73,7 +75,8 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-       $gameDetails = GameActions::FetchGameDetails($game, auth()->id());
+
+        $gameDetails = GameActions::FetchGameDetails($game, auth()->id());
 
         return Inertia::render('Games/Index', [
             'game' => $gameDetails['game'],
@@ -136,7 +139,11 @@ class GameController extends Controller
     public function removePlayer(Game $game, User $user) {
 
         $response = GameActions::RemoveUserAndResetQuestions($game, $user);
-        return ['status' => $response["status"], 'message' => $response["message"] , 'game_status' => $response["game_status"] ];
+        return [
+                'status' => $response["status"],
+                'message' => $response["message"] ,
+                'game' => $response["game"]
+            ];
 
     }
 

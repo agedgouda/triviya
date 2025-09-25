@@ -1,13 +1,15 @@
 <script setup>
-import { computed, onMounted } from 'vue';
+import { onMounted,computed } from 'vue';
 import ThankYou from './Partials/ThankYou.vue';
 import LandingPage from './Partials/LandingPage.vue';
+import LandingPageClosed from './Partials/LandingPageClosed.vue';
 import PlayerQuestions from './Partials/PlayerQuestions.vue';
 
 import Flash from '@/Components/Flash.vue';
 import { useFlash } from '@/Composables/useFlash';
 
 const { setFlash } = useFlash();
+
 // Props for game and questions
 const props = defineProps({
     game: Object,
@@ -18,6 +20,16 @@ const props = defineProps({
     flashMessage: String,
 });
 
+const currentLandingComponent = computed(() => {
+    if (props.routeName !== 'questions.showQuestionLanding') return null;
+
+    if (!props.game.is_full && ['new', 'ready'].includes(props.game.status)) {
+        return LandingPage;
+    } else {
+        return LandingPageClosed;
+    }
+});
+
 onMounted(() => {
   if (props.flashMessage) {
     setFlash(props.flashMessage)
@@ -25,12 +37,17 @@ onMounted(() => {
 })
 
 
-
 </script>
 
 <template>
     <Flash />
-    <LandingPage :game="game" :user="user" v-if="routeName === 'questions.showQuestionLanding'"/>
+    <component
+        :is="currentLandingComponent"
+        v-if="currentLandingComponent"
+        :game="game"
+        :user="user"
+    />
+
     <PlayerQuestions :questions="questions" :game="game" :user="user"  v-if="routeName === 'questions.showQuestions'"/>
     <ThankYou :game="game" :user="user" v-if="routeName === 'questions.showThankYou'"/>
 </template>

@@ -6,11 +6,20 @@ use App\Models\GameUser;
 
 class GameUserObserver
 {
+
+    public function creating(GameUser $gameUser)
+    {
+        if (!$gameUser->game->hasSpace()) {
+            return false; // cancels the attach
+        }
+    }
+
     /**
      * Handle the GameUser "created" event.
      */
     public function created(GameUser $gameUser): void
     {
+        $gameUser->game->updateFullStatus();
         $gameUser->game?->updateStatusIfReady();
     }
 
@@ -27,6 +36,7 @@ class GameUserObserver
      */
     public function deleted(GameUser $gameUser): void
     {
+        $gameUser->game->updateFullStatus();
         $gameUser->game?->updateStatusIfReady();
     }
 

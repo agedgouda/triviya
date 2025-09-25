@@ -21,6 +21,7 @@ const { setFlash } = useFlash();
 const currentDomain = window.location.origin;
 const page = usePage();
 const host = page.props.host;
+const game = ref({ ...props.game });
 
 // Computed helpers
 const questionsAnsweredCount = computed(() =>
@@ -78,6 +79,7 @@ const confirmRemovePlayer = async () => {
         const response = await axios.delete(route('games.removePlayer', { game: props.game.id, user: playerToRemove.value.id }));
         if (response.data.status === 'success') {
             const index = props.players.findIndex(p => p.id === playerToRemove.value.id);
+            game.value = response.data.game;
             if (index !== -1) props.players.splice(index, 1);
             setFlash('Player removed successfully!');
         } else {
@@ -131,7 +133,7 @@ const confirmRemovePlayer = async () => {
       </div>
     </div>
 
-    <div class="flex justify-end mt-2" v-if="(game.status === 'start' || game.status === 'in progress') && isHost">
+    <div class="flex justify-end mt-2" v-if="(game.status === 'start' || game.status === 'in progress' || game.status === 'ready') && isHost">
       <PrimaryButton @click="startGame">
             <StartGameIcon class="h-4 w-4" />
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>
@@ -143,30 +145,28 @@ const confirmRemovePlayer = async () => {
 
   <!-- Host Instructions -->
   <div v-if="isHost" class="mt-4">
-    <div v-if="players.length < 4">
+    <div v-if="['new', 'ready'].includes(game.status)">
       Congrats, you’re the host of TriviYa. You’ll need to:
       <ul class="list-disc pl-4 ml-0">
-        <li>Invite at least {{ 4 - players.length }} more players to join.</li>
-        <li>Share your unique game invite link via email, text, or group chat — whatever works best for you</li>
-        <li>Players’ names and status will appear below once they’ve registered</li>
+        <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more players to join.</li>
+        <li><span class="font-bold">Share</span> your unique game invite link via email, text, or group chat — whatever works best for you.</li>
+        <li><span class="font-bold">Watch</span> as players’ names and status appear below as they register.</li>
+        <li><span class="font-bold">Remember:</span> TriviYa only works with 4–12 players. {{ players.length }} players have joined so far.</li>
+        <li  v-if="game.status === 'new'"><span class="font-bold">START GAME</span> button appears below when all answers are in.</li>
       </ul>
     </div>
 
-    <div v-else-if="questionsAnsweredCount < players.length">
-      Still waiting for {{ playersRemainingToAnswer }} more player<span v-if="playersRemainingToAnswer > 1">s</span> to answer their questions before the game can begin.
-    </div>
-
-    <div v-if="game.status === 'new' || game.status === 'start'" class="mt-3 flex flex-col gap-2">
-    <div class="mt-3 flex flex-col gap-2">
-        <div class="font-bold text-triviyaRegular italic">
-            TriviYa doesn’t send invites – you control who gets your link.
+    <div v-if="['new', 'ready'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
+        <div class="mt-3 flex flex-col gap-2">
+            <div class="flex justify-start">
+                <SecondaryButton @click="copyToClipboard(game)">
+                &nbsp;Copy Link
+                </SecondaryButton>
+            </div>
+            <div class="font-bold text-triviyaRegular italic">
+                TriviYa doesn’t send invites – you control who gets your link.
+            </div>
         </div>
-        <div class="flex justify-start">
-            <SecondaryButton @click="copyToClipboard(game)">
-            &nbsp;Copy Link
-            </SecondaryButton>
-        </div>
-    </div>
     </div>
   </div>
 
@@ -189,14 +189,14 @@ const confirmRemovePlayer = async () => {
           <td class="px-4 py-2 text-center">{{ player.status }}</td>
           <td class="px-4 py-2 text-center">
             <PrimaryButton
-              v-if="$page.props.auth.user.id === player.id && game.status === 'new'"
+              v-if="$page.props.auth.user.id === player.id && ['new', 'ready'].includes(game.status)"
               :class="{ 'pulse-button': player.status === 'Quiz Available' }"
               @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
             >
               {{ quizButtonText(player) }}
             </PrimaryButton>
 
-            <div v-else-if="isHost && $page.props.auth.user.id !== player.id && (game.status === 'new' || game.status === 'start')">
+            <div v-else-if="isHost && $page.props.auth.user.id !== player.id && ['new', 'ready'].includes(game.status)">
                 <DangerButton @click="promptRemovePlayer(player)" class="ml-2">
                     <RemovePlayerIcon class="h-4" />
                 </DangerButton>

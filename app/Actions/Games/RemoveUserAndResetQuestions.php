@@ -45,7 +45,7 @@ class RemoveUserAndResetQuestions
             return [
                 'status' => 'success',
                 'message' => 'User removed',
-                'game_status' => $game->status,
+                'game' => $game,
             ];
         });
     }

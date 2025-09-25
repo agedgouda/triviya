@@ -24,9 +24,18 @@ class DeleteUser implements DeletesUsers
     {
         DB::transaction(function () use ($user) {
             //$this->deleteTeams($user);
+            /*$user->games()
+                ->where('status', 'full')
+                ->each(function ($game) {
+                    $game->update(['status' => null]);
+                });
+            */
+
+
             $user->deleteProfilePhoto();
             $user->tokens->each->delete();
             $user->delete();
+            Session::flash('flashMessage', 'This account has been permanently deleted and can no longer be accessed. All related data has been securely removed.');
         });
     }
 

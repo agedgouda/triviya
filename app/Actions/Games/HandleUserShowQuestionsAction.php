@@ -10,6 +10,7 @@ class HandleUserShowQuestionsAction
 {
     public static function handle(Game $game, ?User $user): array
     {
+
         // Load all necessary relationships
         $game->load(['host', 'questions', 'players']);
 

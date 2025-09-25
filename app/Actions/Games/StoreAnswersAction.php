@@ -45,17 +45,7 @@ class StoreAnswersAction
             $game->players()->updateExistingPivot($user->id, ['status' => $status]);
 
             //check to see how many people we are waiting for
-            $noAnswers = GameUser::where('game_id', $game->id)
-                ->where('status', '!=', 'Host')
-                ->where('status', '!=', 'Questions Answered')
-                ->get();
-
-
-            if(count($noAnswers) === 0) {
-                Game::where('id',$game->id)->update(['status' => 'ready']);
-            } else {
-                Game::where('id',$game->id)->update(['status' => 'new']);
-            }
+            $game->updateStatusIfReady();
 
             $result = $this->mailService->sendPlayerAnsweredQuestions($user, $game, $noAnswers);
         }

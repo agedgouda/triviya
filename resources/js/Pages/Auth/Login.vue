@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -9,6 +9,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PasswordInput from '@/Components/PasswordInput.vue';
+import Flash from '@/Components/Flash.vue';
+import { useFlash } from '@/Composables/useFlash';
 
 const props = defineProps({
     canResetPassword:  {
@@ -29,9 +31,18 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    flashMessage: String,
 });
 
 const show = ref(false)
+const { setFlash } = useFlash();
+
+onMounted(() => {
+  if (props.flashMessage) {
+    setFlash(props.flashMessage)
+  }
+})
+
 
 const form = useForm({
     email: props.user.email || '',
@@ -54,6 +65,7 @@ const submit = () => {
 </script>
 
 <template>
+    <Flash />
     <Head title="Log in" />
 
     <AuthenticationCard>

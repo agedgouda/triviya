@@ -48,6 +48,8 @@ Route::get('/register/{game?}', [RegisterController::class, 'show'])->name('regi
 Route::post('/register', [RegisterController::class, 'store'])->name('register.submit');
 Route::post('register/{game?}', [RegisterController::class, 'store'])->name('register.submit');
 Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prepopulated');
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
 
 Route::prefix('questions/{game}')->group(function () {

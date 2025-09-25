@@ -20,8 +20,12 @@ class FetchGameDetails
 
         $host = $this->transformUser($game->host, $userId);
 
+        // Add hasSpace flag to the game
+        $gameArray = $game->toArray();
+        $gameArray['hasSpace'] = $game->hasSpace();
+
         return [
-            'game' => $game,
+            'game' => $gameArray,
             'players' => $players,
             'invitees' => $game->invitees,
             'host' => $host,
