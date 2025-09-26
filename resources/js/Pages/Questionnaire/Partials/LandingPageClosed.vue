@@ -45,10 +45,11 @@ const join = () => {
                 <div class="my-2" v-if="game.is_full">This game has reached it's 12-player limit. {{ game.is_full }}</div>
                 <div class="my-2" v-else=>This game has already started</div>
                 <ul class="list-disc mx-12 mb-2">
-                    <li class="mb-2">If you’ve already joined this game, please log in to continue.</li>
-                    <li class="mb-2">I you're unsure and need more details, contact {{ game.host[0].first_name }} for help.</li>
+                    <li class="mb-2" v-if="game.is_full">If you’ve already joined this game, please log in to continue.</li>
+                    <li class="mb-2" v-else>Players, you can't change your answers once the game starts.</li>
+                    <li class="mb-2">If you're unsure and need more details, contact {{ game.host[0].first_name }} for help.</li>
                 </ul>
-                Can't join one?<br/>
+                Can't join a game?<br/>
                 No problem - you can create a new game anytime.
             </div>
             <div class="mb-2 text-center b-4" v-if="!user">

@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import { formatDate } from '@/utils';
+import { computed } from 'vue';
+
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
@@ -10,22 +9,19 @@ import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
 const props = defineProps({
     game: Object,
     user: Object,
+    questions: Array,
 });
 
-const { props: pageProps } = usePage();
+const hasAnyAnswer = computed(() => props.questions.some(q => !!q.answer));
 
-    // console.log(props);
 
 </script>
 
 <template>
     <QuestionsLayout title="Questions" :header-has-background="false">
-<!--        <template #header>-->
-<!--            <ApplicationLogo class="flex justify-center block !h-20 mx-auto w-auto" />-->
-<!--        </template>-->
 
         <template #raw-header>
-            <div class="raw-header mt-8 mb-4">
+            <div class="raw-header mt-8 mb-8">
                 <h3 class="game-author text-center text-white font-bold text-xl" v-text="game.host[0].name"></h3>
                 <h4 class="text-center text-white text-lg">has invited you to play</h4>
                 <div class="extended-logo">
@@ -35,29 +31,18 @@ const { props: pageProps } = usePage();
             </div>
         </template>
 
-        <template #question-header>
-            <div class="mb-2 text-xl font-bold">Welcome {{user.name}}</div>
-            <div class="text-lg mb-2">You’ll answer 10 questions that become the trivia in the game.  Shhh... don’t share your answers—or the questions.</div>
-            <div class="text-lg">And whatever you do, DON’T overthink it.</div>
-        </template>
-
-<!--        <template #question-input>-->
-<!--            <div class="mb-2 text-center text-3xl font-bold">A Reminder</div>-->
-<!--            <ul class="list-disc mx-12 mb-2">-->
-<!--                <li>Trivius is the game where your answers become the trivia.</li>-->
-<!--                <li>The answers you give in the survey below becomes part of the game later.</li>-->
-<!--                <li>Once you’ve completed the quiz, you’ll be asked to complete your account registration. Creating an account is FREE and will allow you to change your questions up until game day, plus enables you to create your own Trivius games later!</li>-->
-<!--            </ul>-->
-<!--        </template>-->
-
-<!--        <template #question-footer>-->
-<!--            The next step is answering your TriviYa survey and should take less than 3 minutes to complete.-->
-<!--        </template>-->
-
-        <template #question-buttons>
-            <PrimaryButton type="button" class="mt-2" @click="$emit('nextClicked')">
-                <span>Next</span>
-            </PrimaryButton>
+        <template #question-input>
+            <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4" v-if="!hasAnyAnswer">Congrats {{ user.first_name }} - You're In!</div>
+            <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4" v-else>Welcome Back {{ user.first_name }}</div>
+            <ul class="list-disc mx-12 mb-2">
+                <li class="mb-2">Answer 10  questions - have fun and don't overthink it.</li>
+                <li class="mb-2">You can edit your answers anytime until the game begins.</li>
+            </ul>
+            <div class="mb-2 text-center b-4">
+                <PrimaryButton type="button" class="mt-2" @click="$emit('start-game')">
+                    <span>Start</span>
+                </PrimaryButton>
+            </div>
         </template>
     </QuestionsLayout>
 </template>

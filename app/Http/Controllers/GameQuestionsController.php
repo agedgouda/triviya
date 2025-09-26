@@ -24,6 +24,8 @@ class GameQuestionsController extends Controller
     public function showQuestionLanding(Game $game, Request $request)
     {
 
+
+
         $data = GameActions::FetchQuestionLandingAction($game, auth()->id());
 
         $routeName = $data['hasGameUser']
@@ -42,6 +44,7 @@ class GameQuestionsController extends Controller
     public function showQuestions(Game $game, Request $request)
     {
 
+
         // Check game status before doing anything
         if (!$game->hasSpace()) {
             $max = config('game.max_players');
@@ -49,6 +52,12 @@ class GameQuestionsController extends Controller
             return redirect()
                 ->route('games') // or wherever you want them to go
                 ->with('flashMessage', "The game you are trying to access has reached capacity. TriviYa has a limit of {$max} players per game.");
+        }
+
+        if (!in_array($game->status, ['new', 'ready'])) {
+            return redirect()
+                ->route('games.show', $game->id) // or wherever you want them to go
+                ->with('flashMessage', "You can't change your answers once the game starts.");
         }
 
         $data = GameActions::HandleUserShowQuestionsAction($game, auth()->user());
