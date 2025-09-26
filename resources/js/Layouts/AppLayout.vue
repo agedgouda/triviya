@@ -185,7 +185,7 @@ const logout = () => {
 
                 <!-- Page Heading -->
                 <header v-if="$slots.header">
-                    <div class="max-w-7xl px-5 sm:px-6 lg:px-10 text-blue-50">
+                    <div class="max-w-7xl px-5 sm:px-4 lg:px-10 text-blue-50">
                         <h2 class="font-semibold text-xl">
                             <slot name="header" />
                         </h2>
@@ -195,7 +195,7 @@ const logout = () => {
                 <!-- Page Content -->
                 <main>
                     <div class="">
-                        <div class="mx-auto sm:px-6 lg:px-8">
+                        <div class="mx-auto sm:px-4 lg:px-8">
                             <div class="bg-triviya-lightBackground overflow-hidden shadow-xl pt-6 px-3 border-2 border-triviya-red text-black-900 sm:rounded-lg">
                                 <slot />
                             </div>

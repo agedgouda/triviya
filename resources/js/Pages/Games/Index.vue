@@ -84,7 +84,7 @@ onMounted(() => {
             </div>
         </template>
 
-        <div class="mx-5">
+        <div class="mx-5 sm:mx-1">
             <!-- Dynamic page content -->
             <component :is="CurrentComponent" v-bind="currentProps" />
 

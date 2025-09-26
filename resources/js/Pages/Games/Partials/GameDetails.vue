@@ -119,7 +119,7 @@ const confirmRemovePlayer = async () => {
   <div class="flex justify-between items-start gap-4">
     <div class="flex gap-4">
       <div class="flex flex-col justify-center">
-        <div class="flex items-center text-2xl text-triviyaRegular font-bold">
+        <div class="flex items-center sm:text-sm md:text-2xl text-triviyaRegular font-bold">
             {{ game.name }}
             <PrimaryButton
             v-if="isHost"
@@ -129,13 +129,13 @@ const confirmRemovePlayer = async () => {
                 <EditIcon class="h-3 w-3" />
             </PrimaryButton>
         </div>
-        <div class="text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
+        <div class="sm:text-xs md:text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
       </div>
     </div>
 
-    <div class="flex justify-end mt-2" v-if="(game.status === 'start' || game.status === 'in progress' || game.status === 'ready') && isHost">
+    <div class="flex justify-end" v-if="(game.status === 'start' || game.status === 'in progress' || game.status === 'ready') && isHost">
       <PrimaryButton @click="startGame">
-            <StartGameIcon class="h-4 w-4" />
+            <StartGameIcon class="hidden md:inline-block h-4 w-4" />
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>
       </PrimaryButton>
     </div>

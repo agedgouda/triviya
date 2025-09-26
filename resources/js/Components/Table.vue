@@ -1,9 +1,10 @@
 <template>
-    <table class="min-w-full table-auto">
-        <thead class="bg-triviyaRegular text-white border border-triviyaRegular">
-            <tr>
-                <slot name="header"></slot>
-            </tr>
+
+        <table class="min-w-full table-auto border-collapse text-xs sm:text-sm md:text-base">
+            <thead class="bg-triviyaRegular text-white border border-triviyaRegular">
+                <tr>
+                    <slot name="header"></slot>
+                </tr>
         </thead>
         <tbody>
             <slot :rowClass="rowClass"></slot> <!-- Pass rowClass as a slot prop -->

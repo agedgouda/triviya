@@ -26,10 +26,10 @@ const fetchPage = (url) => {
 
     <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true">
         <template #header>
-                <th class="px-4 py-2 text-left">Your Games</th>
-                <th class="px-4 py-2 text-center"># Playing</th>
-                <th class="px-4 py-2 text-center">Your Status</th>
-                <th class="px-4 py-2 text-center">Game Status</th>
+                <th class="px-4 py-2 text-left sm:px-4 py-1 ">Your Games</th>
+                <th class="px-4 py-2 text-center sm:px-4 py-1 "># Playing</th>
+                <th class="px-4 py-2 text-center sm:px-4 py-1 ">Your Status</th>
+                <th class="px-4 py-2 text-center sm:px-4 py-1 ">Game Status</th>
         </template>
 
             <template #default="{ rowClass }">
@@ -40,10 +40,10 @@ const fetchPage = (url) => {
                 ]"
                 @click="goToGame(game.id)"
             >
-                <td class="text-left">{{ game.name }}</td>
-                <td class="text-center">{{ game.players_count }}</td>
-                <td class="text-center">{{ game.current_user_status }}</td>
-                <td class="text-center">{{ game.status }}</td>
+                <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
+                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.players_count }}</td>
+                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.current_user_status }}</td>
+                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.status }}</td>
 
             </tr>
         </template>
