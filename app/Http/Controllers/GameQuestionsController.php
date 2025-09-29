@@ -23,27 +23,26 @@ class GameQuestionsController extends Controller
 
     public function showQuestionLanding(Game $game, Request $request)
     {
+
         $data = GameActions::FetchQuestionLandingAction($game, auth()->id());
 
-        if (! in_array($game->status, ['new', 'ready'], true)) {
-            return redirect()
-                ->route('games.show', $game) // you can pass the model directly
-                ->with('flashMessage', "You can't change your answers after the game starts.");
-        }
+        $routeName = $data['hasGameUser']
+            ? 'questions.showQuestions'
+            : $request->route()->getName();
 
         return Inertia::render('Questionnaire/Show', [
             'game'      => $data['game'],
             'questions' => $data['questions'],
             'user'      => $data['user'],
-            'routeName' => $data['hasGameUser']
-                ? 'questions.showQuestions'
-                : $request->route()->getName(),
+            'routeName' => $routeName,
             'error'     => session('error'),
         ]);
     }
 
     public function showQuestions(Game $game, Request $request)
     {
+
+
         // Check game status before doing anything
         if (!$game->hasSpace()) {
             $max = config('game.max_players');

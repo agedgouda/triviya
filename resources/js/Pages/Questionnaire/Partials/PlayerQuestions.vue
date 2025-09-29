@@ -45,7 +45,7 @@ const submitAnswers = async () => {
             { question: question.value } // assuming you're sending this as data
         );
 
-console.log(props.questions.length)
+
         questionNumber.value + 1 <= props.questions.length
         ? questionNumber.value++
         : router.visit(route('questions.showThankYou', { game: props.game.id, user: props.user.id }));

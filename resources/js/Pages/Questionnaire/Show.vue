@@ -21,9 +21,8 @@ const props = defineProps({
 });
 
 const currentLandingComponent = computed(() => {
-    if (props.routeName !== 'questions.showQuestionLanding') return null;
-
     if (!props.game.is_full && ['new', 'ready'].includes(props.game.status)) {
+        if (props.routeName !== 'questions.showQuestionLanding') return null;
         return LandingPage;
     } else {
         return LandingPageClosed;

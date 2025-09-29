@@ -18,7 +18,7 @@ const register = () => {
 };
 
 const join = () => {
-    router.visit(route('questions.showQuestions', props.game.id));
+    router.visit(route('games', props.game.id));
 };
 
 
@@ -62,7 +62,7 @@ const join = () => {
             </div>
             <div class="mb-2 text-center b-4" v-else>
                 <PrimaryButton type="button" class="mt-2" @click="join">
-                    <span>Join Game</span>
+                    <span>View Games</span>
                 </PrimaryButton>
             </div>
         </template>
