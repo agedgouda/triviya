@@ -14,7 +14,9 @@ class UserObserver
      */
     public function created(User $user)
     {
-        SyncMailchimp::dispatch($user->id);
+        if ($user->email_opt_in) {
+            SyncMailchimp::dispatch($user->id);
+        }
     }
 
 
@@ -23,8 +25,10 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        $oldEmail = $user->getOriginal('email'); // get previous email
-        SyncMailchimp::dispatch($user->id, $oldEmail);
+        if ($user->email_opt_in) {
+            $oldEmail = $user->getOriginal('email'); // get previous email
+            SyncMailchimp::dispatch($user->id, $oldEmail);
+        }
     }
 
     /**

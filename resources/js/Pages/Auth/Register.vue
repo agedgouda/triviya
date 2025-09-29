@@ -36,6 +36,7 @@ const form = useForm({
     password: '',
     password_confirmation: '',
     terms: false,
+    email_opt_in: false,
 });
 
 onMounted(() => {
@@ -180,6 +181,21 @@ const submit = () => {
                         </div>
                     </div>
                     <InputError class="mt-2" :message="form.errors.terms" />
+                </InputLabel>
+            </div>
+            <div class="mt-4">
+                <div class="mt-1">
+                    Would you like to recieve email from us
+                </div>
+                <InputLabel for="emailOptIn">
+                    <div class="flex items-center">
+                        <Checkbox id="terms" v-model:checked="form.email_opt_in" name="email_opt_in" />
+
+                        <div class="ms-2">
+                            Yes, please opt me in!
+                        </div>
+                    </div>
+                    <InputError class="mt-2" :message="form.errors.email_opt_in" />
                 </InputLabel>
             </div>
 

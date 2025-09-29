@@ -49,6 +49,7 @@ class RegisterController extends Controller
             'phone_number' => $request->phone_number,
             'birthday' => $validated['birthday'],
             'password' => Hash::make($validated['password']),
+            'email_opt_in' => $request->email_opt_in,
         ]);
 
         // Log the user in
