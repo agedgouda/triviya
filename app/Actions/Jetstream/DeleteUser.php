@@ -5,6 +5,7 @@ namespace App\Actions\Jetstream;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cookie;
 use Laravel\Jetstream\Contracts\DeletesTeams;
 use Laravel\Jetstream\Contracts\DeletesUsers;
 
@@ -20,9 +21,20 @@ class DeleteUser implements DeletesUsers
     /**
      * Delete the given user.
      */
-    public function delete(User $user): void
+public function delete(User $user): void
     {
-        DB::transaction(function () use ($user) {
+        $user->deleteProfilePhoto();
+        $user->tokens->each->delete();
+        $user->delete();
+
+        Cookie::queue('account_deleted_message',
+            'This account has been permanently deleted and can no longer be accessed. All related data has been securely removed.',
+            1 // expires in 1 minute
+        );
+
+
+
+        //DB::transaction(function () use ($user) {
             //$this->deleteTeams($user);
             /*$user->games()
                 ->where('status', 'full')
@@ -31,12 +43,7 @@ class DeleteUser implements DeletesUsers
                 });
             */
 
-
-            $user->deleteProfilePhoto();
-            $user->tokens->each->delete();
-            $user->delete();
-            Session::flash('flashMessage', 'This account has been permanently deleted and can no longer be accessed. All related data has been securely removed.');
-        });
+        //});
     }
 
     /**

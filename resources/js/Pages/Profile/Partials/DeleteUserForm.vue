@@ -24,7 +24,9 @@ const confirmUserDeletion = () => {
 const deleteUser = () => {
     form.delete(route('current-user.destroy'), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
+            onSuccess: () => {
+        window.location.href = route('/'); // or 'games'
+    },
         onError: () => passwordInput.value.focus(),
         onFinish: () => form.reset(),
     });

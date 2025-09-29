@@ -4,6 +4,7 @@ import { onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Flash from '@/Components/Flash.vue';
+import { usePage } from '@inertiajs/vue3'
 import { useFlash } from '@/Composables/useFlash';
 
 const props = defineProps({
@@ -26,19 +27,18 @@ const props = defineProps({
 
 
 const { setFlash } = useFlash();
+const page = usePage();
 
 onMounted(() => {
   if (props.flashMessage) {
     setFlash(props.flashMessage)
   }
+  else if (page.props.accountDeletedMessage) {
+    setFlash(page.props.accountDeletedMessage);
+    page.props.accountDeletedMessage = null;
+  }
 })
 
-function handleImageError() {
-    document.getElementById('screenshot-container')?.classList.add('!hidden');
-    document.getElementById('docs-card')?.classList.add('!row-span-1');
-    document.getElementById('docs-card-content')?.classList.add('!flex-row');
-    document.getElementById('background')?.classList.add('!hidden');
-}
 </script>
 
 <template>

@@ -10,6 +10,7 @@ use App\Observers\UserObserver;
 use App\Services\GameActions;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cookie;
 use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
             'stripeKey' => config('services.stripe.key'),
             'flashMessage' => function () {
                 return session('flashMessage');
+            },
+            'accountDeletedMessage' => function () {
+                return Cookie::get('account_deleted_message');
             },
         ]);
 
