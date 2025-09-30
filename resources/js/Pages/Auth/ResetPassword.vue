@@ -1,11 +1,14 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
+import { onMounted, watch } from 'vue';
+
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import PasswordInput from '@/Components/PasswordInput.vue';
 
 const props = defineProps({
     email: String,
@@ -18,6 +21,31 @@ const form = useForm({
     password: '',
     password_confirmation: '',
 });
+
+onMounted(() => {
+    if(form.password.length < 8) {
+        form.errors.password = "Password must be at least 8 characters";
+    }
+});
+
+
+watch(
+  [() => form.password, () => form.password_confirmation],
+  ([newPassword, newPasswordConfirmation], [oldPassword, oldPasswordConfirmation]) => {
+    // Handle changes to form.password
+    if(newPassword.length >= 8) {
+      form.errors.password = "";
+    } else {
+      form.errors.password = "Password must be at least 8 characters";
+    }
+
+    if(newPasswordConfirmation && newPassword !== newPasswordConfirmation) {
+      form.errors.password_confirmation = "Passwords do not match";
+    } else {
+      form.errors.password_confirmation = "";
+    }
+  }
+);
 
 const submit = () => {
     form.post(route('password.update'), {
@@ -51,23 +79,22 @@ const submit = () => {
 
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
-                <TextInput
+                <PasswordInput
                     id="password"
                     v-model="form.password"
-                    type="password"
                     class="mt-1 block w-full"
                     required
                     autocomplete="new-password"
                 />
+
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
+                <PasswordInput
                     id="password_confirmation"
                     v-model="form.password_confirmation"
-                    type="password"
                     class="mt-1 block w-full"
                     required
                     autocomplete="new-password"
