@@ -16,6 +16,18 @@ use App\Http\Middleware\EnsureIsAdmin;
 use Inertia\Inertia;
 
 
+//robots.txt route
+Route::get('/robots.txt', function () {
+    if (app()->environment('production')) {
+        return response("User-agent: *\nDisallow:", 200)
+            ->header('Content-Type', 'text/plain');
+    }
+
+    return response("User-agent: *\nDisallow: /", 200)
+        ->header('Content-Type', 'text/plain');
+});
+
+
 
 // Terms of Service Route
 Route::get('/terms-of-service', [TermsOfServiceController::class, 'show'])->name('terms.show');
