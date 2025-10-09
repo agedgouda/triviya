@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class MailchimpService
 {
     protected MailChimp $client;
+
     protected string $listId;
 
     public function __construct()
@@ -34,20 +35,21 @@ class MailchimpService
 
         // Upsert subscriber
         $result = $this->client->put("lists/{$this->listId}/members/{$subscriberHash}", [
-            "email_address" => $email,
-            "status_if_new" => "subscribed", // or "pending" if double opt-in is enabled
-            "merge_fields"  => $mergeFields,
+            'email_address' => $email,
+            'status_if_new' => 'subscribed', // or "pending" if double opt-in is enabled
+            'merge_fields' => $mergeFields,
         ]);
 
         if ($this->client->success()) {
-            Log::info("Mailchimp upsert successful", [
+            Log::info('Mailchimp upsert successful', [
                 'email' => $email,
                 'response' => $result,
             ]);
+
             return true;
         }
 
-        Log::error("Mailchimp merge upsert failed", [
+        Log::error('Mailchimp merge upsert failed', [
             'email' => $email,
             'error' => $this->client->getLastError(),
             'details' => $result,
@@ -67,10 +69,12 @@ class MailchimpService
 
         if ($this->client->success()) {
             Log::info("Mailchimp subscriber deleted: {$email}");
+
             return true;
         }
 
-        Log::error("Mailchimp delete failed for {$email}: " . $this->client->getLastError(), ['details' => $result]);
+        Log::error("Mailchimp delete failed for {$email}: ".$this->client->getLastError(), ['details' => $result]);
+
         return false;
     }
 }

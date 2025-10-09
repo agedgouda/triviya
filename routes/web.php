@@ -1,22 +1,20 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Laravel\Jetstream\Http\Controllers\Inertia\PrivacyPolicyController;
-use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
-
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameEventController;
 use App\Http\Controllers\GameInviteController;
 use App\Http\Controllers\GameQuestionsController;
 use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Middleware\EnsureIsAdmin;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Laravel\Jetstream\Http\Controllers\Inertia\PrivacyPolicyController;
+use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
 
-
-//robots.txt route
+// robots.txt route
 Route::get('/robots.txt', function () {
     if (app()->environment('production')) {
         return response("User-agent: *\nDisallow:", 200)
@@ -27,26 +25,22 @@ Route::get('/robots.txt', function () {
         ->header('Content-Type', 'text/plain');
 });
 
-
-
 // Terms of Service Route
 Route::get('/terms-of-service', [TermsOfServiceController::class, 'show'])->name('terms.show');
 
 // Privacy Policy Route
 Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('policy.show');
 
-
 Route::get('/', function () {
     return Inertia::render('Welcome'
-    /*,[
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]*/
+        /*,[
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]*/
     );
 });
-
 
 Route::get('/home', function () {
     if (auth()->check()) {
@@ -84,8 +78,6 @@ Route::middleware([
         Route::post('/answers/{user}', [GameQuestionsController::class, 'storeAnswers'])->name('questions.playerAnswers');
     });
 
-
-
     // Games Routes Group
     Route::prefix('games')->group(function () {
         Route::get('/', [GameController::class, 'index'])->name('games');
@@ -98,7 +90,7 @@ Route::middleware([
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
         Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
-        //Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
+        // Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
     });
@@ -123,8 +115,6 @@ Route::middleware([
     //         ->name('games.resend-invite');
     //     Route::post('/{game}/invite', [GameInviteController::class, 'createUserAndInvite'])->name('games.invite');
     // });
-
-
 
 });
 

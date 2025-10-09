@@ -14,9 +14,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        //User::factory(100)->withPersonalTeam()->create();
+        // User::factory(100)->withPersonalTeam()->create();
 
-       $this->call([
+        $this->call([
             ModeSeeder::class,
             QuestionSeeder::class,
             ModeQuestionSeeder::class,

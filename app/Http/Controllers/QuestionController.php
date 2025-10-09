@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
 use App\Models\Mode;
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
-use Carbon\Carbon;
 
 class QuestionController extends Controller
 {

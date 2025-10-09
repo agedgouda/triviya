@@ -21,4 +21,3 @@ class GameRequest extends FormRequest
         ];
     }
 }
-

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Question;
+use Illuminate\Database\Seeder;
 
 class QuestionSeeder extends Seeder
 {
@@ -37,5 +37,3 @@ class QuestionSeeder extends Seeder
         }
     }
 }
-
-

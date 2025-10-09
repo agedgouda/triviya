@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class CreateUserForGameAction
 {
-
     public function handle(Game $game, array $data)
     {
         // Create or get the user
@@ -41,7 +40,7 @@ class CreateUserForGameAction
             if (in_array($user->id, $playerIds)) {
                 return [
                     'status' => 'error',
-                    'message' => $data['first_name'] . ' ' . $data['last_name'] . ' is already attached to this game.',
+                    'message' => $data['first_name'].' '.$data['last_name'].' is already attached to this game.',
                 ];
             }
 
@@ -59,7 +58,7 @@ class CreateUserForGameAction
             return [
                 'status' => 'success',
                 'message' => 'Pending',
-                'player'  => $user,
+                'player' => $user,
             ];
         });
     }

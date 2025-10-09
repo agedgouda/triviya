@@ -2,23 +2,22 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
-    use HasUuids;
     use HasFactory;
     use HasProfilePhoto;
+    use HasUuids;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -47,12 +46,12 @@ class User extends Authenticatable implements FilamentUser
 
     public function getHasRegisteredAttribute()
     {
-        return !empty($this->password);
+        return ! empty($this->password);
     }
 
     public function getNameAttribute()
     {
-        return $this->first_name . ' ' . strtoupper(substr($this->last_name, 0, 1)) . '.';
+        return $this->first_name.' '.strtoupper(substr($this->last_name, 0, 1)).'.';
     }
 
     protected $appends = [
@@ -73,13 +72,13 @@ class User extends Authenticatable implements FilamentUser
     public function hostedGames()
     {
         return $this->belongsToMany(Game::class, 'game_user')
-                    ->wherePivot('is_host', true);
+            ->wherePivot('is_host', true);
     }
 
     public function games()
     {
         return $this->belongsToMany(Game::class, 'game_user')
-                    ->withPivot('is_host');
+            ->withPivot('is_host');
     }
 
     public function defaultProfilePhotoUrl()
@@ -87,4 +86,3 @@ class User extends Authenticatable implements FilamentUser
         return 'https://ui-avatars.com/api/?name='.$this->name.'&color=FFFFFF&background=A93390';
     }
 }
-

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-             $table->boolean('email_opt_in')->default(false);
+            $table->boolean('email_opt_in')->default(false);
         });
     }
 

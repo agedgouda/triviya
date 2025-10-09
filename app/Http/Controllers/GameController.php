@@ -1,22 +1,15 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Actions\Games\FetchGamesAction;
-
 use App\Facades\GameActions;
-use App\Models\Game;
-use App\Models\User;
-use App\Models\Mode;
 use App\Http\Requests\GameRequest;
+use App\Models\Game;
+use App\Models\Mode;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Inertia\Response;
-use App\Actions\Games;
-use Carbon\Carbon;
-
 
 class GameController extends Controller
 {
@@ -56,16 +49,16 @@ class GameController extends Controller
     {
         $response = GameActions::StoreGameAction($request->validated());
 
-        if($response["status"] === 'success') {
+        if ($response['status'] === 'success') {
 
-            return Redirect::route('games.show', $response["game"]->id)->with('flash', [
-                'status' => $response["status"],
+            return Redirect::route('games.show', $response['game']->id)->with('flash', [
+                'status' => $response['status'],
                 'message' => 'Game created successfully!',
             ]);
         } else {
             return redirect()->back()->withErrors([
-                'status' =>  $response["status"],
-                'message' => $response["message"],
+                'status' => $response['status'],
+                'message' => $response['message'],
             ]);
         }
     }
@@ -86,7 +79,6 @@ class GameController extends Controller
             'error' => session('error'),
         ]);
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -135,22 +127,23 @@ class GameController extends Controller
             ->with('flash', ['message' => 'Game duplicated successfully!']);
     }
 
-
-    public function removePlayer(Game $game, User $user) {
+    public function removePlayer(Game $game, User $user)
+    {
 
         $response = GameActions::RemoveUserAndResetQuestions($game, $user);
+
         return [
-                'status' => $response["status"],
-                'message' => $response["message"] ,
-                'game' => $response["game"]
-            ];
+            'status' => $response['status'],
+            'message' => $response['message'],
+            'game' => $response['game'],
+        ];
 
     }
 
     public function createGameQuestions(Game $game)
     {
         $response = GameActions::createGameQuestions($game);
-        return ['status' => 'success', 'message' => $response ];
-    }
 
+        return ['status' => 'success', 'message' => $response];
+    }
 }

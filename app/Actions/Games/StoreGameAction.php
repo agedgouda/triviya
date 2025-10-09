@@ -2,12 +2,11 @@
 
 namespace App\Actions\Games;
 
+use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\Question;
-use Illuminate\Support\Facades\DB;
-use App\Facades\GameActions;
-
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class StoreGameAction
 {
@@ -23,7 +22,7 @@ class StoreGameAction
                 // Prepare the host user from the currently authenticated user
                 $authUser = auth()->user();
 
-                if (!$authUser) {
+                if (! $authUser) {
                     throw new Exception('No authenticated user found.');
                 }
 
@@ -49,7 +48,7 @@ class StoreGameAction
 
                 $hostResult = GameActions::CreateUserForGameAction($game, $hostData);
                 if ($hostResult['status'] !== 'success') {
-                    throw new Exception('Failed to add host: ' . $hostResult['message']);
+                    throw new Exception('Failed to add host: '.$hostResult['message']);
                 }
 
                 $player = $hostResult['player'];
@@ -62,7 +61,7 @@ class StoreGameAction
 
                     return [
                         'status' => 'error',
-                        'message' => $questionResult['message'] . ' Rolled back player assignment.',
+                        'message' => $questionResult['message'].' Rolled back player assignment.',
                     ];
                 }
 

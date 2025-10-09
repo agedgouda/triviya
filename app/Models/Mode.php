@@ -11,10 +11,8 @@ class Mode extends Model
 
     protected $fillable = ['name'];
 
-
     public function questions()
     {
         return $this->belongsToMany(Question::class, 'mode_question');
     }
-
 }

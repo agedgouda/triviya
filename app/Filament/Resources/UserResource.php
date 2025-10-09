@@ -3,28 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\View;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
-
-
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\TextColumn;
-
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
@@ -73,7 +64,7 @@ class UserResource extends Resource
                     ->label('admin'),
                 TextColumn::make('full_name')
                     ->label('Name')
-                    ->getStateUsing(fn ($record) => $record->first_name . ' ' . $record->last_name)
+                    ->getStateUsing(fn ($record) => $record->first_name.' '.$record->last_name)
                     ->sortable(query: function ($query, $direction) {
                         return $query->orderBy('first_name', $direction)->orderBy('last_name', $direction);
                     })

@@ -2,12 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\User;
 use App\Jobs\SyncMailchimp;
-use App\Services\MailchimpService;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
-use Laravel\Jetstream\Contracts\DeletesUsers;
+use App\Models\User;
 
 class UserObserver
 {
@@ -20,7 +16,6 @@ class UserObserver
             SyncMailchimp::dispatch($user->id);
         }
     }
-
 
     /**
      * Handle the User "updated" event.

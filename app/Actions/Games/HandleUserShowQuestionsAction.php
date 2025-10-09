@@ -2,9 +2,9 @@
 
 namespace App\Actions\Games;
 
+use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\User;
-use App\Facades\GameActions;
 
 class HandleUserShowQuestionsAction
 {

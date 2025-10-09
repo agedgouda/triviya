@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Mode;
 use App\Models\Question;
+use Illuminate\Database\Seeder;
 
 class ModeQuestionSeeder extends Seeder
 {

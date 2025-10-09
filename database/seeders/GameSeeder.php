@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Game;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class GameSeeder extends Seeder
 {
@@ -13,7 +13,7 @@ class GameSeeder extends Seeder
         // Ensure a user with id = 1 exists (optional safety check)
         $host = User::find('9d957658-b52b-49a8-9b15-d28dcf3aecb7');
 
-        if (!$host) {
+        if (! $host) {
             $host = User::factory()->create(['id' => '9d957658-b52b-49a8-9b15-d28dcf3aecb7']); // Create the user if it doesn't exist
         }
 

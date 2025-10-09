@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Actions\Games;
 
 use App\Models\Game;

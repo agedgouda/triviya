@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Providers;
-use App\Models\User;
+
 use App\Models\Game;
 use App\Models\GameUser;
-
+use App\Models\User;
 use App\Observers\GameUserObserver;
 use App\Observers\UserObserver;
 use App\Services\GameActions;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(GameActions::class, function ($app) {
-            return new GameActions();
+            return new GameActions;
         });
     }
 

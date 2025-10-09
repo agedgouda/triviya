@@ -18,4 +18,3 @@ class QuestionFactory extends Factory
         ];
     }
 }
-

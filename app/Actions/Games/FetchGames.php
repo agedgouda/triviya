@@ -16,7 +16,7 @@ class FetchGames
             ->with(['players' => function ($q) use ($userId) {
                 // Only load pivot info for the current user
                 $q->where('user_id', $userId)
-                  ->select('users.id'); // minimal select
+                    ->select('users.id'); // minimal select
             }]);
 
         // Filter by hosted/attended

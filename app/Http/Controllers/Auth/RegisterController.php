@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Game;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -14,7 +14,7 @@ class RegisterController extends Controller
     /**
      * Show the prepopulated registration form for a user.
      */
-    public function show(Request $request, Game $game = null)
+    public function show(Request $request, ?Game $game = null)
     {
 
         $redirectTo = request()->input('redirect_to', route('questions.showQuestions', ['game' => $game->id]));
@@ -22,20 +22,20 @@ class RegisterController extends Controller
         // Pass an empty object if no user is found
         return Inertia::render('Auth/Register', [
             'game' => $game ?? (object) [], // Pass an empty object if user is null
-            'redirect_to' => $redirectTo
+            'redirect_to' => $redirectTo,
         ]);
     }
 
     /**
      * Handle the registration process.
      */
-    public function store(Request $request, Game $game = null)
+    public function store(Request $request, ?Game $game = null)
     {
 
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'birthday' => ['required', 'date', 'before_or_equal:' . now()->subYears(13)->format('Y-m-d')],
+            'birthday' => ['required', 'date', 'before_or_equal:'.now()->subYears(13)->format('Y-m-d')],
             'email' => 'required|email|max:255|unique:users,email', // Ensure email is unique
             'password' => 'required|string|min:8|confirmed',
         ], [

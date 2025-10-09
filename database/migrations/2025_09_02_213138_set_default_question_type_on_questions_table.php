@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -18,8 +18,8 @@ return new class extends Migration
         // Change the column default to 'text'
         Schema::table('questions', function (Blueprint $table) {
             $table->enum('question_type', ['date', 'text'])
-                  ->default('text')
-                  ->change();
+                ->default('text')
+                ->change();
         });
     }
 
@@ -31,8 +31,8 @@ return new class extends Migration
         // Remove the default
         Schema::table('questions', function (Blueprint $table) {
             $table->enum('question_type', ['date', 'text'])
-                  ->default(null)
-                  ->change();
+                ->default(null)
+                ->change();
         });
     }
 };

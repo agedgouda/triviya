@@ -3,15 +3,11 @@
 namespace App\Actions\Games;
 
 use App\Models\Game;
-use App\Models\User;
-use App\Models\GameUser;
 use App\Models\GameUserQuestions;
-
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class AssignPlayerQuestionsAction
 {
-
     public function handle(Game $game, User $user)
     {
 
@@ -19,14 +15,12 @@ class AssignPlayerQuestionsAction
             ->pluck('question_text')
             ->toArray();
 
-
         // Select 10 random questions from the game that haven't been used yet
         $selectedQuestions = $game->questions()
             ->whereNotIn('question_text', $assignedQuestions)
             ->inRandomOrder()
             ->limit(10)
             ->get();
-
 
         // Prepare bulk insert data for question assignments
         $assignments = [];
@@ -48,16 +42,16 @@ class AssignPlayerQuestionsAction
             $assignments[] = [
                 'game_id' => $game->id,
                 'user_id' => $user->id,
-                'player_name'   => $user->name,
+                'player_name' => $user->name,
                 'question_text' => $question->question_text,
                 'question_type' => $question->question_type,
-                'created_at'    => now(),
-                'updated_at'    => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ];
         }
 
         // Bulk insert all question assignments at once
-        if (!empty($assignments)) {
+        if (! empty($assignments)) {
             GameUserQuestions::insert($assignments);
             $status = 'success';
             $message = 'questions assigned to user';

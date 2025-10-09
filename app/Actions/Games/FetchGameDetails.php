@@ -41,9 +41,9 @@ class FetchGameDetails
 
         $profilePhotoUrl = $user->profile_photo_path
             ? $user->profile_photo_url
-            : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) .
-                '&color=' . ($isSelf ? 'FFFFFF' : 'A93390').
-                '&background=' . ($isSelf ? 'A93390' : 'FFFFFF');
+            : 'https://ui-avatars.com/api/?name='.urlencode($user->name).
+                '&color='.($isSelf ? 'FFFFFF' : 'A93390').
+                '&background='.($isSelf ? 'A93390' : 'FFFFFF');
 
         return [
             'id' => $user->id,

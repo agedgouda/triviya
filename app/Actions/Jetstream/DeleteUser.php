@@ -4,8 +4,8 @@ namespace App\Actions\Jetstream;
 
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Laravel\Jetstream\Contracts\DeletesTeams;
 use Laravel\Jetstream\Contracts\DeletesUsers;
 
@@ -14,14 +14,12 @@ class DeleteUser implements DeletesUsers
     /**
      * Create a new action instance.
      */
-    public function __construct(protected DeletesTeams $deletesTeams)
-    {
-    }
+    public function __construct(protected DeletesTeams $deletesTeams) {}
 
     /**
      * Delete the given user.
      */
-public function delete(User $user): void
+    public function delete(User $user): void
     {
         $user->deleteProfilePhoto();
         $user->tokens->each->delete();
@@ -32,18 +30,16 @@ public function delete(User $user): void
             1 // expires in 1 minute
         );
 
+        // DB::transaction(function () use ($user) {
+        // $this->deleteTeams($user);
+        /*$user->games()
+            ->where('status', 'full')
+            ->each(function ($game) {
+                $game->update(['status' => null]);
+            });
+        */
 
-
-        //DB::transaction(function () use ($user) {
-            //$this->deleteTeams($user);
-            /*$user->games()
-                ->where('status', 'full')
-                ->each(function ($game) {
-                    $game->update(['status' => null]);
-                });
-            */
-
-        //});
+        // });
     }
 
     /**

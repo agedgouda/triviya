@@ -2,12 +2,10 @@
 
 namespace App\Actions\Games;
 
-use App\Models\User;
 use App\Models\Game;
 use App\Models\GameUser;
 use App\Models\GameUserQuestions;
-use Carbon\Carbon;
-
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class RemoveUserAndResetQuestions

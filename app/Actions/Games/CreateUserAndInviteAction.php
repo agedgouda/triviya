@@ -2,16 +2,13 @@
 
 namespace App\Actions\Games;
 
+use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\GameUserQuestions;
-
-
-use App\Facades\GameActions;
 
 class CreateUserAndInviteAction
 {
     protected $mailService;
-
 
     public function handle(Game $game, array $data)
     {
@@ -36,7 +33,7 @@ class CreateUserAndInviteAction
 
             return [
                 'status' => 'error',
-                'message' => $questionResult['message'] . ' Rolled back player assignment.',
+                'message' => $questionResult['message'].' Rolled back player assignment.',
             ];
         }
 
@@ -53,7 +50,7 @@ class CreateUserAndInviteAction
 
             return [
                 'status' => 'error',
-                'message' => $inviteResult['message'] . ' Rolled back player and questions.',
+                'message' => $inviteResult['message'].' Rolled back player and questions.',
             ];
         }
 

@@ -3,14 +3,13 @@
 namespace App\Actions\Games;
 
 use App\Models\Game;
-use App\Models\User;
 use App\Models\GameUser;
 use App\Models\GameUserQuestions;
+use App\Models\User;
 use App\Services\MailService;
 
 class StoreAnswersAction
 {
-
     protected $mailService;
 
     public function __construct()
@@ -22,11 +21,11 @@ class StoreAnswersAction
     {
         // Find the game_user entry for the current user and the specified game
         $gameUser = GameUser::where('user_id', $user->id)
-        ->where('game_id', $game->id)
-        ->where('status', '!=', 'Host')
-        ->first();
+            ->where('game_id', $game->id)
+            ->where('status', '!=', 'Host')
+            ->first();
 
-        if (!$gameUser) {
+        if (! $gameUser) {
             return ['status' => 'error', 'message' => 'User not found for this game'];
         }
 
@@ -37,14 +36,14 @@ class StoreAnswersAction
 
         $status = $gameUser->status;
 
-        //if this is the first time filling out the form, let the host know this person completed the form
-        if($gameUser->status !== 'All Questions Answered') {
+        // if this is the first time filling out the form, let the host know this person completed the form
+        if ($gameUser->status !== 'All Questions Answered') {
 
             // Update the player's status in the pivot table
             $status = 'Questions Answered';
             $game->players()->updateExistingPivot($user->id, ['status' => $status]);
 
-            //check to see how many people we are waiting for
+            // check to see how many people we are waiting for
             $game->updateStatusIfReady();
 
             $result = $this->mailService->sendPlayerAnsweredQuestions($user, $game, $noAnswers);

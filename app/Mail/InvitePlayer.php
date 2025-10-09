@@ -3,19 +3,18 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
-use App\Models\Game;
 
 class InvitePlayer extends Mailable
 {
     use Queueable, SerializesModels;
+
     public $invitee;
+
     public $game;
 
     /**
@@ -29,7 +28,6 @@ class InvitePlayer extends Mailable
         $this->game = $game;
     }
 
-
     /**
      * Get the message envelope.
      */
@@ -41,7 +39,6 @@ class InvitePlayer extends Mailable
         );
     }
 
-
     /**
      * Get the message content definition.
      */
@@ -49,7 +46,7 @@ class InvitePlayer extends Mailable
     {
         return new Content(
             view: 'emails.invitation',
-            with: ['invitee' => $this->invitee,'game' => $this->game,'host' => $this->game->host,],
+            with: ['invitee' => $this->invitee, 'game' => $this->game, 'host' => $this->game->host],
         );
     }
 

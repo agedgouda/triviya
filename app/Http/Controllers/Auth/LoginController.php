@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Game;
 
 class LoginController extends Controller
 {
@@ -17,10 +16,9 @@ class LoginController extends Controller
     {
         $redirectTo = request()->input('redirect_to', route('questions.showQuestions', ['game' => $game->id]));
 
-
         return inertia('Auth/Login', [
             'game' => $game,
-            'redirect_to' => $redirectTo
+            'redirect_to' => $redirectTo,
         ]);
     }
 
@@ -37,7 +35,7 @@ class LoginController extends Controller
             $user = Auth::user();
             $isPlayer = $game->players()->where('users.id', $user->id)->exists();
 
-            if ($game->isLocked() && !$isPlayer) {
+            if ($game->isLocked() && ! $isPlayer) {
                 // Game is full or in progress, and they’re not in it
                 return redirect()->route('games');
             }

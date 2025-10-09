@@ -2,9 +2,9 @@
 
 namespace App\Actions\Games;
 
+use App\Facades\GameActions;
 use App\Models\Game;
 use Carbon\Carbon;
-use App\Facades\GameActions;
 
 class DuplicateGameAction
 {
@@ -15,7 +15,7 @@ class DuplicateGameAction
     {
         // Copy the game attributes
         $gameData = $game->only(['name', 'date_time', 'mode_id', 'location']);
-        $gameData['name'] .= ' - ' . Carbon::now()->format('m/d/Y');
+        $gameData['name'] .= ' - '.Carbon::now()->format('m/d/Y');
         $gameData['status'] = 'new';
 
         // Create the new game (host is added automatically via StoreGameAction)
@@ -27,16 +27,16 @@ class DuplicateGameAction
 
         // Attach all other players from old game (exclude the new host)
         $otherPlayers = $game->players
-            ->reject(fn($player) => $player->id === $hostId)
-            ->mapWithKeys(fn($player) => [
+            ->reject(fn ($player) => $player->id === $hostId)
+            ->mapWithKeys(fn ($player) => [
                 $player->id => [
                     'status' => 'Quiz Available',
                     'is_host' => $player->pivot->is_host,
-                ]
+                ],
             ])
             ->toArray();
 
-        if (!empty($otherPlayers)) {
+        if (! empty($otherPlayers)) {
             $newGame->players()->attach($otherPlayers);
         }
 

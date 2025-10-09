@@ -17,7 +17,6 @@ return new class extends Migration
             $table->uuid('game_id');
             $table->uuid('question_id');
 
-
             $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
         });

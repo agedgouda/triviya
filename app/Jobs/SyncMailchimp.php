@@ -4,24 +4,24 @@ namespace App\Jobs;
 
 use App\Models\User;
 use App\Services\MailchimpService;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class SyncMailchimp implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected string $userId;
+
     protected ?string $oldEmail;
 
     /**
-     * @param string $userId
-     * @param string|null $oldEmail Previous email if this is an update
+     * @param  string|null  $oldEmail  Previous email if this is an update
      */
     public function __construct(string $userId, ?string $oldEmail = null)
     {
@@ -35,10 +35,11 @@ class SyncMailchimp implements ShouldQueue
 
         if (! $user) {
             Log::warning("Mailchimp sync skipped: user ID {$this->userId} not found.");
+
             return;
         }
 
-        $mailchimp = new MailchimpService();
+        $mailchimp = new MailchimpService;
 
         // If email changed, delete old subscriber first
         if ($this->oldEmail && $this->oldEmail !== $user->email) {
@@ -52,10 +53,10 @@ class SyncMailchimp implements ShouldQueue
         $success = $mailchimp->upsertMergeSubscriber(
             $user->email,
             [
-                'FNAME'    => $user->first_name ?? '',
-                'LNAME'    => $user->last_name ?? '',
+                'FNAME' => $user->first_name ?? '',
+                'LNAME' => $user->last_name ?? '',
                 'BIRTHDAY' => $birthday,
-                'PHONE'    => $user->phone_number ?? '',
+                'PHONE' => $user->phone_number ?? '',
             ]
         );
 

@@ -36,4 +36,3 @@ class CreateGameUserTable extends Migration
         Schema::dropIfExists('game_user');
     }
 }
-

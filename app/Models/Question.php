@@ -11,7 +11,7 @@ class Question extends Model
     use HasFactory;
     use HasUuids;
 
-    protected $fillable = ['question_text','question_type'];
+    protected $fillable = ['question_text', 'question_type'];
 
     public function modes()
     {

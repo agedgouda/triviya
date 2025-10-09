@@ -1,26 +1,15 @@
 <?php
-namespace App\Http\Controllers;
 
-use App\Actions\Games\FetchGamesAction;
+namespace App\Http\Controllers;
 
 use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\User;
-use App\Models\GameUser;
-use App\Models\GameUserQuestions;
-use App\Http\Requests\GameRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-use Inertia\Response;
-use App\Mail\InvitePlayer;
-use App\Actions\Games;
-
 
 class GameQuestionsController extends Controller
 {
-
     public function showQuestionLanding(Game $game, Request $request)
     {
 
@@ -31,20 +20,19 @@ class GameQuestionsController extends Controller
             : $request->route()->getName();
 
         return Inertia::render('Questionnaire/Show', [
-            'game'      => $data['game'],
+            'game' => $data['game'],
             'questions' => $data['questions'],
-            'user'      => $data['user'],
+            'user' => $data['user'],
             'routeName' => $routeName,
-            'error'     => session('error'),
+            'error' => session('error'),
         ]);
     }
 
     public function showQuestions(Game $game, Request $request)
     {
 
-
         // Check game status before doing anything
-        if (!$game->hasSpace()) {
+        if (! $game->hasSpace()) {
             $max = config('game.max_players');
 
             return redirect()
@@ -52,7 +40,7 @@ class GameQuestionsController extends Controller
                 ->with('flashMessage', "The game you are trying to access has reached capacity. TriviYa has a limit of {$max} players per game.");
         }
 
-        if (!in_array($game->status, ['new', 'ready'])) {
+        if (! in_array($game->status, ['new', 'ready'])) {
             return redirect()
                 ->route('games.show', $game->id) // or wherever you want them to go
                 ->with('flashMessage', "You can't change your answers once the game starts.");
@@ -66,15 +54,14 @@ class GameQuestionsController extends Controller
         ]));
     }
 
-
-    public function showThankYou(Game $game, User $user) {
-        return Inertia::render('Questionnaire/Show' , [
+    public function showThankYou(Game $game, User $user)
+    {
+        return Inertia::render('Questionnaire/Show', [
             'game' => $game->load(['host']),
             'user' => $user,
             'routeName' => request()->route()->getName(),
         ]);
     }
-
 
     public function storeAnswer(Request $request, Game $game, User $user)
     {
@@ -82,7 +69,6 @@ class GameQuestionsController extends Controller
 
         return $response;
     }
-
 
     public function storeAnswers(Request $request, Game $game, User $user)
     {
@@ -92,11 +78,11 @@ class GameQuestionsController extends Controller
 
         $response = GameActions::storeAnswersAction($game, $user, $validated);
 
-        //$response = array('status' => 'test');
+        // $response = array('status' => 'test');
 
-        if($response['status'] === 'error') {
+        if ($response['status'] === 'error') {
             return redirect()->back()->withErrors([
-                'message' => $response["message"],
+                'message' => $response['message'],
             ]);
         }
 
@@ -105,5 +91,4 @@ class GameQuestionsController extends Controller
             'user' => $user->id,
         ]);
     }
-
 }

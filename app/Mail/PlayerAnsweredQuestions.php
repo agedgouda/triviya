@@ -3,21 +3,20 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
-use App\Models\Game;
-
 
 class PlayerAnsweredQuestions extends Mailable
 {
     use Queueable, SerializesModels;
+
     public $player;
+
     public $game;
+
     public $noAnswers;
 
     /**
@@ -33,7 +32,6 @@ class PlayerAnsweredQuestions extends Mailable
         $this->noAnswers = $noAnswers;
     }
 
-
     /**
      * Get the message envelope.
      */
@@ -45,7 +43,6 @@ class PlayerAnsweredQuestions extends Mailable
         );
     }
 
-
     /**
      * Get the message content definition.
      */
@@ -53,7 +50,7 @@ class PlayerAnsweredQuestions extends Mailable
     {
         return new Content(
             view: 'emails.player-complete',
-            with: ['player' => $this->player,'game' => $this->game,'host' => $this->game->host,'noAnswers' => $this->noAnswers,],
+            with: ['player' => $this->player, 'game' => $this->game, 'host' => $this->game->host, 'noAnswers' => $this->noAnswers],
         );
     }
 

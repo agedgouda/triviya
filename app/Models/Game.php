@@ -23,14 +23,14 @@ class Game extends Model
     public function players()
     {
         return $this->belongsToMany(User::class, 'game_user')
-                    ->withPivot('id','status', 'is_host');
+            ->withPivot('id', 'status', 'is_host');
     }
 
     public function host()
     {
         return $this->belongsToMany(User::class, 'game_user')
-                    ->wherePivot('is_host', true)
-                    ->withPivot('status');
+            ->wherePivot('is_host', true)
+            ->withPivot('status');
     }
 
     public function scopeHostedBy($query, $userId)
@@ -59,7 +59,7 @@ class Game extends Model
 
     public function isLocked(): bool
     {
-        return $this->is_full || !in_array($this->status, ['new', 'ready']);
+        return $this->is_full || ! in_array($this->status, ['new', 'ready']);
     }
 
     public function getHostAttribute()

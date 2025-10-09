@@ -117,8 +117,6 @@ class CreateEventQuestionsAction
         $game->status = 'in progress';
         $game->update();
 
-
-
         return $this->assignQuestionNumbers($selected);
     }
 
@@ -135,7 +133,7 @@ class CreateEventQuestionsAction
         // Round-robin shuffle
         while ($grouped->flatten()->isNotEmpty()) {
             foreach ($userIds->shuffle() as $uid) {
-                if (!empty($grouped[$uid]) && $grouped[$uid]->isNotEmpty()) {
+                if (! empty($grouped[$uid]) && $grouped[$uid]->isNotEmpty()) {
                     $result->push($grouped[$uid]->shift());
                 }
             }
@@ -153,7 +151,7 @@ class CreateEventQuestionsAction
 
     protected function assignQuestionNumbers($questions)
     {
-        $grouped = $questions->groupBy('user_id')->map(fn($qs) => $qs->values());
+        $grouped = $questions->groupBy('user_id')->map(fn ($qs) => $qs->values());
         $userIds = $grouped->keys()->all();
         $numPlayers = count($userIds);
 
@@ -165,18 +163,18 @@ class CreateEventQuestionsAction
             $round = [];
             $availableIds = $userIds;
 
-            while (!empty($availableIds)) {
+            while (! empty($availableIds)) {
                 // Filter candidates with questions remaining
-                $candidates = array_filter($availableIds, fn($id) => isset($grouped[$id]) && $grouped[$id]->isNotEmpty());
+                $candidates = array_filter($availableIds, fn ($id) => isset($grouped[$id]) && $grouped[$id]->isNotEmpty());
 
                 if (empty($candidates)) {
                     break; // nothing left to pick in this round
                 }
 
                 // Prefer candidates that are not equal to lastUid
-                $safeCandidates = array_filter($candidates, fn($id) => $id !== $lastUid);
+                $safeCandidates = array_filter($candidates, fn ($id) => $id !== $lastUid);
 
-                if (!empty($safeCandidates)) {
+                if (! empty($safeCandidates)) {
                     $candidates = $safeCandidates;
                 }
 
@@ -206,5 +204,4 @@ class CreateEventQuestionsAction
 
         return $result;
     }
-
 }

@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Actions\Games;
 
 use App\Models\Game;
-use App\Models\User;
 use App\Models\GameUserQuestions;
+use App\Models\User;
 
 class GetUserGameQuestionsAction
 {

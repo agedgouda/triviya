@@ -6,10 +6,9 @@ use App\Models\GameUser;
 
 class GameUserObserver
 {
-
     public function creating(GameUser $gameUser)
     {
-        if (!$gameUser->game->hasSpace()) {
+        if (! $gameUser->game->hasSpace()) {
             return false; // cancels the attach
         }
     }

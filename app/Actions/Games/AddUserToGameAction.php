@@ -2,10 +2,10 @@
 
 namespace App\Actions\Games;
 
+use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\GameUser;
 use App\Models\User;
-use App\Facades\GameActions;
 
 class AddUserToGameAction
 {
@@ -15,7 +15,7 @@ class AddUserToGameAction
             ->where('user_id', $user->id)
             ->exists();
 
-        if (!$isPlaying) {
+        if (! $isPlaying) {
             GameUser::create([
                 'game_id' => $game->id,
                 'user_id' => $user->id,

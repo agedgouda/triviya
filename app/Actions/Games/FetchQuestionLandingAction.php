@@ -1,15 +1,14 @@
 <?php
+
 namespace App\Actions\Games;
 
 use App\Models\Game;
-use App\Models\User;
 use App\Models\GameUser;
 use App\Models\GameUserQuestions;
-use Illuminate\Support\Collection;
+use App\Models\User;
 
 class FetchQuestionLandingAction
 {
-
     public static function handle(Game $game, ?string $userId, ?string $currentRouteName = null): array
     {
         $game->load(['host', 'questions', 'players']);
