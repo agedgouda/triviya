@@ -31,12 +31,10 @@ const form = useForm({
     last_name: props.user.last_name || '',
     email: props.user.email || '',
     redirect_to: props.redirect_to || '',
-    birthday: '',
     phone_number: '',
     password: '',
     password_confirmation: '',
     terms: false,
-    email_opt_in: false,
 });
 
 onMounted(() => {
@@ -132,18 +130,6 @@ const submit = () => {
             </div>
 
             <div class="mt-3">
-                <InputLabel for="birthday" value="Birthday" />
-                <TextInput
-                    id="birthday"
-                    v-model="form.birthday"
-                    type="date"
-                    class="block w-full"
-                    required
-                />
-                <InputError class="mt-2" :message="form.errors.birthday" />
-            </div>
-
-            <div class="mt-3">
                 <InputLabel for="password" value="Password" />
 
                 <PasswordInput
@@ -183,22 +169,6 @@ const submit = () => {
                     <InputError class="mt-2" :message="form.errors.terms" />
                 </InputLabel>
             </div>
-            <div class="mt-4">
-                <div class="mt-1">
-                    Would you like to recieve email from us
-                </div>
-                <InputLabel for="emailOptIn">
-                    <div class="flex items-center">
-                        <Checkbox id="terms" v-model:checked="form.email_opt_in" name="email_opt_in" />
-
-                        <div class="ms-2">
-                            Yes, please opt me in!
-                        </div>
-                    </div>
-                    <InputError class="mt-2" :message="form.errors.email_opt_in" />
-                </InputLabel>
-            </div>
-
             <div class="flex items-center justify-end mt-4">
                 <Link :href="route('login')" class="underline text-sm text-triviyaRegular hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Already registered?

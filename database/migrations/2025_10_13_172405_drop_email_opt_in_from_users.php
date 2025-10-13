@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_free')->default(false);
-            $table->unsignedSmallInteger('games_purchased_count')->default(0);
+            $table->dropColumn('email_opt_in');
         });
     }
 

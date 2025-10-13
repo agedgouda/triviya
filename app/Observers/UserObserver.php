@@ -2,7 +2,8 @@
 
 namespace App\Observers;
 
-use App\Jobs\SyncMailchimp;
+use App\Jobs\SyncUserWithMailchimpJob;
+use App\Jobs\DeleteUserFromMailchimpJob;
 use App\Models\User;
 
 class UserObserver
@@ -12,9 +13,9 @@ class UserObserver
      */
     public function created(User $user)
     {
-        if ($user->email_opt_in) {
-            SyncMailchimp::dispatch($user->id);
-        }
+
+        SyncUserWithMailchimpJob::dispatch($user->id);
+
     }
 
     /**
@@ -22,10 +23,10 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        if ($user->email_opt_in) {
-            $oldEmail = $user->getOriginal('email'); // get previous email
-            SyncMailchimp::dispatch($user->id, $oldEmail);
-        }
+
+        $oldEmail = $user->getOriginal('email'); // get previous email
+        SyncUserWithMailchimpJob::dispatch($user->id, $oldEmail);
+
     }
 
     /**
@@ -34,6 +35,14 @@ class UserObserver
     public function deleted(User $user): void
     {
         //
+    }
+
+    /**
+     * Handle the User "deleting" event.
+     */
+    public function deleting(User $user)
+    {
+         DeleteUserFromMailchimpJob::dispatch($user->email);
     }
 
     /**

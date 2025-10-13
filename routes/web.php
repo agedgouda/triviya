@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameEventController;
 use App\Http\Controllers\GameInviteController;
+use App\Http\Controllers\GamePurchaseController;
 use App\Http\Controllers\GameQuestionsController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Middleware\EnsureIsAdmin;
@@ -57,6 +58,12 @@ Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prep
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
+
+Route::middleware(['can.purchase'])->group(function () {
+    Route::get('/buy-games/{product?}', [GamePurchaseController::class, 'index'])->name('games.purchase');
+    Route::post('/buy-games', [GamePurchaseController::class, 'store'])->name('games.purchase.store');
+    Route::get('/buy-games/success', [GamePurchaseController::class, 'success'])->name('games.purchase.success');
+});
 
 Route::prefix('questions/{game}')->group(function () {
     Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
