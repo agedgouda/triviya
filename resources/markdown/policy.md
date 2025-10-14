@@ -1,6 +1,6 @@
-# **Privacy Policy**
+# <p style="text-align:center">**Privacy Policy**</p>
 
-## **Last Modified October 2025**
+## <p style="text-align:center">**Last Modified October 2025**</p>
 
 
 Please read this Privacy Policy carefully to understand our policies and practices regarding your information and how we will treat it. By accessing or using the Services, you agree to this Privacy Policy. If you do not agree with our policies and practices, your choice is not to use the Services. This Privacy Policy is incorporated into our Terms of Use [app.triviyagame.com/terms-of-service](/terms-of-service) (together, the “Policy”), and capitalized terms used herein have the meaning set forth in the Terms of Use. 
