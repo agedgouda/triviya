@@ -11,8 +11,12 @@ const props = defineProps({
     games: Object,
 });
 
-const { data: gamesList, current_page, last_page, links } = props.games;
+const { data: gamesList } = props.games;
 const showDone = ref(false);
+
+// Pagination state
+const currentPage = ref(1);
+const perPage = 10;
 
 const goToGame = (gameId) => {
   window.location.href = route('games.show', gameId); // Redirect to /games/{gameId}
@@ -25,6 +29,16 @@ const filteredGames = computed(() => {
     })
 });
 
+// Slice for current page
+const paginatedGames = computed(() => {
+    const start = (currentPage.value - 1) * perPage;
+    const end = start + perPage;
+    return filteredGames.value.slice(start, end);
+});
+
+// Total pages for filtered array
+const totalPages = computed(() => Math.ceil(filteredGames.value.length / perPage));
+
 const gameStatus = (status) => {
     if (status.includes('done')) {
         status = 'played'
@@ -32,10 +46,8 @@ const gameStatus = (status) => {
     return status.replace(/\b\w/g, c => c.toUpperCase())
 }
 
-const fetchPage = (url) => {
-    if (url) {
-        router.visit(url);
-    }
+const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages.value) currentPage.value = page;
 };
 
 </script>
@@ -58,7 +70,7 @@ const fetchPage = (url) => {
         </template>
 
             <template #default="{ rowClass }">
-            <tr v-for="game in filteredGames"
+            <tr v-for="game in paginatedGames"
                 :key="game.id"
                 :class="[
                     rowClass
@@ -74,25 +86,36 @@ const fetchPage = (url) => {
         </template>
     </Table>
 
-    <div v-if="links.length > 3">
-        <!-- Pagination Links -->
-        <div class="mt-4 flex justify-center">
-            <nav class="inline-flex rounded-md shadow">
-                <button
-                    v-for="link in links"
-                    :key="link.url"
-                    :disabled="!link.url"
-                    @click="fetchPage(link.url)"
-                    :class="[
-                        'px-4 py-2 border text-sm font-medium',
-                        link.active ? 'bg-triviya-red text-white' : 'bg-white text-triviya-red',
-                        !link.url ? 'cursor-not-allowed' : ''
-                    ]"
-                >
-                    <span v-html="link.label"></span>
-                </button>
-            </nav>
-        </div>
+    <div v-if="totalPages > 1" class="mt-4 flex justify-center space-x-1">
+        <button
+        @click="goToPage(currentPage - 1)"
+        :disabled="currentPage === 1"
+        class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
+        >
+        Prev
+        </button>
+
+        <button
+        v-for="page in totalPages"
+        :key="page"
+        @click="goToPage(page)"
+        :class="[
+            'px-3 py-1 border rounded',
+            page === currentPage
+            ? 'bg-triviya-red text-white'
+            : 'bg-white text-triviya-red hover:bg-triviya-red hover:text-white'
+        ]"
+        >
+        {{ page }}
+        </button>
+
+        <button
+        @click="goToPage(currentPage + 1)"
+        :disabled="currentPage === totalPages"
+        class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
+        >
+        Next
+        </button>
     </div>
 </template>
 
