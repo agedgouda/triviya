@@ -151,7 +151,7 @@ const confirmRemovePlayer = async () => {
   <!-- Host Instructions -->
   <div v-if="isHost" class="mt-4">
     <div v-if="['new', 'ready'].includes(game.status)">
-      <span class="hidden md:inline-block">Congrats, you’re the host of TriviYa. You’ll need to:</span>
+      <span class="hidden md:block">Congrats, you’re the host of TriviYa. You’ll need to:</span>
       <ul class="hidden md:inline-block list-disc pl-4 ml-0">
         <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more player<span v-if="4 - players.length > 1">s</span> to join.</li>
         <li><span class="font-bold">Share</span> your unique game invite link via email, text, or group chat — whatever works best for you.</li>

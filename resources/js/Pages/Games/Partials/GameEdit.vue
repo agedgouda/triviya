@@ -1,11 +1,12 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { computed, ref, onMounted } from 'vue';
+import { router } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { loadStripe } from '@stripe/stripe-js';
+//import { loadStripe } from '@stripe/stripe-js';
 import { usePage } from '@inertiajs/vue3'
 
 
@@ -20,6 +21,11 @@ const props = defineProps({
 });
 
 const page = usePage();
+
+const goBack = () => {
+    window.history.back();
+}
+
 //const cardElement = ref(null);
 //const stripe = ref(null);
 //const stripePublicKey = computed(() => page.props.stripeKey);
@@ -192,6 +198,10 @@ onMounted(async () => {
             -->
             <div class="flex flex-col sm:flex-row">
                 <div class="flex items-center mt-10">
+
+                    <SecondaryButton type="button" class="mr-3" @click="goBack">
+                        <span>Back</span>
+                    </SecondaryButton>
                     <PrimaryButton  :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         {{ routeName == 'games.create' ? 'Continue' : 'Update Game'  }}
                     </PrimaryButton>
