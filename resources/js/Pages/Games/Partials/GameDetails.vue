@@ -180,14 +180,14 @@ const confirmRemovePlayer = async () => {
     <span class="text-red-800">{{ $page.props.errors.msg }}</span>
     <Table class="min-w-full table-auto">
       <template #header>
-        <th class="px-4 py-2 text-left">Name</th>
+        <th class="px-2 sm:px-4 py-2 text-left">Name</th>
         <th class="px-4 py-2 text-center">Questions</th>
         <th class="px-4 py-2 text-center"></th>
       </template>
 
       <template #default="{ rowClass }">
         <tr v-for="player in players" :key="player.id" :class="[rowClass]">
-          <td class="px-1 sm:px-4 py-2 flex items-center space-x-2">
+          <td class="px-2 sm:px-4 py-2 md:flex md:items-center md:space-x-2">
             <img
                 class="hidden md:inline-block w-8 h-8 rounded-full object-cover border-triviyaRegular border-2"
                 :src="player.profile_photo_url"
@@ -195,8 +195,8 @@ const confirmRemovePlayer = async () => {
             />
             <span>{{ player.name }}</span>
           </td>
-          <td class="px-4 py-2 text-center">{{ player.status }}</td>
-          <td class="px-4 py-2 text-center">
+          <td class="px-1 sm:px-4 py-2 text-center">{{ player.status }}</td>
+          <td class="px-1 sm:px-4 py-2 text-center">
             <PrimaryButton
               v-if="$page.props.auth.user.id === player.id && ['new', 'ready'].includes(game.status)"
               :class="{ 'pulse-button': player.status === 'Quiz Available' }"
