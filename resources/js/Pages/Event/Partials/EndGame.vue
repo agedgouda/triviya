@@ -61,8 +61,6 @@ const startBonusRound = () => {
                 <div class="border border-triviya-red sm:rounded-lg p-4">
                     <div class="font-bold">🔁 New Game</div>
                     <div>Start fresh! Players will get 10 new questions to answer before the next round.</div>
-
-                    {{ game.status }}
                     <div class="font-bold mt-2">
                         <PrimaryButton @click="restartGame()">
                             Start New Game

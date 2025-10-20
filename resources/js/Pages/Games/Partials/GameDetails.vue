@@ -26,7 +26,7 @@ const game = ref({ ...props.game });
 
 // Computed helpers
 const questionsAnsweredCount = computed(() =>
-  props.players.filter(p => p.status === 'Questions Answered' || p.status === 'Quiz Complete').length
+  props.players.filter(p => p.status === 'Questions Answered' || p.status === 'Complete').length
 );
 
 const playersRemainingToAnswer = computed(() => props.players.length - questionsAnsweredCount.value);
@@ -42,8 +42,8 @@ const startGame = () => router.visit(route('games.startGame', { game: props.game
 
 
 const quizButtonText = (player) => {
-  if (player.status === 'Quiz Available') return 'Start Quiz';
-  if (player.status !== 'Quiz Complete') return 'Finish Quiz';
+  if (player.status === 'Available') return 'Start Quiz';
+  if (player.status !== 'Complete') return 'Finish Quiz';
   return 'Review Quiz';
 };
 
@@ -199,7 +199,7 @@ const confirmRemovePlayer = async () => {
           <td class="px-1 sm:px-4 py-2 text-center">
             <PrimaryButton
               v-if="$page.props.auth.user.id === player.id && ['new', 'ready'].includes(game.status)"
-              :class="{ 'pulse-button': player.status === 'Quiz Available' }"
+              :class="{ 'pulse-button': player.status === 'Available' }"
               @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
             >
               {{ quizButtonText(player) }}

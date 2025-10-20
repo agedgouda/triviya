@@ -28,7 +28,7 @@ const fetchPage = (url) => {
         <template #header>
                 <th class="px-4 py-2 text-left sm:px-4 py-1 ">Your Games</th>
                 <th class="px-4 py-2 text-center sm:px-4 py-1 "># Playing</th>
-                <th class="px-4 py-2 text-center sm:px-4 py-1 ">Your Status</th>
+                <th class="px-4 py-2 text-center sm:px-4 py-1 ">Quiz Status</th>
                 <th class="px-4 py-2 text-center sm:px-4 py-1 ">Game Status</th>
         </template>
 
@@ -43,7 +43,7 @@ const fetchPage = (url) => {
                 <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
                 <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.players_count }}</td>
                 <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.current_user_status }}</td>
-                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.status }}</td>
+                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.status.replace(/\b\w/g, c => c.toUpperCase()) }}</td>
 
             </tr>
         </template>

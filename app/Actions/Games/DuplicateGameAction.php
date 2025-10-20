@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class DuplicateGameAction
 {
     /**
-     * Duplicate a game and add all players, setting status to "Joined Game".
+     * Duplicate a game and add all players, setting status to "Take Quiz".
      */
     public function handle(Game $game): Game
     {
@@ -30,7 +30,7 @@ class DuplicateGameAction
             ->reject(fn ($player) => $player->id === $hostId)
             ->mapWithKeys(fn ($player) => [
                 $player->id => [
-                    'status' => 'Quiz Available',
+                    'status' => 'Available',
                     'is_host' => $player->pivot->is_host,
                 ],
             ])
