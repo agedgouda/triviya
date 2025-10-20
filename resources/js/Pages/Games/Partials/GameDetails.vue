@@ -138,14 +138,14 @@ const confirmRemovePlayer = async () => {
       </div>
     </div>
 
-    <div class="flex justify-end" v-if="(game.status === 'start' || game.status === 'in progress' || game.status === 'ready') && isHost">
+    <div class="flex justify-end" v-if="!game.status.includes('done') && isHost">
       <PrimaryButton @click="startGame">
             <StartGameIcon class="hidden md:inline-block h-4 w-4" />
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>
       </PrimaryButton>
     </div>
 
-    <div class="flex-1 flex justify-center mt-2 text-4xl font-bold" v-if="game.status.includes('done')">GAME COMPLETE</div>
+    <div class="flex-1 flex justify-center mt-2 md:text-4xl sm:text-sm font-bold" v-if="game.status.includes('done')">GAME COMPLETE</div>
   </div>
 
   <!-- Host Instructions -->
