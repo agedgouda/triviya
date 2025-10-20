@@ -187,8 +187,12 @@ const confirmRemovePlayer = async () => {
 
       <template #default="{ rowClass }">
         <tr v-for="player in players" :key="player.id" :class="[rowClass]">
-          <td class="px-4 py-2 flex items-center space-x-2">
-            <img class="w-8 h-8 rounded-full object-cover border-triviyaRegular border-2" :src="player.profile_photo_url" alt="Player Photo" />
+          <td class="px-1 sm:px-4 py-2 flex items-center space-x-2">
+            <img
+                class="hidden md:inline-block w-8 h-8 rounded-full object-cover border-triviyaRegular border-2"
+                :src="player.profile_photo_url"
+                alt="Player Photo"
+            />
             <span>{{ player.name }}</span>
           </td>
           <td class="px-4 py-2 text-center">{{ player.status }}</td>
