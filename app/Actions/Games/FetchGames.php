@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class FetchGames
 {
-    public function handle(bool $hosted): LengthAwarePaginator
+    public function handle(): LengthAwarePaginator
     {
         $userId = auth()->id();
 
@@ -17,10 +17,11 @@ class FetchGames
                 // Only load pivot info for the current user
                 $q->where('user_id', $userId)
                     ->select('users.id'); // minimal select
-            }]);
+            }])
+            ->attendedBy($userId);
 
         // Filter by hosted/attended
-        $query = $hosted ? $query->hostedBy($userId) : $query->attendedBy($userId);
+        //$query = $hosted ? $query->hostedBy($userId) : $query->attendedBy($userId);
 
         // Paginate
         $games = $query->paginate(10);

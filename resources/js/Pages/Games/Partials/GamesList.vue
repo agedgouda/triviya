@@ -1,6 +1,9 @@
 <script setup>
 
 import { router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Table from '@/Components/Table.vue';
 
 
@@ -9,10 +12,18 @@ const props = defineProps({
 });
 
 const { data: gamesList, current_page, last_page, links } = props.games;
+const showDone = ref(false);
 
 const goToGame = (gameId) => {
   window.location.href = route('games.show', gameId); // Redirect to /games/{gameId}
 };
+
+const filteredGames = computed(() => {
+    return gamesList.filter(game => {
+        const hasDone = game.status.includes('done');
+        return showDone.value ? hasDone : !hasDone;
+    })
+});
 
 const gameStatus = (status) => {
     if (status.includes('done')) {
@@ -30,6 +41,13 @@ const fetchPage = (url) => {
 </script>
 
 <template>
+    <div class="mb-4 flex justify-end">
+        <SecondaryButton
+            @click="showDone = !showDone"
+        >
+            {{ showDone ? 'Show Active Games' : 'Show Completed Games' }}
+        </SecondaryButton>
+    </div>
 
     <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true">
         <template #header>
@@ -40,7 +58,7 @@ const fetchPage = (url) => {
         </template>
 
             <template #default="{ rowClass }">
-            <tr v-for="game in gamesList"
+            <tr v-for="game in filteredGames"
                 :key="game.id"
                 :class="[
                     rowClass
@@ -67,6 +85,7 @@ const fetchPage = (url) => {
                     @click="fetchPage(link.url)"
                     :class="[
                         'px-4 py-2 border text-sm font-medium',
+                        link.hover ? 'bg-triviya-red text-white' : 'bg-white text-triviya-red',
                         link.active ? 'bg-triviya-red text-white' : 'bg-white text-triviya-red',
                         !link.url ? 'cursor-not-allowed' : ''
                     ]"

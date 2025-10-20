@@ -20,7 +20,7 @@ class GameController extends Controller
     {
         $maxPlayers = config('game.max_players');
 
-        $games = GameActions::fetchGames(false);
+        $games = GameActions::fetchGames();
 
         return Inertia::render('Games/Index', [
             'games' => $games,
