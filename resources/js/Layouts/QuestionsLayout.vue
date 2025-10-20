@@ -1,13 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import ApplicationMark from '@/Components/ApplicationMark.vue';
+import { Head } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import NavDropdown from '@/Components/NavDropdown.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 defineProps({
     title: String,
@@ -78,10 +71,14 @@ defineProps({
     </div>
 
 
-    <!-- Bottom button bar (dark purple background) -->
-    <div class="w-full bg-triviya-darkPurple p-6 flex justify-center" style="background-image: linear-gradient(to bottom, #A93390 3px, transparent 3px);">
-        <slot name="question-buttons" />
-    </div>
+<!-- Bottom button bar (dark purple background, always visible) -->
+<div
+    class="w-full bg-triviya-darkPurple p-6 flex justify-center md:static fixed bottom-0 left-0 z-50"
+    style="background-image: linear-gradient(to bottom, #A93390 3px, transparent 3px);"
+>
+    <slot name="question-buttons" />
+</div>
+
 
 
     </div>
