@@ -24,7 +24,7 @@ class StoreAnswerAction
             ->count();
 
         if ($numberAnswered === $totalQuestions && $totalQuestions > 0) {
-            $status = 'Complete';
+            $status = 'Completed';
         } else {
             $status = $numberAnswered.' '.($numberAnswered === 1 ? 'Question' : 'Questions').' Answered';
         }
@@ -42,7 +42,7 @@ class StoreAnswerAction
         /*
         if (
             $game->players()->count() >= 4 &&
-            $game->players()->where('status', '!=', 'Complete')->doesntExist()
+            $game->players()->where('status', '!=', 'Completed')->doesntExist()
         ) {
             $game->status = 'start';
             $game->save();

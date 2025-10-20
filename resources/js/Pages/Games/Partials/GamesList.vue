@@ -14,6 +14,13 @@ const goToGame = (gameId) => {
   window.location.href = route('games.show', gameId); // Redirect to /games/{gameId}
 };
 
+const gameStatus = (status) => {
+    if (status.includes('done')) {
+        status = 'played'
+    }
+    return status.replace(/\b\w/g, c => c.toUpperCase())
+}
+
 const fetchPage = (url) => {
     if (url) {
         router.visit(url);
@@ -27,7 +34,7 @@ const fetchPage = (url) => {
     <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true">
         <template #header>
                 <th class="px-4 py-2 text-left sm:px-4 py-1 ">Your Games</th>
-                <th class="px-4 py-2 text-center sm:px-4 py-1 "># Playing</th>
+                <th class="hidden sm:table-cell px-2 py-1 text-center"># Playing</th>
                 <th class="px-4 py-2 text-center sm:px-4 py-1 ">Quiz Status</th>
                 <th class="px-4 py-2 text-center sm:px-4 py-1 ">Game Status</th>
         </template>
@@ -41,9 +48,9 @@ const fetchPage = (url) => {
                 @click="goToGame(game.id)"
             >
                 <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
-                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.players_count }}</td>
+                <td class="hidden sm:table-cell px-2 py-1 text-center">{{ game.players_count }}</td>
                 <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.current_user_status }}</td>
-                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.status.replace(/\b\w/g, c => c.toUpperCase()) }}</td>
+                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ gameStatus(game.status) }}</td>
 
             </tr>
         </template>
@@ -60,7 +67,7 @@ const fetchPage = (url) => {
                     @click="fetchPage(link.url)"
                     :class="[
                         'px-4 py-2 border text-sm font-medium',
-                        link.active ? 'bg-teal-700 text-white' : 'bg-white text-teal-700',
+                        link.active ? 'bg-triviya-red text-white' : 'bg-white text-triviya-red',
                         !link.url ? 'cursor-not-allowed' : ''
                     ]"
                 >

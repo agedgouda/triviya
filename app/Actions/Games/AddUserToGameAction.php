@@ -19,7 +19,7 @@ class AddUserToGameAction
             GameUser::create([
                 'game_id' => $game->id,
                 'user_id' => $user->id,
-                'status' => 'Joined Game',
+                'status' => 'Take Quiz',
                 'is_host' => false,
             ]);
 

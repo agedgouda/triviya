@@ -151,14 +151,22 @@ const confirmRemovePlayer = async () => {
   <!-- Host Instructions -->
   <div v-if="isHost" class="mt-4">
     <div v-if="['new', 'ready'].includes(game.status)">
-      Congrats, you’re the host of TriviYa. You’ll need to:
-      <ul class="list-disc pl-4 ml-0">
-        <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more players to join.</li>
+      <span class="hidden md:inline-block">Congrats, you’re the host of TriviYa. You’ll need to:</span>
+      <ul class="hidden md:inline-block list-disc pl-4 ml-0">
+        <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more player<span v-if="4 - players.length > 1">s</span> to join.</li>
         <li><span class="font-bold">Share</span> your unique game invite link via email, text, or group chat — whatever works best for you.</li>
         <li><span class="font-bold">Watch</span> as players’ names and status appear below as they register.</li>
         <li  v-if=" players.length > 1"><span class="font-bold">Remember:</span> TriviYa only works with 4–12 players. {{ players.length }} players have joined.</li>
         <li  v-if="game.status === 'new'"><span class="font-bold">START GAME</span> button appears below when all answers are in.</li>
       </ul>
+
+      <div class="md:hidden sm:inline-block text-sm">
+        Congrats, you’re the host!
+        <ul>
+            <li v-if="players.length < 4">Share your game link with 3+ friends and watch their names appear below as they join.</li>
+            <li v-if="game.status === 'new'">Start the game when everyone’s quiz is completed.</li>
+        </ul>
+      </div>
     </div>
 
     <div v-if="['new', 'ready'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
@@ -181,7 +189,7 @@ const confirmRemovePlayer = async () => {
     <Table class="min-w-full table-auto">
       <template #header>
         <th class="px-2 sm:px-4 py-2 text-left">Name</th>
-        <th class="px-4 py-2 text-center">Questions</th>
+        <th class="px-4 py-2 text-center">Quiz Status</th>
         <th class="px-4 py-2 text-center"></th>
       </template>
 
