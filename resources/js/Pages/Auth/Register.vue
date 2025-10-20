@@ -155,9 +155,6 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
             <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
-                <div class="mt-1">
-                    Your email is used to create and manage your games and to send you TriviYa updates. It will not be visible to other players. You can unsubscribe from updates anytime.
-                </div>
                 <InputLabel for="terms">
                     <div class="flex items-center">
                         <Checkbox id="terms" v-model:checked="form.terms" name="terms" required />

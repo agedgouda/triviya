@@ -19,6 +19,7 @@ const props = defineProps({
     players: Array,
     routeName: String,
     modes: Array,
+    inviteMessage: String,
     flashMessage: String,
     error: String
 });
@@ -32,7 +33,7 @@ const currentProps = computed(() => {
         case 'games':
             return { games: props.games };
         case 'games.show':
-            return { game: props.game, players: props.players };
+            return { game: props.game, players: props.players , inviteMessage: props.inviteMessage };
         case 'games.create':
             return { modes: props.modes, routeName: props.routeName };
         case 'games.edit':

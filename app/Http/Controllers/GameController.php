@@ -75,6 +75,7 @@ class GameController extends Controller
             'game' => $gameDetails['game'],
             'players' => $gameDetails['players'],
             'host' => $gameDetails['host'],
+            'inviteMessage' => setting('invite_message'),
             'routeName' => request()->route()->getName(),
             'error' => session('error'),
         ]);

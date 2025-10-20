@@ -1,9 +1,11 @@
+// @ts-nocheck
+
 import { ref, onMounted } from 'vue';
 
 export const flashMessage = ref(null);
 
 export function useFlash() {
-    const setFlash = (message, duration = 2000) => {
+    const setFlash = (message, duration = 3500) => {
         flashMessage.value = message;
         setTimeout(() => {
             flashMessage.value = null;

@@ -1,8 +1,10 @@
 <script setup>
 import { computed } from 'vue';
+import { router } from '@inertiajs/vue3';
 
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
 
 // Props for game and questions
@@ -35,12 +37,16 @@ const hasAnyAnswer = computed(() => props.questions.some(q => !!q.answer));
             <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4" v-if="!hasAnyAnswer">Congrats {{ user.first_name }} - You're In!</div>
             <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4" v-else>Welcome Back {{ user.first_name }}</div>
             <ul class="list-disc mx-12 mb-2">
-                <li class="mb-2">Answer 10  questions - have fun and don't overthink it.</li>
+                <li class="mb-2"  v-if="!hasAnyAnswer">Answer 10  questions - have fun and don't overthink it.</li>
                 <li class="mb-2">You can edit your answers anytime until the game begins.</li>
             </ul>
             <div class="mb-2 text-center b-4">
+                <SecondaryButton type="button" class="mt-2 mr-3" @click="router.visit(route('games.show', game.id))" v-if="hasAnyAnswer">
+                    <span>Back</span>
+                </SecondaryButton>
                 <PrimaryButton type="button" class="mt-2" @click="$emit('start-game')">
-                    <span>Start</span>
+                    <span v-if="!hasAnyAnswer">Start</span>
+                    <span v-else>Edit</span>
                 </PrimaryButton>
             </div>
         </template>

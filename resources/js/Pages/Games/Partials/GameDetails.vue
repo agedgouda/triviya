@@ -15,6 +15,7 @@ import RemovePlayerIcon from '@/Components/Icons/RemovePlayerIcon.vue';
 const props = defineProps({
   game: Object,
   players: Array,
+  inviteMessage: String,
 });
 
 const { setFlash } = useFlash();
@@ -38,6 +39,7 @@ const playerToRemove = ref(null);
 // Helper functions
 const goToEditPage = () => router.visit(route('games.edit', props.game.id));
 const startGame = () => router.visit(route('games.startGame', { game: props.game.id }));
+
 
 const quizButtonText = (player) => {
   if (player.status === 'Quiz Available') return 'Start Quiz';
@@ -63,8 +65,11 @@ const copyText = async (text, successMessage) => {
   }
 };
 
-const copyToClipboard = (game) =>
-  copyText(`${currentDomain}/questions/${game.id}`, 'Copied invite link to clipboard! Share it with all players.');
+const copyInvite = () => {
+  // Combine message + game URL
+  const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
+  copyText(textToCopy, 'Copied invite link to clipboard!');
+};;
 
 const promptRemovePlayer = (player) => {
     playerToRemove.value = player;
@@ -151,7 +156,7 @@ const confirmRemovePlayer = async () => {
         <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more players to join.</li>
         <li><span class="font-bold">Share</span> your unique game invite link via email, text, or group chat — whatever works best for you.</li>
         <li><span class="font-bold">Watch</span> as players’ names and status appear below as they register.</li>
-        <li><span class="font-bold">Remember:</span> TriviYa only works with 4–12 players. {{ players.length }} players have joined so far.</li>
+        <li  v-if=" players.length > 1"><span class="font-bold">Remember:</span> TriviYa only works with 4–12 players. {{ players.length }} players have joined.</li>
         <li  v-if="game.status === 'new'"><span class="font-bold">START GAME</span> button appears below when all answers are in.</li>
       </ul>
     </div>
@@ -159,7 +164,7 @@ const confirmRemovePlayer = async () => {
     <div v-if="['new', 'ready'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
         <div class="mt-3 flex flex-col gap-2">
             <div class="flex justify-start">
-                <SecondaryButton @click="copyToClipboard(game)">
+                <SecondaryButton @click="copyInvite(game)">
                 &nbsp;Copy Link
                 </SecondaryButton>
             </div>
