@@ -85,7 +85,6 @@ const fetchPage = (url) => {
                     @click="fetchPage(link.url)"
                     :class="[
                         'px-4 py-2 border text-sm font-medium',
-                        link.hover ? 'bg-triviya-red text-white' : 'bg-white text-triviya-red',
                         link.active ? 'bg-triviya-red text-white' : 'bg-white text-triviya-red',
                         !link.url ? 'cursor-not-allowed' : ''
                     ]"
