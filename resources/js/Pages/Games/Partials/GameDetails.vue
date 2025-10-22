@@ -43,7 +43,7 @@ const startGame = () => router.visit(route('games.startGame', { game: props.game
 
 const quizButtonText = (player) => {
   if (player.status === 'Available') return 'Start Quiz';
-  if (player.status !== 'Complete') return 'Finish Quiz';
+  if (player.status !== 'Completed') return 'Finish Quiz';
   return 'Review Quiz';
 };
 
@@ -138,7 +138,7 @@ const confirmRemovePlayer = async () => {
       </div>
     </div>
 
-    <div class="flex justify-end" v-if="!game.status.includes('done') && isHost">
+    <div class="flex justify-end" v-if="isHost && ['in progress', 'ready'].includes(game.status)">
       <PrimaryButton @click="startGame">
             <StartGameIcon class="hidden md:inline-block h-4 w-4" />
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>

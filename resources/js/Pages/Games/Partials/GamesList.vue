@@ -53,7 +53,7 @@ const goToPage = (page) => {
 </script>
 
 <template>
-    <div class="mb-4 flex justify-end">
+    <div class="mb-4 flex justify-end" v-if="gamesList.some(game => game.status.includes('done'))">
         <SecondaryButton
             @click="showDone = !showDone"
         >

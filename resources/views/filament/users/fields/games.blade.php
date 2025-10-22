@@ -14,7 +14,7 @@
     @foreach ($getRecord()->games as $game)
         <div
             class="flex items-center justify-between text-sm
-                {{ $loop->even ? 'bg-gray-100 dark:bg-gray-800 text-white dark:text-gray-400' : '' }}
+                {{ $loop->even ? 'bg-gray-100 dark:bg-yellow-800 text-white dark:text-gray-400' : '' }}
 
                 m-0 p-0"
         >
