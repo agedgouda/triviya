@@ -10,11 +10,13 @@ import CountDown from "@/Components/CountDown.vue";
 const props = defineProps({
     questions: Object,
     game:Object,
+    questionNumber:Number,
     round: {
         type: Number,
         default: 1
     }
 });
+
 
 const initialTime = 1200;
 const page = ref("landing");
@@ -22,7 +24,7 @@ const page = ref("landing");
 const timer = ref(initialTime);
 let intervalId = null;
 const isPaused = ref(false);
-const questionNumber = ref(0);
+const questionNumber = ref(props.questionNumber ?? 0);
 const isRunning = ref(false);
 
 const countdown = useTemplateRef('countdown');
@@ -32,14 +34,12 @@ const showCountdown = ref(false);
 
 const nextPrevActive = ref(false);
 
-
 watch(questionNumber, (value, old) => {
-    // console.log("QN Changed :: ", value, old);
     showBubbles.value = false;
     setTimeout(() => {
         showBubbles.value = true;
     }, 100);
-});
+}, { immediate: true });
 
 watch(showBubbles, (value, old) => {
     // console.log("ShB Changed :: ", value, old);
@@ -106,7 +106,7 @@ const onComplete = () => {
 const newQuestion = (increment) => {
     if(!nextPrevActive.value) return;
 
-    if((questionNumber.value+1) % 10 === 1){
+    if((questionNumber.value+increment) % 10 === 1){
         router.visit(route('games.endRound', { game: props.questions[0].game_id, round: props.round }));
     } else {
         //timer.value = 1200
@@ -115,8 +115,6 @@ const newQuestion = (increment) => {
         questionNumber.value += increment
     }
 }
-
-
 
 </script>
 <template>
@@ -194,6 +192,9 @@ const newQuestion = (increment) => {
 
         <template #question-buttons>
             <div v-if="questionNumber === 0">
+                <PrimaryButton v-if="round > 1 && game.status !== 'bonus'"  @click="newQuestion(-1)" class="mr-2 mt-1" >
+                    Go to Previous Round
+                </PrimaryButton>
                 <PrimaryButton @click="questionNumber = 1" class="my-4">
                     &nbsp;Go to first<span v-if="game.status === 'bonus'">&nbsp;Bonus&nbsp;</span> question
                 </PrimaryButton>

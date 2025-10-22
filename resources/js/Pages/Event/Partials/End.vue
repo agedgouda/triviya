@@ -15,8 +15,9 @@ const props = defineProps({
 });
 
 
-const newRound = (round) => {
-    router.visit(route('games.startRound', { game: props.answers[0].game_id, round: round }));
+const newRound = (round,questionNumber) => {
+    //alert(questionNumber)
+    router.visit(route('games.startRound', { game: props.answers[0].game_id, round: round, back:true }));
 }
 const endGame = () => {
     router.visit(route('games.endGame', { game: props.answers[0].game_id}));
@@ -27,7 +28,6 @@ const showBubbles = ref(true);
 const buttonsEnabled = ref(false);
 
 watch(questionNumber, (value, old) => {
-    // console.log("QN Changed :: ", value, old);
     showBubbles.value = false;
     buttonsEnabled.value = false;
     setTimeout(() => {
@@ -47,13 +47,9 @@ watch(questionNumber, (value, old) => {
                 <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-if="game.status !== 'bonus'">Round {{ round }} Answers</div>
                 <div class="font-bold text-xl text-center text-white mx-auto justify-center" v-else>Bonus Round Answers</div>
                 <div class="ml-auto absolute right-0" >
-<!--                    {{(round <= 2 && game.status==='ready')}}-->
                     <PrimaryButton @click="newRound(round+1)" v-if="round <= 2 && game.status==='ready' ">
                         &nbsp;Go to Round {{ round+1 }}
                     </PrimaryButton>
-<!--                    <DangerButton @click="endGame" v-else>-->
-<!--                        &nbsp;End Game-->
-<!--                    </DangerButton>-->
                 </div>
             </div>
         </template>
@@ -62,8 +58,6 @@ watch(questionNumber, (value, old) => {
             <BubblesContainer v-if="showBubbles">
                 <template v-if="questionNumber > 0 && questionNumber <=10">
                 <GameBubble  :has-background="true" slide-in="left">
-<!--                    <div v-if="game.status !== 'bonus'">Round {{ round }}</div>-->
-<!--                    <div v-else>Bonus Round</div>-->
                     <div class="text-triviya-red text-sm font-bold">Question {{ (answers[questionNumber-1].question_number % 10 === 0) ? 10 : answers[questionNumber-1].question_number % 10  }} of {{answers.length}}</div>
                     <div><span class="font-bold">{{ answers[questionNumber-1].question_text }}</span></div>
                 </GameBubble>
@@ -102,55 +96,38 @@ watch(questionNumber, (value, old) => {
         </template>
 
         <template #question-buttons>
-            <div class="flex flex-wrap items-center my-2 space-x-2">
-                <!-- Previous Button -->
-                <PrimaryButton
-                    :disabled="!buttonsEnabled || questionNumber === 1"
-                    @click="questionNumber -= 1"
-                    :class="{ 'opacity-50 cursor-not-allowed': questionNumber === 1 }"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-4 rotate-180">
+            <div v-if="questionNumber  === 0">
+                <PrimaryButton @click="newRound(round,questionNumber)" class="my-2 mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>
                     Previous
                 </PrimaryButton>
-
-                <!-- Conditional Next / Reveal / Round / End Buttons -->
-                <template v-if="questionNumber === 0">
-                    <PrimaryButton @click="questionNumber = 1">
-                        Reveal First Answer
-                    </PrimaryButton>
-                </template>
-
-                <template v-else-if="questionNumber > 0 && questionNumber < 10">
-                    <PrimaryButton
-                        :disabled="!buttonsEnabled"
-                        @click="questionNumber += 1"
-                    >
-                        Next
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-2 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                        </svg>
-                    </PrimaryButton>
-                </template>
-
-                <template v-else-if="questionNumber >= 10">
-                    <PrimaryButton
-                        v-if="round <= 2 && game.status !== 'bonus'"
-                        :disabled="!buttonsEnabled"
-                        @click="newRound(round + 1)"
-                    >
-                        Go to Round {{ round + 1 }}
-                    </PrimaryButton>
-
-                    <DangerButton
-                        v-else
-                        :disabled="!buttonsEnabled"
-                        @click="endGame"
-                    >
-                        End Game
-                    </DangerButton>
-                </template>
+                <PrimaryButton @click="questionNumber = 1" class="my-4">
+                    &nbsp;Reveal First Answer
+                </PrimaryButton>
+            </div>
+            <div v-if="questionNumber > 0 && questionNumber <10">
+                <PrimaryButton :disabled="!buttonsEnabled || questionNumber === 1" @click="questionNumber -= 1" :class="['my-2 mr-2', { 'opacity-50 cursor-not-allowed': questionNumber === 1 }]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                    </svg>
+                    Previous
+                </PrimaryButton>
+                <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber += 1"  class="my-2">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-2 h-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                    </svg>
+                </PrimaryButton>
+            </div>
+            <div v-if="questionNumber >= 10" class="my-4">
+                <PrimaryButton :disabled="!buttonsEnabled" @click="newRound(round+1)" v-if="round <= 2 && game.status !== 'bonus'">
+                    &nbsp;Go to Round {{ round+1 }}
+                </PrimaryButton>
+                <DangerButton :disabled="!buttonsEnabled" @click="endGame" v-else>
+                    &nbsp;End Game
+                </DangerButton>
             </div>
 
         </template>
