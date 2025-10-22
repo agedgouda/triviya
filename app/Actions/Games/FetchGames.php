@@ -3,6 +3,7 @@
 namespace App\Actions\Games;
 
 use App\Models\Game;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class FetchGames
@@ -11,30 +12,33 @@ class FetchGames
     {
         $userId = auth()->id();
 
-        // Base query
-        $query = Game::withCount('players')
-            ->with(['players' => function ($q) use ($userId) {
-                // Only load pivot info for the current user
-                $q->where('user_id', $userId)
-                    ->select('users.id'); // minimal select
-            }])
-            ->attendedBy($userId);
+        $games = Game::query()
+        ->join('game_user', 'games.id', '=', 'game_user.game_id')
+        ->where('game_user.user_id', $userId)
+        ->select([
+            'games.id',
+            'games.name',
+            'games.status',
+            'game_user.status as current_user_status',
+            'game_user.is_host as is_host',
+            DB::raw('(SELECT COUNT(*) FROM game_user WHERE game_user.game_id = games.id) as players_count'),
+        ])
+        ->paginate(10);
 
-        // Filter by hosted/attended
-        //$query = $hosted ? $query->hostedBy($userId) : $query->attendedBy($userId);
+        $query = Game::query()
+        ->join('game_user', 'games.id', '=', 'game_user.game_id')
+        ->where('game_user.user_id', $userId)
+        ->select([
+            'games.id',
+            'games.name',
+            'games.status',
+            'game_user.status as current_user_status',
+            'game_user.is_host as is_host',
+            DB::raw('(SELECT COUNT(*) FROM game_user WHERE game_user.game_id = games.id) as players_count'),
+        ]);
 
-        // Paginate
-        $games = $query->paginate(10);
-
-        // Add current user's status for frontend
-        $games->getCollection()->transform(function ($game) {
-            $game->current_user_status = optional($game->players->first()?->pivot)->status ?? null;
-
-            // Remove unnecessary players collection
-            unset($game->players);
-
-            return $game;
-        });
+        $sql = $query->toSql();
+        \Log::info('Game query: ' . $sql, $query->getBindings());
 
         return $games;
     }
