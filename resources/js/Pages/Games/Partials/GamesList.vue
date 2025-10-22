@@ -11,7 +11,7 @@ const props = defineProps({
     games: Object,
 });
 
-const { data: gamesList } = props.games;
+const gamesList = props.games;
 const showDone = ref(false);
 
 // Pagination state

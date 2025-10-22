@@ -91,7 +91,7 @@ onMounted(() => {
 
             <!-- Special buttons for games routes -->
             <div v-if="props.routeName === 'games'">
-                <div v-if="props.games.data.length === 0" class="mb-5 text-center">
+                <div v-if="props.games.length === 0" class="mb-5 text-center">
                     <div class="mb-1 font-bold">Let’s Do This!</div>
                     <div class="mb-2">Click new game to get started</div>
                     <PrimaryButton @click="navigate('games.create')">New Game</PrimaryButton>

@@ -4,11 +4,10 @@ namespace App\Actions\Games;
 
 use App\Models\Game;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class FetchGames
 {
-    public function handle(): LengthAwarePaginator
+    public function handle()
     {
         $userId = auth()->id();
 
@@ -22,7 +21,8 @@ class FetchGames
             'game_user.status as current_user_status',
             'game_user.is_host as is_host',
             DB::raw('(SELECT COUNT(*) FROM game_user WHERE game_user.game_id = games.id) as players_count'),
-        ]);
+        ])
+        ->get();
 
         // $query = Game::query()
         // ->join('game_user', 'games.id', '=', 'game_user.game_id')
