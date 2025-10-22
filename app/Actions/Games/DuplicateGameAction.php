@@ -15,7 +15,7 @@ class DuplicateGameAction
     {
         // Copy the game attributes
         $gameData = $game->only(['name', 'date_time', 'mode_id', 'location']);
-        $gameData['name'] .= ' - '.Carbon::now()->format('m/d/Y');
+        $gameData['name'] .= ' The Sequel ';
         $gameData['status'] = 'new';
 
         // Create the new game (host is added automatically via StoreGameAction)
