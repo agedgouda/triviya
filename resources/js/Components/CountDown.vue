@@ -8,7 +8,7 @@ const status = ref('idle');
 const secondsLeft = ref(defaultDuration);
 const spinnerProgress = ref(false);
 
-const beep = new Audio('http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3');
+const beep = new Audio('https://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3');
 beep.load();
 
 let theTimeout = null;

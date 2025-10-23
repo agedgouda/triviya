@@ -106,7 +106,7 @@ const onComplete = () => {
 const newQuestion = (increment) => {
     if(!nextPrevActive.value) return;
 
-    if((questionNumber.value+increment) % 10 === 1){
+    if((questionNumber.value+increment) % 10 === 1 && increment > 0 ){
         router.visit(route('games.endRound', { game: props.questions[0].game_id, round: props.round }));
     } else {
         //timer.value = 1200
