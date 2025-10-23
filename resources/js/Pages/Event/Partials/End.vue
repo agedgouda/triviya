@@ -2,7 +2,6 @@
 import { router } from '@inertiajs/vue3';
 import {ref, watch} from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import BubblesLayout from "@/Layouts/BubblesLayout.vue";
 import BubblesContainer from "@/Components/BubblesContainer.vue";
@@ -12,35 +11,56 @@ const props = defineProps({
     answers: Object,
     round: Number,
     game: Object,
+    questionNumber:Number,
 });
 
 
 const newRound = (round,back) => {
-    //alert(questionNumber)
     router.visit(route('games.startRound', { game: props.answers[0].game_id, round: round, back:back }));
 }
 const endGame = () => {
     router.visit(route('games.endGame', { game: props.answers[0].game_id}));
 }
-const questionNumber = ref(0);
+
+const questionNumber = ref(props.questionNumber ?? 0);
 const showBubbles = ref(true);
 
 const buttonsEnabled = ref(false);
 
+// watch(questionNumber, (value, old) => {
+//     showBubbles.value = false;
+//     buttonsEnabled.value = false;
+//     setTimeout(() => {
+//         showBubbles.value = true;
+//     }, 100);
+
+//     setTimeout(() => {
+//         buttonsEnabled.value = true;
+//     }, 1500);
+// });
+
 watch(questionNumber, (value, old) => {
     showBubbles.value = false;
-    buttonsEnabled.value = false;
     setTimeout(() => {
         showBubbles.value = true;
     }, 100);
+}, { immediate: true });
 
-    setTimeout(() => {
-        buttonsEnabled.value = true;
-    }, 1500);
+watch(showBubbles, (value, old) => {
+    if(value) {
+        setTimeout(() => {
+            showCountdown.value = true;
+        }, 1500);
+        setTimeout(() => {
+            buttonsEnabled.value = true;
+        }, 1800);
+    }
 });
+
 
 </script>
 <template>
+
     <BubblesLayout>
         <template #header>
             <div class="flex content-center">
@@ -103,17 +123,19 @@ watch(questionNumber, (value, old) => {
                     </svg>
                     Previous
                 </PrimaryButton>
-                <PrimaryButton @click="questionNumber = 1" class="my-4">
+                <PrimaryButton @click="questionNumber = 1" class="my-2">
                     &nbsp;Reveal First Answer
                 </PrimaryButton>
             </div>
-            <div v-if="questionNumber > 0 && questionNumber <10">
+            <div v-if="questionNumber > 0">
                 <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber -= 1" :class="['my-2 mr-2',]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>
                     Previous
                 </PrimaryButton>
+            </div>
+            <div v-if="questionNumber > 0 && questionNumber <10">
                 <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber += 1"  class="my-2">
                     Next
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-2 h-2">
@@ -121,7 +143,7 @@ watch(questionNumber, (value, old) => {
                     </svg>
                 </PrimaryButton>
             </div>
-            <div v-if="questionNumber >= 10" class="my-4">
+            <div v-if="questionNumber >= 10" class="my-2">
                 <PrimaryButton :disabled="!buttonsEnabled" @click="newRound(round+1)" v-if="round <= 2 && game.status !== 'bonus'">
                     &nbsp;Go to Round {{ round+1 }}
                 </PrimaryButton>

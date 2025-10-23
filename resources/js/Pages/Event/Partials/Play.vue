@@ -42,8 +42,6 @@ watch(questionNumber, (value, old) => {
 }, { immediate: true });
 
 watch(showBubbles, (value, old) => {
-    // console.log("ShB Changed :: ", value, old);
-
     if(value) {
         setTimeout(() => {
             showCountdown.value = true;
@@ -86,7 +84,6 @@ const togglePauseResume = () => {
 
 
 const resetCountdown = () => {
-// console.log("RESET INTERVAL", intervalId, countdown.value, countdown.value.status, countdown.value.resetTimer);
 
 countdown.value.resetTimer();
   if (intervalId) {
@@ -105,14 +102,20 @@ const onComplete = () => {
 
 const newQuestion = (increment) => {
     if(!nextPrevActive.value) return;
-
     if((questionNumber.value+increment) % 10 === 1 && increment > 0 ){
         router.visit(route('games.endRound', { game: props.questions[0].game_id, round: props.round }));
     } else {
-        //timer.value = 1200
-        nextPrevActive.value = false;
-        resetCountdown();
-        questionNumber.value += increment
+
+        if(questionNumber.value+increment < 0) {
+            const round = props.round - 1;
+            router.visit(route('games.endRound', { game: props.game.id, round: round , back:true }));
+        }
+        else {
+            //timer.value = 1200
+            nextPrevActive.value = false;
+            resetCountdown();
+            questionNumber.value += increment
+        }
     }
 }
 
@@ -193,14 +196,17 @@ const newQuestion = (increment) => {
         <template #question-buttons>
             <div v-if="questionNumber === 0">
                 <PrimaryButton v-if="round > 1 && game.status !== 'bonus'"  @click="newQuestion(-1)" class="mr-2 mt-1" >
-                    Go to Previous Round
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                    </svg>
+                    Previous
                 </PrimaryButton>
-                <PrimaryButton @click="questionNumber = 1" class="my-4">
+                <PrimaryButton @click="questionNumber = 1" class="my-2">
                     &nbsp;Go to first<span v-if="game.status === 'bonus'">&nbsp;Bonus&nbsp;</span> question
                 </PrimaryButton>
             </div>
             <div v-else>
-                <PrimaryButton :disabled="!nextPrevActive || questionNumber === 1 " @click="newQuestion(-1)" class="my-2 mr-2 " :class="['my-2 mr-2', { 'opacity-50 cursor-not-allowed': questionNumber === 1 }]">
+                <PrimaryButton :disabled="!nextPrevActive" @click="newQuestion(-1)" class="my-2 mr-2 " :class="['my-2 mr-2']">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>

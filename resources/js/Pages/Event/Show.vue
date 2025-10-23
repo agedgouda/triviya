@@ -25,12 +25,11 @@ const fadeOut = ref(false);
 </script>
 
 <template>
-
     <template v-if="routeName === 'games.startGame' || routeName === 'games.startRound'">
         <Play :questions="questions" :round="round" :game="game" :questionNumber="questionNumber" />
     </template>
     <template v-if="routeName === 'games.endRound'">
-        <End :answers="answers" :round="round" :game="game"   />
+        <End :answers="answers" :round="round" :game="game" :questionNumber="questionNumber" />
     </template>
     <template v-if="routeName === 'games.endGame'">
         <EndGame :game="game" />

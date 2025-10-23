@@ -107,7 +107,7 @@ Route::middleware([
         Route::get('/start/{reset?}', [GameEventController::class, 'startGame'])->name('games.startGame');
         Route::get('/round/{round}/{back?}', [GameEventController::class, 'startRound'])->name('games.startRound');
         Route::get('/end', [GameEventController::class, 'endGame'])->name('games.endGame');
-        Route::get('/end/{round}', [GameEventController::class, 'endRound'])->name('games.endRound');
+        Route::get('/end/{round}/{back?}', [GameEventController::class, 'endRound'])->name('games.endRound');
     });
 
     /*******************************************

@@ -36,34 +36,17 @@ class GameEventController extends Controller
         ]);
     }
 
-    public function startRound2(Game $game, int $round)
+    public function endRound(Game $game, int $round, ?bool $back = false)
     {
-        $lastQuestion = $round * 10;
-        $firstQuestion = $lastQuestion - 9;
-        $questions = GameUserQuestions::where('game_id', $game->id)
-            ->where('question_number', '>=', $firstQuestion)
-            ->where('question_number', '<=', $lastQuestion)
-            ->orderBy('question_number')
-            ->get();
+        $answers = GameActions::CreateEventAnswerListAction($game, $round);
+        $questionNumber = $back ? count($answers) : null;
 
         return Inertia::render('Event/Show', [
-            'game' => $game,
-            'questions' => $questions,
-            'round' => $round,
-            'routeName' => request()->route()->getName(),
-            'error' => session('error'),
-        ]);
-    }
-
-    public function endRound(Game $game, int $round)
-    {
-        $response = GameActions::CreateEventAnswerListAction($game, $round);
-
-        return Inertia::render('Event/Show', [
-            'answers' => $response,
+            'answers' => $answers,
             'round' => $round,
             'game' => $game,
             'routeName' => request()->route()->getName(),
+            'questionNumber' => $questionNumber,
             'error' => session('error'),
         ]);
     }
