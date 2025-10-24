@@ -1,7 +1,7 @@
 <script setup>
 import {nextTick, ref} from "vue";
 
-const defaultDuration = 30;
+const defaultDuration = 20;
 // const defaultDuration = 8;
 
 const status = ref('idle');

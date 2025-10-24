@@ -55,6 +55,9 @@ const logout = () => {
                                     <NavLink :href="route('games')" :active="route().current('games*')" :hasSubnav="false">
                                         My Games
                                     </NavLink>
+                                    <NavLink href="https://triviyagame.com/" target="_blank">
+                                        About TriviYa
+                                    </NavLink>
                                 </div>
                             </div>
 
