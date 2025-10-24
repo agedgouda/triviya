@@ -16,7 +16,8 @@ class DuplicateGameAction
         // Copy the game attributes
         $gameData = $game->only(['name', 'date_time', 'mode_id', 'location']);
         $gameData['name'] .= ' The Sequel ';
-        $gameData['status'] = 'new';
+        //$gameData['status'] = 'new';
+        $gameData['status'] = 'sequel';
 
         // Create the new game (host is added automatically via StoreGameAction)
         $response = GameActions::StoreGameAction($gameData);

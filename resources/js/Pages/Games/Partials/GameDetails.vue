@@ -169,7 +169,12 @@ const confirmRemovePlayer = async () => {
       </div>
     </div>
 
-    <div v-if="['new', 'ready'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
+    <div v-if="game.status === 'sequel'">
+        <p>Congrats, you’ve started a new game {{ game.name }}!</p>
+        <p>Your players can join using this new link, or they’ll find the game waiting on their dashboard.</p>
+    </div>
+
+    <div v-if="['new', 'ready', 'sequel'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
         <div class="mt-3 flex flex-col gap-2">
             <div class="flex justify-start">
                 <SecondaryButton @click="copyInvite(game)">
@@ -206,14 +211,14 @@ const confirmRemovePlayer = async () => {
           <td class="px-1 sm:px-4 py-2 text-center">{{ player.status }}</td>
           <td class="px-1 sm:px-4 py-2 text-center">
             <PrimaryButton
-              v-if="$page.props.auth.user.id === player.id && ['new', 'ready'].includes(game.status)"
+              v-if="$page.props.auth.user.id === player.id && ['new', 'ready', 'sequel'].includes(game.status)"
               :class="{ 'pulse-button': player.status === 'Available' }"
               @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
             >
               {{ quizButtonText(player) }}
             </PrimaryButton>
 
-            <div v-else-if="isHost && $page.props.auth.user.id !== player.id && ['new', 'ready'].includes(game.status)">
+            <div v-else-if="isHost && $page.props.auth.user.id !== player.id && ['new', 'ready', 'sequel'].includes(game.status)">
                 <DangerButton @click="promptRemovePlayer(player)" class="ml-2">
                     <RemovePlayerIcon class="h-4" />
                 </DangerButton>

@@ -40,7 +40,7 @@ class GameQuestionsController extends Controller
                 ->with('flashMessage', "The game you are trying to access has reached capacity. TriviYa has a limit of {$max} players per game.");
         }
 
-        if (! in_array($game->status, ['new', 'ready'])) {
+        if (! in_array($game->status, ['new', 'ready', 'sequel'])) {
             return redirect()
                 ->route('games.show', $game->id) // or wherever you want them to go
                 ->with('flashMessage', "You can't change your answers once the game starts.");
