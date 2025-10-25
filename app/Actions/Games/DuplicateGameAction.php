@@ -28,17 +28,12 @@ class DuplicateGameAction
 
         // Attach all other players from old game (exclude the new host)
         $otherPlayers = $game->players
-            ->reject(fn ($player) => $player->id === $hostId)
-            ->mapWithKeys(fn ($player) => [
-                $player->id => [
-                    'status' => 'Available',
-                    'is_host' => $player->pivot->is_host,
-                ],
-            ])
-            ->toArray();
+            ->reject(fn ($player) => $player->id === $hostId);
 
-        if (! empty($otherPlayers)) {
-            $newGame->players()->attach($otherPlayers);
+        if ($otherPlayers->isNotEmpty()) {
+            foreach ($otherPlayers as $user) {
+                GameActions::AddUserToGameAction($newGame, $user);
+            }
         }
 
         $game->status = 'done';
@@ -47,3 +42,4 @@ class DuplicateGameAction
         return $newGame;
     }
 }
+

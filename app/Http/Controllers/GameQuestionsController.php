@@ -45,7 +45,7 @@ class GameQuestionsController extends Controller
                 ->route('games.show', $game->id) // or wherever you want them to go
                 ->with('flashMessage', "You can't change your answers once the game starts.");
         }
-
+//dd("here");
         $data = GameActions::HandleUserShowQuestionsAction($game, auth()->user());
 
         return Inertia::render('Questionnaire/Show', array_merge($data, [
