@@ -23,7 +23,7 @@ const props = defineProps({
 const currentLandingComponent = computed(() => {
     if (!props.game.is_full && ['new', 'ready', 'sequel'].includes(props.game.status)) {
         if (props.routeName !== 'questions.showQuestionLanding') return null;
-        return null;
+        return LandingPage;
     } else {
         return LandingPageClosed;
     }
@@ -40,7 +40,6 @@ onMounted(() => {
 
 <template>
     <Flash />
-
     <component
         :is="currentLandingComponent"
         v-if="currentLandingComponent"
