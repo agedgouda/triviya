@@ -82,11 +82,6 @@ const logout = () => {
                                         </template>
 
                                         <template #content>
-                                            <DropdownLink :href="route('games')">
-                                                My Games
-                                            </DropdownLink>
-
-                                            <div class="border-t border-gray-200" />
 
                                             <!-- Account Management -->
                                             <div class="block px-4 py-2 text-xs text-triviyaRegular">
@@ -165,6 +160,10 @@ const logout = () => {
                             <div class="mt-3 space-y-1">
                                 <ResponsiveNavLink :href="route('games')" :active="route().current('games*')">
                                     My Games
+                                </ResponsiveNavLink>
+
+                                <ResponsiveNavLink href="https://triviyagame.com/" target="_blank" rel="noopener">
+                                    About TriviYa
                                 </ResponsiveNavLink>
 
                                 <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
