@@ -1,5 +1,5 @@
 <script setup>
-import { router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import {ref, useTemplateRef, watch} from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import BubblesLayout from "@/Layouts/BubblesLayout.vue";
@@ -194,30 +194,38 @@ const newQuestion = (increment) => {
 
 
         <template #question-buttons>
-            <div v-if="questionNumber === 0">
-                <PrimaryButton v-if="round > 1 && game.status !== 'bonus'"  @click="newQuestion(-1)" class="mr-2 mt-1" >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                    </svg>
-                    Previous
-                </PrimaryButton>
-                <PrimaryButton @click="questionNumber = 1" class="my-2">
-                    &nbsp;Go to first<span v-if="game.status === 'bonus'">&nbsp;Bonus&nbsp;</span> question
-                </PrimaryButton>
-            </div>
-            <div v-else>
-                <PrimaryButton :disabled="!nextPrevActive" @click="newQuestion(-1)" class="my-2 mr-2 " :class="['my-2 mr-2']">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                    </svg>
-                    Previous
-                </PrimaryButton>
-                <PrimaryButton :disabled="!nextPrevActive" @click="newQuestion(+1)" class="my-2">
-                    Next
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-2 h-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                    </svg>
-                </PrimaryButton>
+            <div class="flex flex-col items-center w-full">
+                <div v-if="questionNumber === 0">
+                    <PrimaryButton v-if="round > 1 && game.status !== 'bonus'"  @click="newQuestion(-1)" class="mr-2 mt-1" >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                        </svg>
+                        Previous
+                    </PrimaryButton>
+                    <PrimaryButton @click="questionNumber = 1" class="my-2">
+                        &nbsp;Go to first<span v-if="game.status === 'bonus'">&nbsp;Bonus&nbsp;</span> question
+                    </PrimaryButton>
+                </div>
+                <div v-else>
+                    <PrimaryButton :disabled="!nextPrevActive" @click="newQuestion(-1)" class="my-2 mr-2 " :class="['my-2 mr-2']">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                        </svg>
+                        Previous
+                    </PrimaryButton>
+                    <PrimaryButton :disabled="!nextPrevActive" @click="newQuestion(+1)" class="my-2">
+                        Next
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-2 h-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                        </svg>
+                    </PrimaryButton>
+                </div>
+                <Link
+                    :href="route('games.show', game.id)"
+                    class="mt-2 text-white text-sm underline hover:text-triviya-lightRed transition"
+                >
+                    Return to Dashboard
+                </Link>
             </div>
         </template>
 
