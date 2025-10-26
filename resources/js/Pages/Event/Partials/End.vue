@@ -1,5 +1,5 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import {ref, watch} from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -112,50 +112,42 @@ watch(showBubbles, (value, old) => {
         </template>
 
         <template #question-buttons>
-            <div class="flex flex-col items-center w-full">
-                <div v-if="questionNumber === 0" class="flex space-x-2">
+            <div v-if="questionNumber  === 0">
                 <PrimaryButton @click="newRound(round,true)" class="my-2 mr-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>
                     Previous
                 </PrimaryButton>
                 <PrimaryButton @click="questionNumber = 1" class="my-2">
                     &nbsp;Reveal First Answer
                 </PrimaryButton>
-                </div>
-
-                <div v-if="questionNumber > 0 && questionNumber < 10" class="flex space-x-2 my-2">
-                <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber -= 1">
+            </div>
+            <div v-if="questionNumber > 0">
+                <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber -= 1" :class="['my-2 mr-2',]">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mr-2 h-2 rotate-180">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>
                     Previous
                 </PrimaryButton>
-                <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber += 1">
+            </div>
+            <div v-if="questionNumber > 0 && questionNumber <10">
+                <PrimaryButton :disabled="!buttonsEnabled" @click="questionNumber += 1"  class="my-2">
                     Next
                     <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="ml-2 h-2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
                     </svg>
                 </PrimaryButton>
-                </div>
-
-                <div v-if="questionNumber >= 10" class="flex space-x-2 my-2">
+            </div>
+            <div v-if="questionNumber >= 10" class="my-2">
                 <PrimaryButton :disabled="!buttonsEnabled" @click="newRound(round+1)" v-if="round <= 2 && game.status !== 'bonus'">
                     &nbsp;Go to Round {{ round+1 }}
                 </PrimaryButton>
                 <DangerButton :disabled="!buttonsEnabled" @click="endGame" v-else>
                     &nbsp;End Game
                 </DangerButton>
-                </div>
-
-                <Link
-                :href="route('games.show', game.id)"
-                class="mt-2 text-white text-sm underline hover:text-triviya-lightRed transition"
-                >
-                Return to Dashboard
-                </Link>
             </div>
+
         </template>
     </BubblesLayout>
 </template>
