@@ -83,11 +83,6 @@ const logout = () => {
 
                                         <template #content>
 
-                                            <!-- Account Management -->
-                                            <div class="block px-4 py-2 text-xs text-triviyaRegular">
-                                                Manage Account
-                                            </div>
-
                                             <DropdownLink :href="route('profile.show')">
                                                 Profile
                                             </DropdownLink>
@@ -96,11 +91,9 @@ const logout = () => {
                                                 API Tokens
                                             </DropdownLink>
 
-                                            <div class="border-t border-gray-200" />
-
                                             <!-- Authentication -->
                                             <form @submit.prevent="logout">
-                                                <DropdownLink as="button">
+                                                <DropdownLink>
                                                     Log Out
                                                 </DropdownLink>
                                             </form>
