@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Jobs\SyncUserWithMailchimpJob;
 use App\Jobs\DeleteUserFromMailchimpJob;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserObserver
 {
@@ -42,7 +43,21 @@ class UserObserver
      */
     public function deleting(User $user)
     {
-         DeleteUserFromMailchimpJob::dispatch($user->email);
+
+        DeleteUserFromMailchimpJob::dispatch($user->email);
+        DB::transaction(function () use ($user) {
+
+            $user->hostedGames()->each(function ($game) {
+                $game->delete();
+            });
+
+            // Delete the user's profile photo (if your model has that method)
+            if (method_exists($user, 'deleteProfilePhoto')) {
+                $user->deleteProfilePhoto();
+            }
+
+        });
+
     }
 
     /**

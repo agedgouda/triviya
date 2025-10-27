@@ -21,27 +21,18 @@ class DeleteUser implements DeletesUsers
      */
     public function delete(User $user): void
     {
-        DB::transaction(function () use ($user) {
 
-            // Delete all games the user hosts
-            $user->hostedGames()->each(function ($game) {
-                $game->delete();
-            });
 
-            // Clean up associated data
-            $user->deleteProfilePhoto();
-            $user->tokens->each->delete();
 
-            // Delete the user itself
-            $user->delete();
-        });
+        //$user->deleteProfilePhoto();
+        $user->tokens->each->delete();
+        $user->delete();
 
-        // Set the confirmation cookie
-        Cookie::queue(
-            'account_deleted_message',
+        Cookie::queue('account_deleted_message',
             'This account has been permanently deleted and can no longer be accessed. All related data has been securely removed.',
             1 // expires in 1 minute
         );
+
     }
 
     /**
