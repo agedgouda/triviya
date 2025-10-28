@@ -49,10 +49,7 @@ class GameResource extends Resource
                     ->label('Name'),
                 TextColumn::make('host.name')
                     ->label('Host')
-                    ->getStateUsing(function ($record) {
-                        $host = $record->host;
-                        return "{$host->first_name} {$host->last_name}";
-                    })
+                    ->getStateUsing(fn($record) => "{$record->host()->first()->first_name} {$record->host()->first()->last_name}"),
             ])
             ->filters([
                 //
