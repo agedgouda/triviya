@@ -22,6 +22,19 @@
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
+
+        @production
+            <script type="text/javascript">
+                window._mfq = window._mfq || [];
+                (function() {
+                    var mf = document.createElement("script");
+                    mf.type = "text/javascript";
+                    mf.defer = true;
+                    mf.src = "//cdn.mouseflow.com/projects/043b11ee-9221-4772-902f-e64555edd74d.js";
+                    document.getElementsByTagName("head")[0].appendChild(mf);
+                })();
+            </script>
+        @endproduction
     </head>
     <body class="font-sans antialiased">
         @inertia
