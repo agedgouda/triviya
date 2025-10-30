@@ -1,7 +1,8 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Flash from '@/Components/Flash.vue';
 import { usePage } from '@inertiajs/vue3'
@@ -45,72 +46,29 @@ onMounted(() => {
     <Flash />
     <Head title="Welcome" />
 
-    <div class="relative min-h-screen bg-cover bg-center bg-no-repeat text-triviyaRegular" style="background-image: url('/images/triviya-bg-cover.png');">
+     <AuthenticationCard>
+        <template #logo>
+            <AuthenticationCardLogo />
+        </template>
 
-        <!--<img id="background" class="absolute -left-20 top-0 bg-cover" src="/images/triviya-bg-cover.png" />-->
-        <header class="grid grid-cols-2 items-center gap-2 pb-10 lg:grid-cols-3">
-                    <div class="flex lg:justify-center lg:col-start-2">
-
-                    </div>
-                    <nav v-if="canLogin" class="-mx-3 flex flex-1 py-10 pr-10 justify-end">
-                        <Link
-                            v-if="$page.props.auth.user"
-                            :href="route('dashboard')"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Dashboard
-                        </Link>
-                        <!--
-                        <template v-else>
-                            <Link
-                                :href="route('login')"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Log in
-                            </Link>
-
-                            <Link
-                                v-if="canRegister"
-                                :href="route('register')"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Register
-                            </Link>
-                        </template>
-                        -->
-                    </nav>
-        </header>
-<div class="relative min-h-screen flex flex-col items-center">
-    <main>
-        <div class="justify-center items-center">
-            <ApplicationLogo />
+        <div class="mb-5 text-2xl font-bold">
+            Welcome to Early Access!
         </div>
-        <div class="bg-white shadow-md sm:rounded-lg p-6 mb-10 mx-auto max-w-xl rounded-xl text-black text-center">
-            <div class="mb-5 text-2xl font-bold">
-                Welcome to Early Access!
-            </div>
 
-            <div class="mb-5">
-                For a limited time, play TriviYa for <span class="font-bold">FREE.</span><br/>
-<!--                Later, you'll choose a Game Pack -<br/>
-                but for now, enjoy unlimited play!<br/>-->
-            </div>
+        <div class="mb-5">
+            Each player answers questions about themselves — then TriviYa turns those answers into a
+            <span class="font-bold">three-round game</span> where
+            <span class="font-bold">teams</span> guess
+            <span class="font-bold italic">“Who said that?”</span>
+        </div>
 
-            <div class="mb-2 text-center mb-4">
-                <Link href="/home">
+        <div class="text-center">
+            <Link href="/home">
                 <PrimaryButton type="button" class="mt-2">
                     <span>Get Started</span>
                 </PrimaryButton>
-                </Link>
-            </div>
+            </Link>
         </div>
-    </main>
 
-    <!-- Move footer outside of main / white card -->
-    <footer class="py-16 text-center text-sm text-white dark:text-white/70">
-        TriviYa Copyright ©{{ new Date().getFullYear() }}
-    </footer>
-</div>
-
-    </div>
+    </AuthenticationCard>
 </template>
