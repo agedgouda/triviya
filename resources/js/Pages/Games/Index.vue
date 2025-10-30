@@ -74,42 +74,9 @@ onMounted(() => {
 
 <template>
     <AppLayout title="Games">
-        <template #header>
-            <div v-if="props.routeName === 'games.showQuestions'">
-                <div>{{ props.game.name }}</div>
-                <div class="text-base">
-                    Hosted by {{ props.game.host[0].first_name }} {{ props.game.host[0].last_name }}
-                </div>
-                <div class="text-base">{{ formatDate(props.game.date_time) }}</div>
-                <div class="text-base">{{ props.game.location }}</div>
-            </div>
-        </template>
 
         <div class="mx-5 sm:mx-1">
-            <!-- Dynamic page content -->
             <component :is="CurrentComponent" v-bind="currentProps" />
-
-            <!-- Special buttons for games routes -->
-            <div v-if="props.routeName === 'games'">
-                <div v-if="props.games.length === 0" class="mb-5 text-center">
-                    <div class="mb-1 font-bold">Let’s Do This!</div>
-                    <div class="mb-2">Click new game to get started</div>
-                    <PrimaryButton @click="navigate('games.create')">New Game</PrimaryButton>
-                </div>
-                <div v-else class="flex justify-end my-5">
-                    <PrimaryButton @click="navigate('games.create')">Create A New Game</PrimaryButton>
-                </div>
-            </div>
-
-            <div v-if="props.routeName === 'games.show'" class="flex justify-end my-5">
-                <PrimaryButton @click="navigate('games')">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                    </svg>
-                    &nbsp;Back To All Games
-                </PrimaryButton>
-            </div>
-
         </div>
     </AppLayout>
 </template>

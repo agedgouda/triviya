@@ -53,18 +53,20 @@ const goToPage = (page) => {
 </script>
 
 <template>
-    <div class="mb-4 flex justify-end" v-if="gamesList.some(game => game.status.includes('done'))">
-        <SecondaryButton
-            @click="showDone = !showDone"
-        >
-            {{ showDone ? 'Show Active Games' : 'Show Completed Games' }}
-        </SecondaryButton>
-    </div>
+        <div v-if="props.games.length === 0" class="mb-5 text-center">
+            <div class="mb-1 font-bold">Let’s Do This!</div>
+            <div class="mb-2">Click new game to get started</div>
+            <PrimaryButton @click="router.visit(route('games.create'))">Host A Game</PrimaryButton>
+        </div>
+        <div v-else class="flex mb-5">
+            <PrimaryButton @click="router.visit(route('games.create'))">Host A New Game</PrimaryButton>
+        </div>
 
-    <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true">
+
+    <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true" v-if="props.games.length > 0">
         <template #header>
-                <th class="px-4 py-2 text-left sm:px-4 py-1 ">Your Games</th>
-                <th class="hidden sm:table-cell px-2 py-1 text-center"># Playing</th>
+                <th class="px-4 py-2 text-left sm:px-4 py-1 ">My Games</th>
+                <th class="hidden sm:table-cell px-2 py-1 text-center">My Status</th>
                 <th class="px-4 py-2 text-center sm:px-4 py-1 ">Quiz Status</th>
                 <th class="px-4 py-2 text-center sm:px-4 py-1 ">Game Status</th>
         </template>
@@ -78,7 +80,7 @@ const goToPage = (page) => {
                 @click="goToGame(game.id)"
             >
                 <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
-                <td class="hidden sm:table-cell px-2 py-1 text-center">{{ game.players_count }}</td>
+                <td class="hidden sm:table-cell px-2 py-1 text-center">{{ game.is_host ? 'Host' : 'Player' }}</td>
                 <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.current_user_status }}</td>
                 <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ gameStatus(game.status) }}</td>
 
@@ -117,6 +119,15 @@ const goToPage = (page) => {
         Next
         </button>
     </div>
+
+            <div v-if="gamesList.some(game => game.status.includes('done'))">
+            <SecondaryButton
+                @click="showDone = !showDone"
+                class="mt-3 mb-5"
+            >
+                {{ showDone ? 'Show Active Games' : 'Show Completed Games' }}
+            </SecondaryButton>
+            </div>
 </template>
 
 <style scoped>
