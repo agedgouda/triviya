@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { router, usePage, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -32,8 +32,11 @@ const questionsAnsweredCount = computed(() =>
 const playersRemainingToAnswer = computed(() => props.players.length - questionsAnsweredCount.value);
 
 const isHost = computed(() => page.props.auth.user.id === host.id);
+const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
+const invitationLink = `${currentDomain}/questions/${props.game.id}`;
 
 const showRemoveModal = ref(false);
+const showManualCopy = ref(false);
 const playerToRemove = ref(null);
 
 // Helper functions
@@ -67,8 +70,8 @@ const copyText = async (text, successMessage) => {
 
 const copyInvite = () => {
   // Combine message + game URL
-  const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
-  copyText(textToCopy, 'Copied invite link to clipboard!');
+  //const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
+  copyText(invitationLink, 'Copied invite link to clipboard!');
 };;
 
 const promptRemovePlayer = (player) => {
@@ -103,11 +106,22 @@ const confirmRemovePlayer = async () => {
 
 <template>
 
+
+<Modal
+    :show="showManualCopy"
+    title="Invite Player"
+    @close="showRemoveModal = false"
+>
+  <div class="text-sm mb-2">Tap and hold to copy this text:</div>
+  <textarea readonly class="w-full p-2 text-sm bg-gray-100">{{ textToCopy }}</textarea>
+  <PrimaryButton @click="showManualCopy = false">Close</PrimaryButton>
+</Modal>
+
 <Modal
     :show="showRemoveModal"
     title="Remove Player?"
     @close="showRemoveModal = false"
->
+>1
     <p>Are you sure you want to remove this player from the game?</p>
     <div class="mt-4 flex justify-end gap-2">
     <PrimaryButton @click="confirmRemovePlayer(player)">
@@ -176,10 +190,16 @@ const confirmRemovePlayer = async () => {
 
     <div v-if="['new', 'ready', 'sequel'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
         <div class="mt-3 flex flex-col gap-2">
-            <div class="flex justify-start">
-                <SecondaryButton @click="copyInvite(game)">
-                &nbsp;Copy Link
-                </SecondaryButton>
+            <div class="justify-start">
+                Send this link to invite friends and family to play:<br/>
+                {{ invitationLink }}
+                <!--<Link :href=" invitationLink">{{ invitationLink }}</Link>-->
+                <!--<PrimaryButton @click="showManualCopy = true">-->
+                <PrimaryButton @click="copyInvite(game)" class="w-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
+                    </svg>
+                </PrimaryButton>
             </div>
             <div class="font-bold text-triviyaRegular italic">
                 TriviYa doesn’t send invites – you control who gets your link.
