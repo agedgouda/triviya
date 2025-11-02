@@ -213,7 +213,7 @@ const confirmRemovePlayer = async () => {
                 <!--<Link :href=" invitationLink">{{ invitationLink }}</Link>-->
                 <!--<PrimaryButton @click="showManualCopy = true">-->
                 Send this link to invite friends and family to play:<br/>
-                <div class="text-sm md:text-lg mr-3">{{ invitationLink }}
+                <div class="text-xs md:text-lg mr-3">{{ invitationLink }}
                     <div class="md:hidden sm:inline-block text-sm">
                         Select the URL above then tap the "Copy," then tell your adult children you are an iOS Expert
                     </div>
