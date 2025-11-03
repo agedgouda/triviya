@@ -34,10 +34,8 @@ const playersRemainingToAnswer = computed(() => props.players.length - questions
 const isHost = computed(() => page.props.auth.user.id === host.id);
 const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
 //const invitationLink = `${currentDomain}/questions/${props.game.id}`;
-const longLink = `${currentDomain}/q/${props.game.short_url}`
+const invitationLink = `${currentDomain}/q/${props.game.short_url}`
 
-// our reactive invitation link (starts with full link as fallback)
-const invitationLink = ref(longLink)
 
 
 const showRemoveModal = ref(false);
@@ -76,7 +74,7 @@ const copyText = async (text, successMessage) => {
 const copyInvite = () => {
   // Combine message + game URL
   //const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
-  copyText(invitationLink.value, 'Copied invite link to clipboard!');
+  copyText(invitationLink, 'Copied invite link to clipboard!');
 };;
 
 const promptRemovePlayer = (player) => {
@@ -196,10 +194,8 @@ const confirmRemovePlayer = async () => {
     <div v-if="['new', 'ready', 'sequel'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
         <div class="mt-3 flex flex-col gap-2">
             <div class="justify-start">
-                <!--<Link :href=" invitationLink">{{ invitationLink }}</Link>-->
-                <!--<PrimaryButton @click="showManualCopy = true">-->
                 Send this link to invite friends and family to play:<br/>
-                <div class="text-xs md:text-lg mr-3">{{ invitationLink }}
+                <div class="mr-3">{{ invitationLink }}
                     <div class="md:hidden sm:inline-block text-sm">
                         Select the URL above then tap the "Copy," then tell your adult children you are an iOS Expert
                     </div>
