@@ -11,7 +11,6 @@ import { useFlash } from '@/Composables/useFlash';
 import EditIcon from '@/Components/Icons/EditIcon.vue';
 import StartGameIcon from '@/Components/Icons/StartGameIcon.vue';
 import RemovePlayerIcon from '@/Components/Icons/RemovePlayerIcon.vue';
-import { useUrlShortener } from '@/Composables/useUrlShortener.js'
 
 const props = defineProps({
   game: Object,
@@ -35,23 +34,10 @@ const playersRemainingToAnswer = computed(() => props.players.length - questions
 const isHost = computed(() => page.props.auth.user.id === host.id);
 const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
 //const invitationLink = `${currentDomain}/questions/${props.game.id}`;
-const longLink = `${currentDomain}/questions/${props.game.id}`
+const longLink = `${currentDomain}/q/${props.game.short_url}`
 
 // our reactive invitation link (starts with full link as fallback)
 const invitationLink = ref(longLink)
-
-// use shortener composable
-const { create } = useUrlShortener()
-
-onMounted(() => {
-  try {
-    const short = create({ longUrl: longLink })
-    invitationLink.value = short.fullShortUrl
-  } catch (err) {
-    console.warn('Shortener failed:', err.message)
-    invitationLink.value = longLink
-  }
-})
 
 
 const showRemoveModal = ref(false);

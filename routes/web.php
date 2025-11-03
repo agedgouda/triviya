@@ -65,6 +65,12 @@ Route::middleware(['can.purchase'])->group(function () {
     Route::get('/buy-games/success', [GamePurchaseController::class, 'success'])->name('games.purchase.success');
 });
 
+Route::get('/q/{short_url}', function ($short_url) {
+    $game = \App\Models\Game::where('short_url', $short_url)->firstOrFail();
+    return redirect()->to("/questions/{$game->id}");
+});
+
+
 Route::prefix('questions/{game}')->group(function () {
     Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
 });
