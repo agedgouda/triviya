@@ -48,7 +48,7 @@ const startGame = () => router.visit(route('games.startGame', { game: props.game
 
 
 const quizButtonText = (player) => {
-  if (player.status === 'Available') return 'Start Quiz';
+  if (player.status === 'Available') return 'Take Quiz';
   if (player.status !== 'Completed') return 'Finish Quiz';
   return 'Review Quiz';
 };
