@@ -167,54 +167,50 @@ const confirmRemovePlayer = async () => {
 
   <!-- Host Instructions -->
   <div v-if="isHost" class="mt-4">
-    <div v-if="['new', 'ready'].includes(game.status)">
-      <span class="hidden md:block">Congrats, you’re the host of TriviYa. You’ll need to:</span>
-      <ul class="hidden md:inline-block list-disc pl-4 ml-0">
-        <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more player<span v-if="4 - players.length > 1">s</span> to join.</li>
-        <li><span class="font-bold">Share</span> your unique game invite link via email, text, or group chat — whatever works best for you.</li>
-        <li><span class="font-bold">Watch</span> as players’ names and status appear below as they register.</li>
-        <li  v-if=" players.length > 1"><span class="font-bold">Remember:</span> TriviYa only works with 4–12 players. {{ players.length }} players have joined.</li>
-        <li  v-if="game.status === 'new'"><span class="font-bold">START GAME</span> button appears below when all answers are in.</li>
-      </ul>
+    <div v-if="['new', 'ready','sequel'].includes(game.status)">
+        <div class="hidden md:block">
+            <div v-if="game.status === 'sequel'">
+                <p>Congrats, you’ve started a new game {{ game.name }}! You’ll need to:</p>
+            </div>
+            <div v-else>
+                <p>Congrats, you’re the host of TriviYa. You’ll need to:</p>
+            </div>
+            <ul class="hidden md:inline-block list-disc pl-4 ml-0">
+                <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more player<span v-if="4 - players.length > 1">s</span> to join. Click on the button next to the invitation link below to copy the invitiation link.</li>
+                <li><span class="font-bold">Share</span> your unique game link by pasting it into email, text, or group chat — whatever works best for you.</li>
+                <li><span class="font-bold">Watch</span> as players’ names and status appear below as they register.</li>
+                <li v-if=" players.length > 1"><span class="font-bold">Remember:</span> TriviYa only works with 4–12 players. {{ players.length }} players have joined.</li>
+            </ul>
 
-      <div class="md:hidden sm:inline-block text-sm">
-        Congrats, you’re the host!
-        <ul>
-            <li v-if="players.length < 4">Share your game link with 3+ friends and watch their names appear below as they join.</li>
-            <li v-if="game.status === 'new'">Start the game when everyone’s quiz is completed.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div v-if="game.status === 'sequel'">
-        <p>Congrats, you’ve started a new game {{ game.name }}!</p>
-        <p>Your players can join using this new link, or they’ll find the game waiting on their dashboard.</p>
-    </div>
-
-    <div v-if="['new', 'ready', 'sequel'].includes(game.status) && !game.is_full" class="mt-3 flex flex-col gap-2">
-        <div class="mt-3 flex flex-col gap-2">
-            <div class="justify-start">
-                Send this link to invite friends and family to play:<br/>
-                <div class="mr-3"><span class="text-triviyaRegular">{{ invitationLink }}</span>
-                    <div class="md:hidden sm:inline-block text-sm">
-                        Select the URL above then tap the "Copy," then tell your adult children you are an iOS Expert
-                    </div>
-
-                    <div class="hidden md:inline-block text-sm ml-2">
-                    <PrimaryButton @click="copyInvite(game)" class="w-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
-                        </svg>
-                    </PrimaryButton>
-
-                    </div>
+            <div class="mr-3">
+                <span class="text-triviyaRegular">{{ invitationLink }}</span>
+                <div class="hidden md:inline-block text-sm ml-2">
+                    <PrimaryButton @click="copyInvite(game)" class="w-sm pulse-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
+                    </svg>
+                </PrimaryButton>
                 </div>
             </div>
-            <div class="font-bold text-triviyaRegular italic">
-                TriviYa doesn’t send invites – you control who gets your link.
-            </div>
+        </div>
+
+        <div class="md:hidden sm:inline-block text-sm">
+            Congrats, you’re the host!
+            <ol class="list-decimal ml-3">
+                <li><span class="font-bold">Highlight and copy</span> this game link:
+                    <span class="text-triviyaRegular">{{ invitationLink }}</span>
+                </li>
+                <li><span class="font-bold">Paste the game link</span> into an email, text or group chat - you choose.</li>
+                <li><span class="font-bold">Send to at least 3 people</span> (games are limited to 12 players total). </li>
+                <li>Click <span class="font-bold">TAKE QUIZ</span> below to take the quiz. <span class="font-bold">You’re the host AND a player.</span></li>
+            </ol>
+        </div>
+
+        <div class="font-bold text-triviyaRegular italic mt-2">
+            TriviYa doesn’t send invites – you control who gets your link.
         </div>
     </div>
+
   </div>
 
   <!-- Players Table -->
@@ -241,7 +237,6 @@ const confirmRemovePlayer = async () => {
           <td class="px-1 sm:px-4 py-2 text-center">
             <PrimaryButton
               v-if="$page.props.auth.user.id === player.id && ['new', 'ready', 'sequel'].includes(game.status)"
-              :class="{ 'pulse-button': player.status === 'Available' }"
               @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
             >
               {{ quizButtonText(player) }}
