@@ -166,7 +166,7 @@ const confirmRemovePlayer = async () => {
   </div>
 
   <!-- Host Instructions -->
-  <div v-if="isHost" class="mt-4">
+  <div v-if="isHost" class="mt-1">
     <div v-if="['new', 'ready','sequel'].includes(game.status)">
         <div class="hidden md:block">
             <div v-if="game.status === 'sequel'">
