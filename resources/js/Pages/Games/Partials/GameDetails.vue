@@ -143,13 +143,6 @@ const confirmRemovePlayer = async () => {
       <div class="flex flex-col justify-center">
         <div class="flex items-center sm:text-sm md:text-2xl text-triviyaRegular font-bold">
             {{ game.name }}
-            <PrimaryButton
-            v-if="isHost"
-            @click="goToEditPage"
-            class="ml-2 p-1"
-            >
-                <EditIcon class="h-3 w-3" />
-            </PrimaryButton>
         </div>
         <div class="sm:text-xs md:text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
       </div>

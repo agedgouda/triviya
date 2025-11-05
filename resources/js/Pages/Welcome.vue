@@ -51,15 +51,16 @@ onMounted(() => {
             <AuthenticationCardLogo />
         </template>
 
-        <div class="mb-5 text-2xl font-bold">
-            Welcome to Early Access!
+        <div class="mb-3 text-center">
+            <div class="text-2xl font-bold ">Welcome to TriviYa</div>
+            The game where <span class="italic">you</span> are the trivia!
         </div>
 
-        <div class="mb-5">
-            Each player answers questions about themselves — then TriviYa turns those answers into a
-            <span class="font-bold">three-round game</span> where
-            <span class="font-bold">teams</span> guess
-            <span class="font-bold italic">“Who said that?”</span>
+        <div class="mb-3">
+            It’s trivia with a twist. Players take a quick quiz about themselves, and those responses become the game that gets everyone
+            guessing <span class="italic">who said that?</span>.
+
+
         </div>
 
         <div class="text-center">

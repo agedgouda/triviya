@@ -26,23 +26,31 @@ const register = () => {
         <template #logo>
             <AuthenticationCardLogo />
         </template>
-        <div class="mb-5 text-2xl font-bold">
-            How to Play
+        <div class="mb-5 text-2xl text-center font-bold">
+            Who Are You?
         </div>
-            <ol class="list-decimal mx-5 mb-5">
-                <li>Answer <span class="font-bold">ten fun questions about yourself</span> — but don’t share! Everyone’s quiz is different.</li>
-                <li><span class="font-bold">One of you is the Host</span> — they create the game and send the link.</li>
-                <li><span class="font-bold">Everyone else joins as Players</span>, takes their quiz, and gets ready to guess who said that!</li>
-                <li>When everyone’s done, it’s <span class="font-bold">devices down</span> — only the Host needs one to run the game.</li>
-            </ol>
+        <div class="border border-triviya-red sm:rounded-lg p-4  mb-5">
+            <div class="font-bold">
+            The Host?
+            </div>
+            You’ll kick off the game, share the link, and keep things moving. Once everyone’s finished their quiz, it’s devices down. Only you need a screen. Log in or register to start.
 
-        <div class="text-center">
-            <PrimaryButton type="button" class="mt-2" @click="login">
-                <span>Login</span>
-            </PrimaryButton>
-            <PrimaryButton type="button" class="mt-2 ml-2" @click="register">
-                <span>Register</span>
-            </PrimaryButton>
+
+            <div class="text-center">
+                <PrimaryButton type="button" class="mt-2" @click="login">
+                    <span>Login</span>
+                </PrimaryButton>
+                <PrimaryButton type="button" class="mt-2 ml-2" @click="register">
+                    <span>Register</span>
+                </PrimaryButton>
+            </div>
+        </div>
+        <div class="border border-triviya-red sm:rounded-lg p-4  mb-5">
+            <div>
+                Or the <span class="font-bold">Player</span>?
+            </div>
+            Hang tight. Your host will send your TriviYa quiz link by text, email, or chat. Open it, answer the questions and you’re in.
+
         </div>
     </AuthenticationCard>
 
