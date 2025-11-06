@@ -166,7 +166,7 @@ const confirmRemovePlayer = async () => {
             <ul class="list-disc pl-4 ml-0">
                 <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more player<span v-if="4 - players.length > 1">s</span> to join. Click on the button next to the invitation link below to copy the invitiation link.</li>
                 <li class="hidden md:list-item"><span class="font-bold">Copy</span> your invitation link using the button below.</li>
-                <li class="md:hidden sm:list-itemk"><span class="font-bold">Highlight and copy</span> the invitation link below</li>
+                <li class="md:hidden sm:list-itemk"><span class="font-bold">Highlight and copy</span> the invitation link below.</li>
                 <li><span class="font-bold">Share</span> the link by pasting it into a text, email, or group chat so your players can register.</li>
                 <li><span class="font-bold">Take your quiz.</span> You're also a player! Click on the link below.</li>
             </ul>
