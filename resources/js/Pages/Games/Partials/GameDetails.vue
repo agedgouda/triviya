@@ -168,7 +168,7 @@ const confirmRemovePlayer = async () => {
                 <li class="hidden md:list-item"><span class="font-bold">Copy</span> your invitation link using the button below.</li>
                 <li class="md:hidden sm:list-itemk"><span class="font-bold">Highlight and copy</span> the invitation link below.</li>
                 <li><span class="font-bold">Share</span> the link by pasting it into a text, email, or group chat so your players can register.</li>
-                <li><span class="font-bold">Take your quiz.</span> You're also a player! Click on the link below.</li>
+                <li><span class="font-bold">Take your quiz.</span> You're also a player! Click on the button below to get started.</li>
             </ul>
 
             <div class="mr-3">
