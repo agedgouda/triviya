@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed,onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -8,7 +8,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import Table from '@/Components/Table.vue';
 import Modal from '@/Components/Modal.vue';
 import { useFlash } from '@/Composables/useFlash';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
+//import EditIcon from '@/Components/Icons/EditIcon.vue';
 import StartGameIcon from '@/Components/Icons/StartGameIcon.vue';
 import RemovePlayerIcon from '@/Components/Icons/RemovePlayerIcon.vue';
 
@@ -30,20 +30,16 @@ const questionsAnsweredCount = computed(() =>
 );
 
 const playersRemainingToAnswer = computed(() => props.players.length - questionsAnsweredCount.value);
-
 const isHost = computed(() => page.props.auth.user.id === host.id);
 const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
 //const invitationLink = `${currentDomain}/questions/${props.game.id}`;
 const invitationLink = `${currentDomain}/q/${props.game.short_url}`
-
-
-
 const showRemoveModal = ref(false);
 const showManualCopy = ref(false);
 const playerToRemove = ref(null);
 
 // Helper functions
-const goToEditPage = () => router.visit(route('games.edit', props.game.id));
+//const goToEditPage = () => router.visit(route('games.edit', props.game.id));
 const startGame = () => router.visit(route('games.startGame', { game: props.game.id }));
 
 
@@ -72,7 +68,6 @@ const copyText = async (text, successMessage) => {
 };
 
 const copyInvite = () => {
-  // Combine message + game URL
   //const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
   copyText(invitationLink, 'Copied invite link to clipboard!');
 };;
@@ -161,18 +156,19 @@ const confirmRemovePlayer = async () => {
   <!-- Host Instructions -->
   <div v-if="isHost" class="mt-1">
     <div v-if="['new', 'ready','sequel'].includes(game.status)">
-        <div class="hidden md:block">
+        <div class="block">
             <div v-if="game.status === 'sequel'">
-                <p>Congrats, you’ve started a new game {{ game.name }}! You’ll need to:</p>
+                <p class="text-bold">Congrats, you’ve started a new game {{ game.name }}! You’ll need to:</p>
             </div>
             <div v-else>
-                <p>Congrats, you’re the host of TriviYa. You’ll need to:</p>
+                <p class="text-bold">Congrats, you’re the host of TriviYa. You’ll need to:</p>
             </div>
-            <ul class="hidden md:inline-block list-disc pl-4 ml-0">
+            <ul class="list-disc pl-4 ml-0">
                 <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more player<span v-if="4 - players.length > 1">s</span> to join. Click on the button next to the invitation link below to copy the invitiation link.</li>
-                <li><span class="font-bold">Share</span> your unique game link by pasting it into email, text, or group chat — whatever works best for you.</li>
-                <li><span class="font-bold">Watch</span> as players’ names and status appear below as they register.</li>
-                <li v-if=" players.length > 1"><span class="font-bold">Remember:</span> TriviYa only works with 4–12 players. {{ players.length }} players have joined.</li>
+                <li class="hidden md:list-item"><span class="font-bold">Copy</span> your invitation link using the button below.</li>
+                <li class="md:hidden sm:list-itemk"><span class="font-bold">Highlight and copy</span> the invitation link below</li>
+                <li><span class="font-bold">Share</span> the link by pasting it into a text, email, or group chat so your players can register.</li>
+                <li><span class="font-bold">Take your quiz.</span> You're also a player! Click on the link below.</li>
             </ul>
 
             <div class="mr-3">
@@ -185,18 +181,6 @@ const confirmRemovePlayer = async () => {
                 </PrimaryButton>
                 </div>
             </div>
-        </div>
-
-        <div class="md:hidden sm:inline-block text-sm">
-            Congrats, you’re the host!
-            <ol class="list-decimal ml-3">
-                <li><span class="font-bold">Highlight and copy</span> this game link:
-                    <span class="text-triviyaRegular">{{ invitationLink }}</span>
-                </li>
-                <li><span class="font-bold">Paste the game link</span> into an email, text or group chat - you choose.</li>
-                <li><span class="font-bold">Send to at least 3 people</span> (games are limited to 12 players total). </li>
-                <li>Click <span class="font-bold">TAKE QUIZ</span> below to take the quiz. <span class="font-bold">You’re the host AND a player.</span></li>
-            </ol>
         </div>
 
         <div class="font-bold text-triviyaRegular italic mt-2">
