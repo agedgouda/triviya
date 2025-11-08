@@ -58,7 +58,7 @@ onMounted(() => {
 
         <div class="mb-3">
             It’s trivia with a twist. Players take a quick quiz about themselves, and those responses become the game that gets everyone
-            guessing <span class="italic">who said that?</span>.
+            guessing <span class="italic">who said that?</span>
 
 
         </div>
