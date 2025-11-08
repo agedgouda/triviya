@@ -131,16 +131,23 @@ const confirmRemovePlayer = async () => {
     </div>
 </Modal>
 
-
   <!-- Game Header -->
-  <div class="flex justify-between items-start gap-4">
-    <div class="flex gap-4">
+  <div class="flex justify-between items-startmb-1">
+    <div class="flex">
       <div class="flex flex-col justify-center">
-        <div class="flex items-center sm:text-sm md:text-2xl text-triviyaRegular font-bold">
-            {{ game.name }}
+            <div class="flex items-center sm:text-sm md:text-2xl text-triviyaRegular font-bold">
+                {{ game.name }}
+            </div>
+            <div class="sm:text-xs md:text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
+            <div>
+                <span class="text-triviyaRegular">{{ invitationLink }}</span>
+                <div class="hidden md:inline-block text-sm ml-2" v-if="['new', 'ready','sequel'].includes(game.status)">
+                    <PrimaryButton @click="copyInvite(game)" class="w-sm pulse-button">
+                        Copy Link
+                    </PrimaryButton>
+                </div>
+            </div>
         </div>
-        <div class="sm:text-xs md:text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
-      </div>
     </div>
 
     <div class="flex justify-end" v-if="isHost && ['in progress', 'ready'].includes(game.status)">
@@ -154,35 +161,27 @@ const confirmRemovePlayer = async () => {
   </div>
 
   <!-- Host Instructions -->
-  <div v-if="isHost" class="mt-1">
+  <div v-if="isHost" >
     <div v-if="['new', 'ready','sequel'].includes(game.status)">
-        <div class="block">
-            <div v-if="game.status === 'sequel'">
-                <p class="text-bold">Congrats, you’ve started a new game {{ game.name }}! You’ll need to:</p>
+        <div >
+            <div class="font-bold text-triviyaRegular">
+                Host To Dos:
             </div>
-            <div v-else>
-                <p class="text-bold">Congrats, you’re the host of TriviYa. You’ll need to:</p>
-            </div>
-            <ul class="list-disc pl-4 ml-0">
-                <li v-if="players.length < 4"><span class="font-bold">Invite</span> at least {{ 4 - players.length }} more player<span v-if="4 - players.length > 1">s</span> to join. Click on the button next to the invitation link below to copy the invitiation link.</li>
-                <li class="hidden md:list-item"><span class="font-bold">Copy</span> your invitation link using the button below.</li>
-                <li class="md:hidden sm:list-itemk"><span class="font-bold">Highlight and copy</span> the invitation link below.</li>
-                <li><span class="font-bold">Share</span> the link by pasting it into a text, email, or group chat so your players can register.</li>
-                <li><span class="font-bold">Take your quiz.</span> You're also a player! Click on the button below to get started.</li>
-            </ul>
+            <div class="font-bold">👥  Step 1 – Invite players</div>
+            Invite 3–12 players.
+            <div class="inline-block" v-if="players.length <4 ">You’ll need at least {{ 4 - players.length }} to start the game.</div>
+            <div class="inline-block" v-if="players.length >12 ">You can invite  {{ players.length-12 }} to start the game.</div>
+            <div class="inline-block" v-if="players.length === 12 ">The game is full, start the game when everybody has taken the quiz!</div>
 
-            <div class="mr-3">
-                <span class="text-triviyaRegular">{{ invitationLink }}</span>
-                <div class="hidden md:inline-block text-sm ml-2">
-                    <PrimaryButton @click="copyInvite(game)" class="w-sm pulse-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
-                    </svg>
-                </PrimaryButton>
-                </div>
-            </div>
+            <div class="font-bold">🔗 Step 2 – Share the quiz link</div>
+            <span class="hidden md:block">Tap Copy Link above, then paste it into a text, email, or group chat so everyone can join.</span>
+            <span class="md:hidden">Press and hold the link above, then tap Copy.
+                Paste it into a text, email, or group chat then send it to the players.
+            </span>
+
+            <div class="font-bold">🤔 Step 3 – Take your quiz</div>
+            You’re a player too! Tap Take Quiz below to answer 10 quick questions about yourself.
         </div>
-
         <div class="font-bold text-triviyaRegular italic mt-2">
             TriviYa doesn’t send invites – you control who gets your link.
         </div>
