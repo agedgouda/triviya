@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
 
         Inertia::share([
             'stripeKey' => config('services.stripe.key'),
+            'short_url' => config('app.short_url'),
             'flashMessage' => function () {
                 return session('flashMessage');
             },
