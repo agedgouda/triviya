@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { onMounted, watch } from 'vue';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -82,7 +83,17 @@ const submit = () => {
 
     <AuthenticationCard>
         <template #logo>
-            <AuthenticationCardLogo />
+            <div class="text-white flex flex-col items-center">
+                <div class="mb-2">
+                    <AuthenticationCardLogo />
+                </div>
+                <div class="text-left max-w-md">
+                    <div class="font-bold">Do I have to register?</div>
+                    <div>
+                        Yes. TriviYa saves your answers and connects you to the right game — whether you’re hosting or playing.
+                    </div>
+                </div>
+            </div>
         </template>
 
         <div v-if="flash" class="mb-2 font-medium text-sm text-triviyaPink">
