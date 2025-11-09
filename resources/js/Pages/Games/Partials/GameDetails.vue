@@ -132,17 +132,17 @@ const confirmRemovePlayer = async () => {
 </Modal>
 
   <!-- Game Header -->
-  <div class="flex justify-between items-startmb-1">
+  <div class="flex justify-between items-start mb-1">
     <div class="flex">
       <div class="flex flex-col justify-center">
             <div class="flex items-center sm:text-sm md:text-2xl text-triviyaRegular font-bold">
                 {{ game.name }}
             </div>
-            <div class="sm:text-xs md:text-lg font-bold text-triviyaRegular">Location: {{ game.location }}</div>
-            <div>
-                <span class="text-triviyaRegular">{{ invitationLink }}</span>
+            <div class="text-triviyaRegular"><span class="font-bold">Location:</span> <span class="text-black">{{ game.location }}</span></div>
+            <div class="mb-2">
+                <span class="text-black"><span class="font-bold text-triviyaRegular">Quiz Link:</span> {{ invitationLink }}</span>
                 <div class="hidden md:inline-block text-sm ml-2" v-if="['new', 'ready','sequel'].includes(game.status)">
-                    <PrimaryButton @click="copyInvite(game)" class="w-sm pulse-button">
+                    <PrimaryButton @click="copyInvite(game)" class="w-sm">
                         Copy Link
                     </PrimaryButton>
                 </div>
@@ -164,26 +164,19 @@ const confirmRemovePlayer = async () => {
   <div v-if="isHost" >
     <div v-if="['new', 'ready','sequel'].includes(game.status)">
         <div >
-            <div class="font-bold text-triviyaRegular">
-                Host To Dos:
-            </div>
-            <div class="font-bold">👥  Step 1 – Invite players</div>
-            Invite 3–12 players.
-            <div class="inline-block" v-if="players.length <4 ">You’ll need at least {{ 4 - players.length }} to start the game.</div>
-            <div class="inline-block" v-if="players.length >12 ">You can invite  {{ players.length-12 }} to start the game.</div>
-            <div class="inline-block" v-if="players.length === 12 ">The game is full, start the game when everybody has taken the quiz!</div>
 
-            <div class="font-bold">🔗 Step 2 – Share the quiz link</div>
-            <span class="hidden md:block">Tap Copy Link above, then paste it into a text, email, or group chat so everyone can join.</span>
+            <div class="font-bold text-triviyaRegular">👥  Step 1 – Invite players</div>
+            <div class="inline-block mb-2" v-if="players.length <4 ">You’ll need at least {{ 4 - players.length }} more (up to 12) to start the game.</div>
+            <div class="inline-block mb-2" v-if="players.length >4 &&  players.length < 12 ">You can invite {{ 12 - players.length }} more to start the game.</div>
+            <div class="inline-block mb-2" v-if="players.length === 12 ">The game is full, start the game when everybody has taken the quiz!</div>
+            <div class="font-bold text-triviyaRegular">🔗 Step 2 – Share the quiz link</div>
+            <span class="hidden md:block">Tap Copy Link above, then paste and send it to the players in a text, email, or group chat.</span>
             <span class="md:hidden">Press and hold the link above, then tap Copy.
                 Paste it into a text, email, or group chat then send it to the players.
             </span>
 
-            <div class="font-bold">🤔 Step 3 – Take your quiz</div>
+            <div class="font-bold mt-2 text-triviyaRegular">🤔 Step 3 – Take your quiz</div>
             You’re a player too! Tap Take Quiz below to answer 10 quick questions about yourself.
-        </div>
-        <div class="font-bold text-triviyaRegular italic mt-2">
-            TriviYa doesn’t send invites – you control who gets your link.
         </div>
     </div>
 
