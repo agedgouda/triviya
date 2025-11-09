@@ -7,6 +7,7 @@ import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PasswordInput from '@/Components/PasswordInput.vue';
 
@@ -60,6 +61,11 @@ watch(
     }
   }
 );
+
+const goBack = () => {
+    window.history.back();
+}
+
 
 const submit = () => {
 
@@ -177,14 +183,21 @@ const submit = () => {
                 </InputLabel>
             </div>
             <div class="flex items-center justify-end mt-4">
-                <Link :href="route('login')" class="underline text-sm text-triviyaRegular hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Already registered?
-                </Link>
+
+
+                <SecondaryButton class="ms-4" @click="goBack()">
+                    Cancel
+                </SecondaryButton>
+
 
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Register
                 </PrimaryButton>
             </div>
+
+            <Link :href="route('login')" class="underline text-sm text-triviyaRegular hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Already registered?
+                </Link>
         </form>
     </AuthenticationCard>
 </template>
