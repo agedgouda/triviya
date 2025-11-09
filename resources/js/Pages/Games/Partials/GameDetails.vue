@@ -33,7 +33,8 @@ const playersRemainingToAnswer = computed(() => props.players.length - questions
 const isHost = computed(() => page.props.auth.user.id === host.id);
 const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
 //const invitationLink = `${currentDomain}/questions/${props.game.id}`;
-const invitationLink = `${currentDomain}/q/${props.game.short_url}`
+//const invitationLink = `${currentDomain}/q/${props.game.short_url}`
+const invitationLink = `https://tryvy.co/q/${props.game.short_url}`
 const showRemoveModal = ref(false);
 const showManualCopy = ref(false);
 const playerToRemove = ref(null);
