@@ -186,7 +186,7 @@ const submit = () => {
 
 
                 <SecondaryButton class="ms-4" @click="goBack()">
-                    Cancel
+                    Back
                 </SecondaryButton>
 
 
