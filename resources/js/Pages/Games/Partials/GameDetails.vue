@@ -66,7 +66,6 @@ const copyText = async (text, successMessage) => {
 };
 
 const copyInvite = () => {
-  //const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
   copyText(textToCopy, 'Copied invite link to clipboard!');
 };;
 
