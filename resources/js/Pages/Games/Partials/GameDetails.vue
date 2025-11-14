@@ -29,6 +29,11 @@ const questionsAnsweredCount = computed(() =>
   props.players.filter(p => p.status === 'Questions Answered' || p.status === 'Complete').length
 );
 
+
+const thisPlayer = computed(() =>
+  props.players.find(p => p.id === page.props.auth.user.id )
+);
+
 const playersRemainingToAnswer = computed(() => props.players.length - questionsAnsweredCount.value);
 const isHost = computed(() => page.props.auth.user.id === host.id);
 const invitationLink = `${page.props.short_url}/q/${props.game.short_url}`
@@ -128,8 +133,8 @@ const confirmRemovePlayer = async () => {
     </div>
 </Modal>
 
-  <!-- Game Header -->
-    <div class="flex flex-col md:flex-row justify-between items-start mb-2 md:mb-1 space-y-2 md:space-y-0 md:space-x-4">
+<!-- Game Header -->
+<div class="flex flex-col md:flex-row justify-between items-start mb-2 md:mb-1 space-y-2 md:space-y-0 md:space-x-4">
     <!-- Left Column: Game Info -->
     <div class="flex flex-col justify-center space-y-1 flex-1 min-w-0">
         <!-- Game Name -->
@@ -139,23 +144,23 @@ const confirmRemovePlayer = async () => {
 
         <!-- Location -->
         <div class="text-triviyaRegular break-words">
-        <span class="font-bold">Location:</span>
-        <span class="text-black">{{ game.location }}</span>
+            <span class="font-bold">Location:</span>
+            <span class="text-black">{{ game.location }}</span>
         </div>
 
         <!-- Quiz Link -->
-        <div class="break-words">
-        <span class="text-black">
-            <span class="font-bold text-triviyaRegular">Quiz Link:</span>
-            {{ invitationLink }}
-        </span>
+        <div class="break-words" v-if="isHost" >
+            <span class="text-black">
+                <span class="font-bold text-triviyaRegular">Quiz Link:</span>
+                {{ invitationLink }}
+            </span>
 
         <!-- Copy Button (desktop only) -->
-        <div class="hidden md:inline-block text-sm ml-2" v-if="['new', 'ready','sequel'].includes(game.status)">
-            <PrimaryButton @click="copyInvite(game)" class="w-sm">
-            Copy Link
-            </PrimaryButton>
-        </div>
+            <div class="hidden md:inline-block text-sm ml-2" v-if="['new', 'ready','sequel'].includes(game.status)">
+                <PrimaryButton @click="copyInvite(game)" class="w-sm">
+                Copy Link
+                </PrimaryButton>
+            </div>
         </div>
     </div>
 
@@ -166,16 +171,11 @@ const confirmRemovePlayer = async () => {
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>
         </PrimaryButton>
     </div>
-
-    <!-- Game Complete Indicator -->
-    <div class="flex justify-center mt-2 md:mt-0 text-xl sm:text-lg md:text-4xl font-bold flex-1" v-if="game.status.includes('done')">
-        GAME COMPLETE
-    </div>
-    </div>
+</div>
 
 
-  <!-- Host Instructions -->
-  <div v-if="isHost" >
+<!-- Host Instructions -->
+<div v-if="isHost" >
     <div v-if="['new', 'ready','sequel'].includes(game.status)">
         <div >
 
@@ -193,9 +193,20 @@ const confirmRemovePlayer = async () => {
             You’re a player too! Tap Take Quiz below to answer 10 quick questions about yourself.
         </div>
     </div>
+</div>
 
-  </div>
+<div class="mt-3">
+    <PrimaryButton
+        v-if="['new', 'ready', 'sequel'].includes(game.status)"
+        @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: $page.props.auth.user.id }))"
+    >
+        {{ quizButtonText(thisPlayer) }}
+    </PrimaryButton>
+</div>
 
+<div class="mt-3" v-if="game.status.includes('done')">
+    GAME COMPLETE
+</div>
   <!-- Players Table -->
   <div class="mt-5">
     <span class="text-red-800">{{ $page.props.errors.msg }}</span>
@@ -203,7 +214,7 @@ const confirmRemovePlayer = async () => {
       <template #header>
         <th class="px-2 sm:px-4 py-2 text-left">Name</th>
         <th class="px-4 py-2 text-center">Quiz Status</th>
-        <th class="px-4 py-2 text-center"></th>
+        <th class="px-4 py-2 text-center" v-if="isHost && ['new', 'ready', 'sequel'].includes(game.status)"></th>
       </template>
 
       <template #default="{ rowClass }">
@@ -217,15 +228,8 @@ const confirmRemovePlayer = async () => {
             <span>{{ player.name }}</span>
           </td>
           <td class="px-1 sm:px-4 py-2 text-center">{{ player.status }}</td>
-          <td class="px-1 sm:px-4 py-2 text-center">
-            <PrimaryButton
-              v-if="$page.props.auth.user.id === player.id && ['new', 'ready', 'sequel'].includes(game.status)"
-              @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: player.id }))"
-            >
-              {{ quizButtonText(player) }}
-            </PrimaryButton>
-
-            <div v-else-if="isHost && $page.props.auth.user.id !== player.id && ['new', 'ready', 'sequel'].includes(game.status)">
+          <td class="px-1 sm:px-4 py-2 text-center" v-if="isHost && ['new', 'ready', 'sequel'].includes(game.status)" >
+            <div v-if="$page.props.auth.user.id !== player.id">
                 <DangerButton @click="promptRemovePlayer(player)" class="ml-2">
                     <RemovePlayerIcon class="h-4" />
                 </DangerButton>
@@ -235,14 +239,14 @@ const confirmRemovePlayer = async () => {
       </template>
     </Table>
 
-                <div class="flex justify-end my-5">
-                <PrimaryButton @click="router.visit(route('games'))">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                    </svg>
-                    &nbsp;Back To All Games
-                </PrimaryButton>
-            </div>
+    <div class="flex justify-end my-5">
+        <PrimaryButton @click="router.visit(route('games'))">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            &nbsp;Back To All Games
+        </PrimaryButton>
+    </div>
   </div>
 </template>
 
