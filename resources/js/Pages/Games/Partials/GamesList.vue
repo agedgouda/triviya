@@ -66,8 +66,6 @@ const goToPage = (page) => {
         <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true" v-if="props.games.length > 0">
             <template #header>
                     <th class="px-4 py-2 text-left sm:px-4 py-1 ">My Games</th>
-                    <th class="hidden sm:table-cell px-2 py-1 text-center">My Status</th>
-                    <th class="px-4 py-2 text-center sm:px-4 py-1 ">Quiz Status</th>
                     <th class="px-4 py-2 text-center sm:px-4 py-1 ">Game Status</th>
             </template>
 
@@ -80,9 +78,11 @@ const goToPage = (page) => {
                     @click="goToGame(game.id)"
                 >
                     <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
-                    <td class="hidden sm:table-cell px-2 py-1 text-center">{{ game.is_host ? 'Host' : 'Player' }}</td>
-                    <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.current_user_status }}</td>
-                    <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ gameStatus(game.status) }}</td>
+                    <td class="px-2 sm:px-4 py-1 text-center" v-if="game.status === 'in progress'">Game In Progress</td>
+                    <td class="px-2 sm:px-4 py-1 text-center" v-else>
+                        <span v-if="game.current_user_status !=='Available'">{{ game.current_user_status }}</span>
+                        <span v-else>Start Quiz</span>
+                    </td>
 
                 </tr>
             </template>
