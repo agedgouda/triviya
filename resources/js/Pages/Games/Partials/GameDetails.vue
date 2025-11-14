@@ -129,33 +129,50 @@ const confirmRemovePlayer = async () => {
 </Modal>
 
   <!-- Game Header -->
-  <div class="flex justify-between items-start mb-1">
-    <div class="flex">
-      <div class="flex flex-col justify-center">
-            <div class="flex items-center sm:text-sm md:text-2xl text-triviyaRegular font-bold">
-                {{ game.name }}
-            </div>
-            <div class="text-triviyaRegular"><span class="font-bold">Location:</span> <span class="text-black">{{ game.location }}</span></div>
-            <div class="mb-2">
-                <span class="text-black"><span class="font-bold text-triviyaRegular">Quiz Link:</span> {{ invitationLink }}</span>
-                <div class="hidden md:inline-block text-sm ml-2" v-if="['new', 'ready','sequel'].includes(game.status)">
-                    <PrimaryButton @click="copyInvite(game)" class="w-sm">
-                        Copy Link
-                    </PrimaryButton>
-                </div>
-            </div>
+    <div class="flex flex-col md:flex-row justify-between items-start mb-2 md:mb-1 space-y-2 md:space-y-0 md:space-x-4">
+    <!-- Left Column: Game Info -->
+    <div class="flex flex-col justify-center space-y-1 flex-1 min-w-0">
+        <!-- Game Name -->
+        <div class="font-bold text-lg sm:text-sm md:text-2xl text-triviyaRegular break-words">
+        {{ game.name }}
+        </div>
+
+        <!-- Location -->
+        <div class="text-triviyaRegular break-words">
+        <span class="font-bold">Location:</span>
+        <span class="text-black">{{ game.location }}</span>
+        </div>
+
+        <!-- Quiz Link -->
+        <div class="break-words">
+        <span class="text-black">
+            <span class="font-bold text-triviyaRegular">Quiz Link:</span>
+            {{ invitationLink }}
+        </span>
+
+        <!-- Copy Button (desktop only) -->
+        <div class="hidden md:inline-block text-sm ml-2" v-if="['new', 'ready','sequel'].includes(game.status)">
+            <PrimaryButton @click="copyInvite(game)" class="w-sm">
+            Copy Link
+            </PrimaryButton>
+        </div>
         </div>
     </div>
 
-    <div class="flex justify-end" v-if="isHost && ['in progress', 'ready'].includes(game.status)">
-      <PrimaryButton @click="startGame">
-            <StartGameIcon class="hidden md:inline-block h-4 w-4" />
+    <!-- Right Column: Start/Continue Button -->
+    <div class="flex justify-end mt-2 md:mt-0 flex-shrink-0" v-if="isHost && ['in progress', 'ready'].includes(game.status)">
+        <PrimaryButton @click="startGame">
+        <StartGameIcon class="hidden md:inline-block h-4 w-4" />
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>
-      </PrimaryButton>
+        </PrimaryButton>
     </div>
 
-    <div class="flex-1 flex justify-center mt-2 md:text-4xl sm:text-sm font-bold" v-if="game.status.includes('done')">GAME COMPLETE</div>
-  </div>
+    <!-- Game Complete Indicator -->
+    <div class="flex justify-center mt-2 md:mt-0 text-xl sm:text-lg md:text-4xl font-bold flex-1" v-if="game.status.includes('done')">
+        GAME COMPLETE
+    </div>
+    </div>
+
 
   <!-- Host Instructions -->
   <div v-if="isHost" >
