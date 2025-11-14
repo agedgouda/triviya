@@ -53,81 +53,82 @@ const goToPage = (page) => {
 </script>
 
 <template>
-        <div v-if="props.games.length === 0" class="mb-5 text-center">
+        <div v-if="props.games.length === 0" class="text-center">
             <div class="mb-1 font-bold">Let’s Do This!</div>
             <div class="mb-2">Click new game to get started</div>
-            <PrimaryButton @click="router.visit(route('games.create'))">Host A Game</PrimaryButton>
         </div>
-        <div v-else class="flex mb-5">
+
+        <div class="mb-3">
             <PrimaryButton @click="router.visit(route('games.create'))">Host A New Game</PrimaryButton>
         </div>
 
+        <div class="sm:mb-2 md:hidden">Tap a game name below to view details.</div>
+        <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true" v-if="props.games.length > 0">
+            <template #header>
+                    <th class="px-4 py-2 text-left sm:px-4 py-1 ">My Games</th>
+                    <th class="hidden sm:table-cell px-2 py-1 text-center">My Status</th>
+                    <th class="px-4 py-2 text-center sm:px-4 py-1 ">Quiz Status</th>
+                    <th class="px-4 py-2 text-center sm:px-4 py-1 ">Game Status</th>
+            </template>
 
-    <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true" v-if="props.games.length > 0">
-        <template #header>
-                <th class="px-4 py-2 text-left sm:px-4 py-1 ">My Games</th>
-                <th class="hidden sm:table-cell px-2 py-1 text-center">My Status</th>
-                <th class="px-4 py-2 text-center sm:px-4 py-1 ">Quiz Status</th>
-                <th class="px-4 py-2 text-center sm:px-4 py-1 ">Game Status</th>
-        </template>
+                <template #default="{ rowClass }">
+                <tr v-for="game in paginatedGames"
+                    :key="game.id"
+                    :class="[
+                        rowClass
+                    ]"
+                    @click="goToGame(game.id)"
+                >
+                    <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
+                    <td class="hidden sm:table-cell px-2 py-1 text-center">{{ game.is_host ? 'Host' : 'Player' }}</td>
+                    <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.current_user_status }}</td>
+                    <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ gameStatus(game.status) }}</td>
 
-            <template #default="{ rowClass }">
-            <tr v-for="game in paginatedGames"
-                :key="game.id"
-                :class="[
-                    rowClass
-                ]"
-                @click="goToGame(game.id)"
+                </tr>
+            </template>
+        </Table>
+
+        <div v-if="totalPages > 1" class="mt-4 flex justify-center space-x-1">
+            <button
+            @click="goToPage(currentPage - 1)"
+            :disabled="currentPage === 1"
+            class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
             >
-                <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
-                <td class="hidden sm:table-cell px-2 py-1 text-center">{{ game.is_host ? 'Host' : 'Player' }}</td>
-                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ game.current_user_status }}</td>
-                <td class="px-2 sm:px-4 py-1 sm:py-2 text-center">{{ gameStatus(game.status) }}</td>
+            Prev
+            </button>
 
-            </tr>
-        </template>
-    </Table>
+            <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="[
+                'px-3 py-1 border rounded',
+                page === currentPage
+                ? 'bg-triviya-red text-white'
+                : 'bg-white text-triviya-red hover:bg-triviya-red hover:text-white'
+            ]"
+            >
+            {{ page }}
+            </button>
 
-    <div v-if="totalPages > 1" class="mt-4 flex justify-center space-x-1">
-        <button
-        @click="goToPage(currentPage - 1)"
-        :disabled="currentPage === 1"
-        class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
-        >
-        Prev
-        </button>
+            <button
+            @click="goToPage(currentPage + 1)"
+            :disabled="currentPage === totalPages"
+            class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
+            >
+            Next
+            </button>
+        </div>
 
-        <button
-        v-for="page in totalPages"
-        :key="page"
-        @click="goToPage(page)"
-        :class="[
-            'px-3 py-1 border rounded',
-            page === currentPage
-            ? 'bg-triviya-red text-white'
-            : 'bg-white text-triviya-red hover:bg-triviya-red hover:text-white'
-        ]"
-        >
-        {{ page }}
-        </button>
-
-        <button
-        @click="goToPage(currentPage + 1)"
-        :disabled="currentPage === totalPages"
-        class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
-        >
-        Next
-        </button>
-    </div>
-
-            <div v-if="gamesList.some(game => game.status.includes('done'))">
+        <div class="mb-5">
             <SecondaryButton
                 @click="showDone = !showDone"
-                class="mt-3 mb-5"
+                class="mt-3"
+                v-if="gamesList.some(game => game.status.includes('done'))"
             >
                 {{ showDone ? 'Show Active Games' : 'Show Completed Games' }}
             </SecondaryButton>
-            </div>
+        </div>
 </template>
 
 <style scoped>
