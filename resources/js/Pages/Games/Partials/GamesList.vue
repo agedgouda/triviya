@@ -62,7 +62,7 @@ const goToPage = (page) => {
             <PrimaryButton @click="router.visit(route('games.create'))">Host A New Game</PrimaryButton>
         </div>
 
-        <div class="sm:mb-2 md:hidden">Tap a game name below to view details.</div>
+        <div class="sm:mb-2 md:hidden">Tap a game name to view details.</div>
         <Table class="min-w-full table-auto " :has-hover="true" :has-pointer="true" v-if="props.games.length > 0">
             <template #header>
                     <th class="px-4 py-2 text-left sm:px-4 py-1 ">My Games</th>
