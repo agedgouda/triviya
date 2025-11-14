@@ -31,9 +31,9 @@ const questionsAnsweredCount = computed(() =>
 
 const playersRemainingToAnswer = computed(() => props.players.length - questionsAnsweredCount.value);
 const isHost = computed(() => page.props.auth.user.id === host.id);
-const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
-
 const invitationLink = `${page.props.short_url}/q/${props.game.short_url}`
+const textToCopy = `${props.inviteMessage}\n\n${invitationLink}`;
+
 const showRemoveModal = ref(false);
 const showManualCopy = ref(false);
 const playerToRemove = ref(null);
@@ -67,7 +67,7 @@ const copyText = async (text, successMessage) => {
 
 const copyInvite = () => {
   //const textToCopy = `${props.inviteMessage}\n\n${currentDomain}/questions/${props.game.id}`;
-  copyText(invitationLink, 'Copied invite link to clipboard!');
+  copyText(textToCopy, 'Copied invite link to clipboard!');
 };;
 
 const promptRemovePlayer = (player) => {
