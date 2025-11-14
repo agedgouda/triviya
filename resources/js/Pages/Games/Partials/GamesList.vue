@@ -80,8 +80,9 @@ const goToPage = (page) => {
                     <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
                     <td class="px-2 sm:px-4 py-1 text-center" v-if="game.status === 'in progress'">Game In Progress</td>
                     <td class="px-2 sm:px-4 py-1 text-center" v-else>
-                        <span v-if="game.current_user_status !=='Available'">{{ game.current_user_status }}</span>
-                        <span v-else>Start Quiz</span>
+                        <span v-if="game.current_user_status ==='Available'">Start Game</span>
+                        <span v-if="game.current_user_status ==='Completed'">Game {{ game.current_user_status }}</span>
+                        <span v-else>{{ game.current_user_status }}</span>
                     </td>
 
                 </tr>
