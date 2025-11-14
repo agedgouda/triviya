@@ -77,12 +77,13 @@ const goToPage = (page) => {
                     ]"
                     @click="goToGame(game.id)"
                 >
-                    <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }}</td>
+                    <td class="px-2 sm:px-4 py-1 sm:py-2">{{ game.name }} </td>
                     <td class="px-2 sm:px-4 py-1 text-center" v-if="game.status === 'in progress'">Game In Progress</td>
-                    <td class="px-2 sm:px-4 py-1 text-center" v-else>
-                        <span v-if="game.current_user_status ==='Available'">Start Game</span>
-                        <span v-if="game.current_user_status ==='Completed'">Game {{ game.current_user_status }}</span>
-                        <span v-else>{{ game.current_user_status }}</span>
+                    <td class="px-2 sm:px-4 py-1 text-center" v-if="game.status === 'ready' && game.completed_count === game.total_players">Ready to Start</td>
+                    <td class="px-2 sm:px-4 py-1 text-center" v-if="[ 'new','sequel'].includes(game.status)">
+                        <span v-if="game.current_user_status ==='Available'">Start Quiz</span>
+                        <span v-if="game.current_user_status ==='Completed'">Quiz {{ game.current_user_status }}</span>
+                        <span v-if="![ 'Available','Completed'].includes(game.current_user_status)">{{ game.current_user_status }}</span>
                     </td>
 
                 </tr>
