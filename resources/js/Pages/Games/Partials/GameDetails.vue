@@ -180,7 +180,7 @@ const confirmRemovePlayer = async () => {
         <div >
 
             <div class="font-bold text-triviyaRegular">👥  Step 1 – Invite players</div>
-            <div class="inline-block mb-2" v-if="players.length <4 ">You’ll need at least {{ 4 - players.length }} more (up to 12) to start the game.</div>
+            <div class="inline-block mb-2" v-if="players.length <4 ">You’ll need at least {{ 4 - players.length }} more (up to 12) to complete their quiz to start the game.</div>
             <div class="inline-block mb-2" v-if="players.length >4 &&  players.length < 12 ">You can invite {{ 12 - players.length }} more to start the game.</div>
             <div class="inline-block mb-2" v-if="players.length === 12 ">The game is full, start the game when everybody has taken the quiz!</div>
             <div class="font-bold text-triviyaRegular">🔗 Step 2 – Share the quiz link</div>
