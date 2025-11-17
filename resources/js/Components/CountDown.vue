@@ -102,7 +102,7 @@ defineExpose({resetTimer, status});
 
 <style scoped>
 .hour-glass-inner {
-    background-image: url("/images/small-eclipse.png?inline");
+    background-image: url("/images/small-eclipse.png");
     background-size: contain;
     height: 50px;
     aspect-ratio: 1;
