@@ -102,7 +102,7 @@ defineExpose({resetTimer, status});
 
 <style scoped>
 .hour-glass-inner {
-    background-image: url("/images/small-eclipse.png");
+    background-image: url("~/images/small-eclipse.png");
     background-size: contain;
     height: 50px;
     aspect-ratio: 1;
@@ -121,15 +121,11 @@ defineExpose({resetTimer, status});
 }
 
 .hour-glass {
-    background-image: url("/images/hour-glass.png");
+    background-image: url("~/images/hour-glass.png");
     height:30px;
     width: 13.5px;
     background-size: contain;
     background-repeat: no-repeat;
-    //animation-name: hourglass;
-    //animation-iteration-count: infinite;
-    //animation-duration: 2.0s;
-    //animation-timing-function: linear;
 }
 
 .idle-container {
@@ -139,7 +135,7 @@ defineExpose({resetTimer, status});
 .idle-container.switching .hour-glass-inner{
     height: 60px;
     transition: all 0.3s linear;
-    background-image: url("/images/spinner-base.png");
+    background-image: url("~/images/spinner-base.png");
 }
 
 @keyframes hourglass {
@@ -162,7 +158,7 @@ defineExpose({resetTimer, status});
     top: 0;
     width: 60px;
     height: 60px;
-    background-image: url("/images/spinner-base.png");
+    background-image: url("~/images/spinner-base.png");
     background-size: contain;
     rotate: 0deg;
 }
