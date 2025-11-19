@@ -127,7 +127,7 @@ const changeHowToPage = (direction) => {
                                     <NavLink :href="route('games')" :active="route().current('games*')" :hasSubnav="false">
                                         My Games
                                     </NavLink>
-                                    <NavLink @click="showAboutModal = true">
+                                    <NavLink href="https://triviyagame.com/" target="_blank">
                                         About TriviYa
                                     </NavLink>
                                 </div>
