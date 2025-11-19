@@ -13,6 +13,7 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  onClick: Function, // new prop for click event
 })
 
 const isHovered = ref(false)
@@ -23,8 +24,15 @@ const classes = computed(() => {
     : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-triviya-lightRed text-sm font-bold leading-5 text-blue-50 hover:text-triviya-red hover:border-triviya-red focus:outline-none transition duration-150 ease-in-out'
 })
 
-// check if href is an internal route (no http:// or https://)
-const isInternal = computed(() => !/^https?:\/\//.test(props.href))
+const isInternal = computed(() => props.href && !/^https?:\/\//.test(props.href))
+
+// handle click
+const handleClick = (event) => {
+  if (props.onClick) {
+    event.preventDefault()
+    props.onClick(event)
+  }
+}
 </script>
 
 <template>
@@ -34,11 +42,12 @@ const isInternal = computed(() => !/^https?:\/\//.test(props.href))
     :class="classes"
     class="relative"
   >
-    <!-- Main Navigation Link -->
     <component
-      :is="isInternal ? Link : 'a'"
-      :href="href"
+      :is="props.href ? (isInternal ? Link : 'a') : 'button'"
+      :href="props.href"
       v-bind="!isInternal && props.target ? { target: props.target, rel: 'noopener noreferrer' } : {}"
+      @click="handleClick"
+      class="inline-flex items-center"
     >
       <slot />
     </component>

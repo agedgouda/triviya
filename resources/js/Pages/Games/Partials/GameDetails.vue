@@ -8,7 +8,6 @@ import DangerButton from '@/Components/DangerButton.vue';
 import Table from '@/Components/Table.vue';
 import Modal from '@/Components/Modal.vue';
 import { useFlash } from '@/Composables/useFlash';
-//import EditIcon from '@/Components/Icons/EditIcon.vue';
 import StartGameIcon from '@/Components/Icons/StartGameIcon.vue';
 import RemovePlayerIcon from '@/Components/Icons/RemovePlayerIcon.vue';
 

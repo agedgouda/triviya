@@ -6,30 +6,102 @@ import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
-import NavDropdown from '@/Components/NavDropdown.vue';
+import Modal from '@/Components/Modal.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Flash from '@/Components/Flash.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 defineProps({
     title: String,
 });
 
 const showingNavigationDropdown = ref(false);
+const showAboutModal = ref(false);
+const howToPage = ref(1);
 
-const switchToTeam = (team) => {
-    router.put(route('current-team.update'), {
-        team_id: team.id,
-    }, {
-        preserveState: false,
-    });
-};
 
 const logout = () => {
     router.post(route('logout'));
 };
+const changeHowToPage = (direction) => {
+    howToPage.value += direction;
+};
 </script>
 
 <template>
+<Modal
+    :show="showAboutModal"
+    title="How To Play"
+    @close="showAboutModal = false"
+    class="font-bold w-screen h-screen max-w-none m-0 p-0  flex-col"
+>
+    <div class="flex-1 overflow-y-auto p-6 text-sm">
+        <!-- PAGE 1 -->
+        <div v-if="howToPage === 1">
+            <h2 class="text-lg mb-2">What You’ll Need</h2>
+            <ul class="list-disc ml-5">
+                <li>1 host</li>
+                <li>4–12 players</li>
+                <li>Phone, tablet, computer</li>
+                <li>No downloads needed</li>
+                <li>
+                    A scorecard <span class="font-normal">(notes app or pen & paper)</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- PAGE 2 -->
+        <div v-if="howToPage === 2">
+            <h2 class="text-lg mb-2">Setting Up the Game</h2>
+            <ul class="list-disc ml-5">
+                <li>Host creates a game</li>
+                <li>
+                    Host shares the link
+                    <span class="font-normal">with players</span>
+                </li>
+                <li>
+                    Players each answer 10 questions
+                    <span class="font-normal">before the game starts</span>
+                </li>
+                <li>
+                    Only the host needs a device
+                    <span class="font-normal">during gameplay</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- PAGE 3 -->
+        <div v-if="howToPage === 3">
+            <h2 class="text-lg mb-2">Game Play</h2>
+            <ul class="list-disc ml-5">
+                <li>Form teams <span class="font-normal">(pairs work best)</span></li>
+                <li>Host reads each question</li>
+                <li>Teams guess who said what</li>
+                <li>Host sees answers at the same time as players</li>
+                <li>Keep your own score</li>
+                <li>After 3 rounds, highest score wins</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- BUTTON ROW (stick to bottom) -->
+    <div class="flex justify-between w-full px-6 pb-6">
+        <PrimaryButton
+            @click="changeHowToPage(-1)"
+            :disabled="howToPage === 1"
+        >
+            Previous
+        </PrimaryButton>
+
+        <PrimaryButton
+            @click="changeHowToPage(1)"
+            :disabled="howToPage === 3"
+        >
+            Next
+        </PrimaryButton>
+    </div>
+</Modal>
+
     <div>
         <Flash />
         <Head :title="title" />
@@ -55,7 +127,7 @@ const logout = () => {
                                     <NavLink :href="route('games')" :active="route().current('games*')" :hasSubnav="false">
                                         My Games
                                     </NavLink>
-                                    <NavLink href="https://triviyagame.com/" target="_blank">
+                                    <NavLink @click="showAboutModal = true">
                                         About TriviYa
                                     </NavLink>
                                 </div>
@@ -155,7 +227,7 @@ const logout = () => {
                                     My Games
                                 </ResponsiveNavLink>
 
-                                <ResponsiveNavLink href="https://triviyagame.com/" target="_blank" rel="noopener">
+                                <ResponsiveNavLink @click="showAboutModal = true" rel="noopener">
                                     About TriviYa
                                 </ResponsiveNavLink>
 

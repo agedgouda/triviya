@@ -18,6 +18,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    fullscreen: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emit = defineEmits(['close']);
@@ -95,10 +99,15 @@ const maxWidthClass = computed(() => {
             >
                 <div
                     v-show="show"
-                    class="mb-6 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
-                    :class="maxWidthClass"
+                    :class="[
+                        'overflow-hidden shadow-xl transform transition-all',
+                        fullscreen
+                            ? 'fixed inset-0 w-screen h-screen m-0 rounded-none sm:max-w-none sm:w-screen sm:h-screen'
+                            : 'mb-6 rounded-lg sm:w-full sm:mx-auto ' + maxWidthClass
+                    ]"
                     style="background-color: #E6E7F6; border: 2px solid #651A72;"
                 >
+
                     <!-- Title bar -->
                     <div v-if="title" class="flex justify-between items-center px-4 py-2 bg-[#651A72] text-white font-bold text-lg">
                         <span>{{ title }}</span>
