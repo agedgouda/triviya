@@ -81,7 +81,7 @@ const goToPage = (page) => {
                     <td class="px-2 sm:px-4 py-1 text-center">
                         <!-- Main status text -->
                         <template v-if="game.status === 'in progress'">
-                            Game In Progress
+                           In Progress
                         </template>
 
                         <template v-else-if="game.status === 'ready' && game.completed_count === game.total_players">
