@@ -94,9 +94,9 @@ const submit = () => {
                     <AuthenticationCardLogo />
                 </div>
                 <div class="text-left px-5 md:px-0 md:max-w-md">
-                    <div class="font-bold">Do I have to register?</div>
+                    <div class="font-bold">Why do I have to register?</div>
                     <div>
-                        Yes. TriviYa saves your answers and connects you to the right game — whether you’re hosting or playing.
+                        So we can connect you to the right game, whether you're hosting or joining. It only takes a moment.
                     </div>
                 </div>
             </div>
