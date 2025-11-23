@@ -171,7 +171,10 @@ const confirmRemovePlayer = async () => {
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>
         </PrimaryButton>
     </div>
+
 </div>
+
+    <hr class="h-px bg-triviyaRegular border-0 my-4">
 <!-- Host Instructions -->
 <div v-if="isHost" >
     <div v-if="['new', 'ready','sequel'].includes(game.status)">
@@ -191,7 +194,6 @@ const confirmRemovePlayer = async () => {
             You’re a player too! Tap Take Quiz below to answer 10 quick questions about yourself.
         </div>
     </div>
-    <hr class="h-px bg-triviyaRegular border-0 my-4">
 </div>
 
 <div class="mt-3">
