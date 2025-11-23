@@ -88,32 +88,9 @@ const goToPage = (page) => {
                             Ready to Start
                         </template>
 
-                        <template v-else-if="['new','sequel'].includes(game.status)">
-                            <span v-if="!['Available','Completed'].includes(game.current_user_status)">
-                            {{ game.current_user_status }}
-                            </span>
-                            <span v-else-if="game.current_user_status === 'Available'">
-                            Start Quiz
-                            </span>
-                            <span v-else-if="game.current_user_status === 'Completed'">
-                            Quiz {{ game.current_user_status }}
-                            </span>
+                        <template v-else>
+                            {{ game.status.charAt(0).toUpperCase() + game.status.slice(1) }}
                         </template>
-
-                        <!-- Host progress bar -->
-                        <div v-if="game.is_host && game.status !== 'in progress'" class="mt-1 flex justify-center">
-                            <div class="w-3/4 sm:w-1/2">
-                                <div class="relative h-2 bg-gray-200 rounded">
-                                    <div
-                                    class="absolute top-0 left-0 h-2 bg-triviya-red rounded"
-                                    :style="{ width: (game.completed_count / game.total_players * 100) + '%' }"
-                                    ></div>
-                                </div>
-                                <div class="text-xs mt-1 text-center">
-                                    {{ game.completed_count }} of {{ game.total_players }} total
-                                </div>
-                            </div>
-                        </div>
                     </td>
 
 
