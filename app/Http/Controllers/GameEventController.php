@@ -38,8 +38,10 @@ class GameEventController extends Controller
 
     public function endRound(Game $game, int $round, ?bool $back = false)
     {
+
         $answers = GameActions::CreateEventAnswerListAction($game, $round);
         $questionNumber = $back ? count($answers) : null;
+
 
         return Inertia::render('Event/Show', [
             'answers' => $answers,
@@ -53,8 +55,14 @@ class GameEventController extends Controller
 
     public function endGame(Game $game)
     {
+        if($game->status === 'in progress') {
+             $game->status = 'done-bonus';
+        }
 
-        $game->status = $game->status === 'in progress' ? 'done-bonus' : 'done';
+        if($game->status === 'bonus') {
+             $game->status = 'done';
+        }
+
         $game->save();
 
         return Inertia::render('Event/Show', [

@@ -8,6 +8,10 @@ class FetchGameDetails
 {
     public function handle(Game $game, string $userId): array
     {
+        if ($game->status === 'done-bonus') {
+            $game->status = 'done';
+            $game->save();
+        }
         $game->load([
             'players:id,first_name,last_name,email,profile_photo_path',
             'host:id,first_name,last_name,email,profile_photo_path',

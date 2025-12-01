@@ -21,7 +21,7 @@ class GameController extends Controller
         $maxPlayers = config('game.max_players');
 
         $games = GameActions::fetchGames();
-//dd($games);
+
         return Inertia::render('Games/Index', [
             'games' => $games,
             'routeName' => request()->route()->getName(),
