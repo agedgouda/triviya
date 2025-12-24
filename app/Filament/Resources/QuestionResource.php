@@ -40,13 +40,15 @@ class QuestionResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('question_text')
-                    ->label('Question'),
+                    ->label('Question')
+                    ->searchable(),
                 TextColumn::make('modes_list')
                     ->label('Modes')
                     ->getStateUsing(function ($record) {
                         return $record->modes->pluck('name')->join(', ');
                     }),
             ])
+            ->searchPlaceholder('Search Questions')
             ->filters([
                     //
             ])
