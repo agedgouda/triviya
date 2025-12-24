@@ -82,6 +82,17 @@ const changeHowToPage = (direction) => {
                 <li>After 3 rounds, highest score wins</li>
             </ul>
         </div>
+
+        <!-- PAGE 4 -->
+        <div v-if="howToPage === 4">
+            <h2 class="text-lg mb-2">Choosing Teams</h2>
+            <ul class="list-disc ml-5">
+                <li><span class="font-normal">Teams of </span>2 players <span class="font-normal">work best</span></li>
+                <li class="font-normal">Everyone will recognize their own answers</li>
+                <li>That's okay</li>
+                <li class="font-normal">It all evens out and keeps the game fair</li>
+            </ul>
+        </div>
     </div>
 
     <!-- BUTTON ROW (stick to bottom) -->
@@ -95,7 +106,7 @@ const changeHowToPage = (direction) => {
 
         <PrimaryButton
             @click="changeHowToPage(1)"
-            :disabled="howToPage === 3"
+            :disabled="howToPage === 4"
         >
             Next
         </PrimaryButton>
@@ -128,7 +139,7 @@ const changeHowToPage = (direction) => {
                                         My Games
                                     </NavLink>
                                     <NavLink href="https://triviyagame.com/" target="_blank">
-                                        About TriviYa
+                                        How to Play
                                     </NavLink>
                                 </div>
                             </div>
@@ -228,7 +239,7 @@ const changeHowToPage = (direction) => {
                                 </ResponsiveNavLink>
 
                                 <ResponsiveNavLink @click="showAboutModal = true" rel="noopener">
-                                    About TriviYa
+                                    How to Play
                                 </ResponsiveNavLink>
 
                                 <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
