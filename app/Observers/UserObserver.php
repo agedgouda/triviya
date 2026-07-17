@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Jobs\SyncUserWithMailchimpJob;
 use App\Jobs\DeleteUserFromMailchimpJob;
+use App\Jobs\SyncUserWithMailchimpJob;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +14,9 @@ class UserObserver
      */
     public function created(User $user)
     {
+        if (empty($user->email)) {
+            return;
+        }
 
         SyncUserWithMailchimpJob::dispatch($user->id);
 
@@ -24,6 +27,9 @@ class UserObserver
      */
     public function updated(User $user): void
     {
+        if (empty($user->email)) {
+            return;
+        }
 
         $oldEmail = $user->getOriginal('email'); // get previous email
         SyncUserWithMailchimpJob::dispatch($user->id, $oldEmail);
@@ -44,7 +50,10 @@ class UserObserver
     public function deleting(User $user)
     {
 
-        DeleteUserFromMailchimpJob::dispatch($user->email);
+        if (! empty($user->email)) {
+            DeleteUserFromMailchimpJob::dispatch($user->email);
+        }
+
         DB::transaction(function () use ($user) {
 
             $user->hostedGames()->each(function ($game) {

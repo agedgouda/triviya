@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted,computed } from 'vue';
+import { onMounted, computed, watch } from 'vue';
+import { router } from '@inertiajs/vue3';
 import ThankYou from './Partials/ThankYou.vue';
 import LandingPage from './Partials/LandingPage.vue';
 import LandingPageClosed from './Partials/LandingPageClosed.vue';
@@ -35,6 +36,33 @@ onMounted(() => {
   }
 })
 
+// Remember this player on this device so they can resume without re-entering
+// their name, and resume automatically if we already know who they are.
+const storageKey = computed(() => `game_${props.game.id}`);
+let attemptedResume = false;
+
+watch(
+    () => [props.user, props.routeName],
+    ([user, routeName]) => {
+        if (user) {
+            localStorage.setItem(storageKey.value, user.id);
+            return;
+        }
+
+        if (routeName === 'questions.showQuestionLanding' && !attemptedResume) {
+            const savedPlayerId = localStorage.getItem(storageKey.value);
+
+            if (savedPlayerId) {
+                attemptedResume = true;
+                router.visit(`${window.location.pathname}?player=${savedPlayerId}`, {
+                    replace: true,
+                    preserveState: false,
+                });
+            }
+        }
+    },
+    { immediate: true }
+);
 
 </script>
 

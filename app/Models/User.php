@@ -28,6 +28,7 @@ class User extends Authenticatable implements FilamentUser
         'phone_number',
         'password',
         'is_admin',
+        'is_guest',
     ];
 
     protected $hidden = [
@@ -49,6 +50,10 @@ class User extends Authenticatable implements FilamentUser
 
     public function getNameAttribute()
     {
+        if (empty($this->last_name)) {
+            return $this->first_name;
+        }
+
         return $this->first_name.' '.strtoupper(substr($this->last_name, 0, 1)).'.';
     }
 
@@ -63,6 +68,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_guest' => 'boolean',
         ];
     }
 

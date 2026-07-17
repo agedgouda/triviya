@@ -26,7 +26,6 @@ class StoreGameAction
                     throw new Exception('No authenticated user found.');
                 }
 
-                // Use CreateUserAndInviteAction to add the host
                 $hostData = [
                     'first_name' => $authUser->first_name,
                     'last_name' => $authUser->last_name,

@@ -1,8 +1,10 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
 import QuestionsLayout from '@/Layouts/QuestionsLayout.vue';
 
 // Props for game and questions
@@ -11,20 +13,13 @@ const props = defineProps({
     user: Object,
 });
 
-const { props: pageProps } = usePage();
+const form = useForm({
+    name: '',
+});
 
-const login = () => {
-    router.visit(route('login.prepopulated', props.game.id));
+const submit = () => {
+    form.post(route('questions.join', props.game.id));
 };
-const register = () => {
-    router.visit(route('register.prepopulated', props.game.id));
-};
-
-const join = () => {
-    router.visit(route('questions.showQuestions', props.game.id));
-};
-
-
 
 </script>
 
@@ -47,24 +42,27 @@ const join = () => {
                 <li class="mb-2">Everyone invited to the game will answer 10 questions about themselves</li>
                 <li class="mb-2">During the game, teams will guess who said what</li>
                 <li class="mb-2">Teams earn points matching the answers to the correct people</li>
-                <li class="mb-2">The team with the most points wins</li>
-                <li>You must login or register to begin</li>
+                <li>The team with the most points wins</li>
             </ul>
 
+            <form @submit.prevent="submit" class="w-full max-w-md mx-auto">
+                <InputLabel for="name" value="Enter your name to join" />
+                <TextInput
+                    id="name"
+                    type="text"
+                    v-model="form.name"
+                    required
+                    autofocus
+                    class="mt-1 block w-full"
+                />
+                <InputError :message="form.errors.name" class="mt-2" />
 
-            <div class="mb-2 text-center b-4" v-if="!user">
-                <PrimaryButton type="button" class="mt-2" @click="login">
-                    <span>Login</span>
-                </PrimaryButton>
-                <PrimaryButton type="button" class="mt-2 ml-2" @click="register">
-                    <span>Register</span>
-                </PrimaryButton>
-            </div>
-            <div class="mb-2 text-center b-4" v-else>
-                <PrimaryButton type="button" class="mt-2" @click="join">
-                    <span>Join Game</span>
-                </PrimaryButton>
-            </div>
+                <div class="mb-2 text-center b-4">
+                    <PrimaryButton type="submit" class="mt-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        <span>Join Game</span>
+                    </PrimaryButton>
+                </div>
+            </form>
         </template>
 
     </QuestionsLayout>

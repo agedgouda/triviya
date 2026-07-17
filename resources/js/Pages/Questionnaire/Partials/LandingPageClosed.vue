@@ -10,18 +10,9 @@ const props = defineProps({
     user: Object,
 });
 
-const login = () => {
-    router.visit(route('login.prepopulated', props.game.id));
-};
-const register = () => {
-    router.visit(route('register.prepopulated', props.game.id));
-};
-
 const join = () => {
     router.visit(route('games', props.game.id));
 };
-
-
 
 </script>
 
@@ -45,22 +36,13 @@ const join = () => {
                 <div class="my-2" v-if="game.is_full">This game has reached it's 12-player limit. {{ game.is_full }}</div>
                 <div class="my-2" v-else=>This game has already started</div>
                 <ul class="list-disc mx-12 mb-2">
-                    <li class="mb-2" v-if="game.is_full">If you’ve already joined this game, please log in to continue.</li>
-                    <li class="mb-2" v-else>Players, you can't change your answers once the game starts.</li>
+                    <li class="mb-2" v-if="!game.is_full">Players, you can't change your answers once the game starts.</li>
                     <li class="mb-2">If you're unsure and need more details, contact {{ game.host[0].first_name }} for help.</li>
                 </ul>
                 Can't join a game?<br/>
                 No problem - you can create a new game anytime.
             </div>
-            <div class="mb-2 text-center b-4" v-if="!user">
-                <PrimaryButton type="button" class="mt-2" @click="login">
-                    <span>Login</span>
-                </PrimaryButton>
-                <PrimaryButton type="button" class="mt-2 ml-2" @click="register">
-                    <span>Register</span>
-                </PrimaryButton>
-            </div>
-            <div class="mb-2 text-center b-4" v-else>
+            <div class="mb-2 text-center b-4" v-if="user">
                 <PrimaryButton type="button" class="mt-2" @click="join">
                     <span>View Games</span>
                 </PrimaryButton>

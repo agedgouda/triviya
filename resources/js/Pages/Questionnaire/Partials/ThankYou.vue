@@ -10,6 +10,13 @@ const props = defineProps({
     user: Object,
 });
 
+const goBack = () => {
+    if (props.user.is_guest) {
+        router.visit(route('questions.showQuestions', { game: props.game.id, player: props.user.id }));
+    } else {
+        router.visit(route('games.show', { game: props.game.id }));
+    }
+};
 
 </script>
 
@@ -32,7 +39,10 @@ const props = defineProps({
                 <p>When the game starts, the host will ask the questions? Your job? Guess who said what!</p>
             </div>
             <div class="text-center">
-                    <PrimaryButton type="submit" class="mt-4 mb-4 ml-4" @click="router.visit(route('games.show', { game: props.game.id }))">View Dashboard</PrimaryButton>
+                    <PrimaryButton type="submit" class="mt-4 mb-4 ml-4" @click="goBack">
+                        <span v-if="user.is_guest">Review My Answers</span>
+                        <span v-else>View Dashboard</span>
+                    </PrimaryButton>
             </div>
         </template>
 

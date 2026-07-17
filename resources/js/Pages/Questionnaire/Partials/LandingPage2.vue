@@ -16,6 +16,14 @@ const props = defineProps({
 
 const hasAnyAnswer = computed(() => props.questions.some(q => !!q.answer));
 
+const goBack = () => {
+    if (props.user.is_guest) {
+        router.visit(route('questions.showThankYou', { game: props.game.id, user: props.user.id }));
+    } else {
+        router.visit(route('games.show', props.game.id));
+    }
+};
+
 
 </script>
 
@@ -41,7 +49,7 @@ const hasAnyAnswer = computed(() => props.questions.some(q => !!q.answer));
                 <li class="mb-2">You can edit your answers anytime until the game begins.</li>
             </ul>
             <div class="mb-2 text-center b-4">
-                <SecondaryButton type="button" class="mt-2 mr-3" @click="router.visit(route('games.show', game.id))" v-if="hasAnyAnswer">
+                <SecondaryButton type="button" class="mt-2 mr-3" @click="goBack" v-if="hasAnyAnswer">
                     <span>Back</span>
                 </SecondaryButton>
                 <PrimaryButton type="button" class="mt-2" @click="$emit('start-game')">

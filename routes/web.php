@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameEventController;
-use App\Http\Controllers\GameInviteController;
 use App\Http\Controllers\GamePurchaseController;
 use App\Http\Controllers\GameQuestionsController;
 use App\Http\Controllers\QuestionController;
@@ -67,12 +66,17 @@ Route::middleware(['can.purchase'])->group(function () {
 
 Route::get('/q/{short_url}', function ($short_url) {
     $game = \App\Models\Game::where('short_url', $short_url)->firstOrFail();
+
     return redirect()->to("/questions/{$game->id}");
 });
 
-
 Route::prefix('questions/{game}')->group(function () {
     Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
+    Route::post('/join', [GameQuestionsController::class, 'joinGame'])->name('questions.join');
+    Route::get('/show', [GameQuestionsController::class, 'showQuestions'])->name('questions.showQuestions');
+    Route::get('/{user}/complete', [GameQuestionsController::class, 'showThankYou'])->name('questions.showThankYou');
+    Route::post('/answer/{user}', [GameQuestionsController::class, 'storeAnswer'])->name('questions.playerAnswer');
+    Route::post('/answers/{user}', [GameQuestionsController::class, 'storeAnswers'])->name('questions.playerAnswers');
 });
 
 Route::middleware([
@@ -83,13 +87,6 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return redirect()->route('games');
     })->name('dashboard');
-
-    Route::prefix('questions/{game}')->group(function () {
-        Route::get('/show', [GameQuestionsController::class, 'showQuestions'])->name('questions.showQuestions');
-        Route::get('/{user}/complete', [GameQuestionsController::class, 'showThankYou'])->name('questions.showThankYou');
-        Route::post('/answer/{user}', [GameQuestionsController::class, 'storeAnswer'])->name('questions.playerAnswer');
-        Route::post('/answers/{user}', [GameQuestionsController::class, 'storeAnswers'])->name('questions.playerAnswers');
-    });
 
     // Games Routes Group
     Route::prefix('games')->group(function () {
@@ -115,20 +112,6 @@ Route::middleware([
         Route::get('/end', [GameEventController::class, 'endGame'])->name('games.endGame');
         Route::get('/end/{round}/{back?}', [GameEventController::class, 'endRound'])->name('games.endRound');
     });
-
-    /*******************************************
-    *
-    *   DEPRECATED
-    *
-    ********************************************/
-    // Invitations
-    // Route::prefix('games/{game}/event')->group(function () {
-    //     Route::post('/{game}/send-invites', [GameInviteController::class, 'sendInvitations'])->name('games.sendInvites');
-    //     Route::post('/{game}/resend-invite/{user}', [GameInviteController::class, 'resendInvite'])
-    //         ->name('games.resend-invite');
-    //     Route::post('/{game}/invite', [GameInviteController::class, 'createUserAndInvite'])->name('games.invite');
-    // });
-
 });
 
 Route::middleware([
