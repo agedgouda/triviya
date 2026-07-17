@@ -11,11 +11,7 @@ const props = defineProps({
 });
 
 const goBack = () => {
-    if (props.user.is_guest) {
-        router.visit(route('questions.showQuestions', { game: props.game.id, player: props.user.id }));
-    } else {
-        router.visit(route('games.show', { game: props.game.id }));
-    }
+    router.visit(route('games.show', { game: props.game.id }));
 };
 
 </script>
@@ -38,11 +34,8 @@ const goBack = () => {
                 <p class="mb-2 mt-2 ">You're all set! TriviYA is working its magic, turning everone's answers into your custom trivia game.</p>
                 <p>When the game starts, the host will ask the questions? Your job? Guess who said what!</p>
             </div>
-            <div class="text-center">
-                    <PrimaryButton type="submit" class="mt-4 mb-4 ml-4" @click="goBack">
-                        <span v-if="user.is_guest">Review My Answers</span>
-                        <span v-else>View Dashboard</span>
-                    </PrimaryButton>
+            <div class="text-center" v-if="!user.is_guest">
+                    <PrimaryButton type="submit" class="mt-4 mb-4 ml-4" @click="goBack">View Dashboard</PrimaryButton>
             </div>
         </template>
 

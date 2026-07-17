@@ -16,9 +16,13 @@ class GameQuestionsController extends Controller
 
         $data = GameActions::FetchQuestionLandingAction($game, $this->resolvePlayerId($request));
 
-        $routeName = $data['hasGameUser']
-            ? 'questions.showQuestions'
-            : $request->route()->getName();
+        $routeName = $request->route()->getName();
+
+        if ($data['hasGameUser']) {
+            $routeName = GameActions::HasPlayerCompletedQuestionsAction($game, $data['user'])
+                ? 'questions.showThankYou'
+                : 'questions.showQuestions';
+        }
 
         return Inertia::render('Questionnaire/Show', [
             'game' => $data['game'],
@@ -71,6 +75,10 @@ class GameQuestionsController extends Controller
 
         if (! $user) {
             return redirect()->route('questions.showQuestionLanding', $game->id);
+        }
+
+        if (GameActions::HasPlayerCompletedQuestionsAction($game, $user)) {
+            return redirect()->route('questions.showThankYou', ['game' => $game->id, 'user' => $user->id]);
         }
 
         $data = GameActions::HandleUserShowQuestionsAction($game, $user);

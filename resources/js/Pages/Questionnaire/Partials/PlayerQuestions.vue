@@ -26,6 +26,13 @@ const questionNumber = ref(0);
 
 const question = computed(() => props.questions[questionNumber.value - 1]);
 
+const isFinalQuestion = computed(() => questionNumber.value === props.questions.length);
+
+const firstUnansweredQuestionNumber = computed(() => {
+    const index = props.questions.findIndex(q => q.answer === null);
+    return index === -1 ? props.questions.length : index + 1;
+});
+
 // Create a reactive form object using useForm
 const form2 = useForm({
     answers: {}, // Store answers keyed by question ID
@@ -65,7 +72,7 @@ const changeQuestion = (increment) => {
 </script>
 
 <template>
-    <LandingPage2 :questions="questions" :game="game" :user="user" v-if="questionNumber === 0" @start-game="questionNumber = 1"/>
+    <LandingPage2 :questions="questions" :game="game" :user="user" v-if="questionNumber === 0" @start-game="questionNumber = firstUnansweredQuestionNumber"/>
     <QuestionsLayout title="Questions" v-else>
         <template #question-header>
             <div class="ml-4 mb-4 text-red-700" v-if="error">{{ error }}</div>
@@ -76,6 +83,9 @@ const changeQuestion = (increment) => {
                 </div>
                 <div class="mb-2 text-white">
                     <InputLabel :for="'question-' + question.id" :value="question.question_text" size-class="text-2xl"/>
+                </div>
+                <div class="mb-2 text-white font-bold" v-if="isFinalQuestion">
+                    This is your last question. Once you submit, your answers cannot be changed.
                 </div>
             </div>
         </template>
@@ -100,14 +110,14 @@ const changeQuestion = (increment) => {
                     type="button"
                     class="mt-2"
                     @click="changeQuestion(-1)"
-                    :disabled="questionNumber === 0"
+                    :disabled="questionNumber === 1"
                 >
                     Previous
                 </SecondaryButton>
 
                 <PrimaryButton type="submit" class="mt-2" :disabled="question.answer === null || question.answer.length === 0 ">
-                    <span v-if="questionNumber <= questions.length">Next</span>
-                    <span v-else>End</span>
+                    <span v-if="isFinalQuestion">Submit</span>
+                    <span v-else>Next</span>
                 </PrimaryButton>
             </form>
         </template>

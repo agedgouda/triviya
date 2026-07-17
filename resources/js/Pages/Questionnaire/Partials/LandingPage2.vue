@@ -17,11 +17,7 @@ const props = defineProps({
 const hasAnyAnswer = computed(() => props.questions.some(q => !!q.answer));
 
 const goBack = () => {
-    if (props.user.is_guest) {
-        router.visit(route('questions.showThankYou', { game: props.game.id, user: props.user.id }));
-    } else {
-        router.visit(route('games.show', props.game.id));
-    }
+    router.visit(route('games.show', props.game.id));
 };
 
 
@@ -45,16 +41,17 @@ const goBack = () => {
             <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4" v-if="!hasAnyAnswer">Congrats {{ user.first_name }} - You're In!</div>
             <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4" v-else>Welcome Back {{ user.first_name }}</div>
             <ul class="list-disc mx-12 mb-2">
-                <li class="mb-2"  v-if="!hasAnyAnswer">Answer 10  questions - have fun and don't overthink it.</li>
-                <li class="mb-2">You can edit your answers anytime until the game begins.</li>
+                <li class="mb-2" v-if="!hasAnyAnswer">Answer 10 questions - have fun and don't overthink it.</li>
+                <li class="mb-2" v-else>Pick up where you left off.</li>
+                <li class="mb-2">You can go back and change your answers until you finish the quiz - after that, they're final.</li>
             </ul>
             <div class="mb-2 text-center b-4">
-                <SecondaryButton type="button" class="mt-2 mr-3" @click="goBack" v-if="hasAnyAnswer">
+                <SecondaryButton type="button" class="mt-2 mr-3" @click="goBack" v-if="hasAnyAnswer && !user.is_guest">
                     <span>Back</span>
                 </SecondaryButton>
                 <PrimaryButton type="button" class="mt-2" @click="$emit('start-game')">
                     <span v-if="!hasAnyAnswer">Start</span>
-                    <span v-else>Edit</span>
+                    <span v-else>Continue</span>
                 </PrimaryButton>
             </div>
         </template>

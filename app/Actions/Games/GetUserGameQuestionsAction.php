@@ -12,6 +12,7 @@ class GetUserGameQuestionsAction
     {
         return GameUserQuestions::where('user_id', $user->id)
             ->where('game_id', $game->id)
+            ->orderBy('id')
             ->get();
     }
 }

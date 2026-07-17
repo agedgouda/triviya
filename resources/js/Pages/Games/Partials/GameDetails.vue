@@ -47,8 +47,7 @@ const startGame = () => router.visit(route('games.startGame', { game: props.game
 
 const quizButtonText = (player) => {
   if (player.status === 'Available') return 'Take Quiz';
-  if (player.status !== 'Completed') return 'Finish Quiz';
-  return 'Review Quiz';
+  return 'Finish Quiz';
 };
 
 const copyText = async (text, successMessage) => {
@@ -143,7 +142,7 @@ const confirmRemovePlayer = async () => {
 
         <!-- Location -->
         <div class="text-triviyaRegular break-words">
-            <span class="font-bold">Location:</span>
+            <span class="font-bold">Location: </span>
             <span class="text-black">{{ game.location }}</span>
         </div>
 
@@ -198,7 +197,7 @@ const confirmRemovePlayer = async () => {
 
 <div class="mt-3">
     <PrimaryButton
-        v-if="['new', 'ready', 'sequel'].includes(game.status)"
+        v-if="['new', 'ready', 'sequel'].includes(game.status) && thisPlayer?.status !== 'Completed'"
         @click="$inertia.visit(route('questions.showQuestions', { game: game.id, user: $page.props.auth.user.id }))"
     >
         {{ quizButtonText(thisPlayer) }}
