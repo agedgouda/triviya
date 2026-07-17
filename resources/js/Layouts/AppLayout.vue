@@ -41,7 +41,7 @@ const changeHowToPage = (direction) => {
             <h2 class="text-lg mb-2">What You’ll Need</h2>
             <ul class="list-disc ml-5">
                 <li>1 host</li>
-                <li>4–12 players</li>
+                <li>2–12 players</li>
                 <li>Phone, tablet, computer</li>
                 <li>No downloads needed</li>
                 <li>

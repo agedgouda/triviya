@@ -119,10 +119,10 @@ const confirmRemovePlayer = async () => {
     :show="showRemoveModal"
     title="Remove Player?"
     @close="showRemoveModal = false"
->1
-    <p>Are you sure you want to remove this player from the game?</p>
+>
+    <p>Are you sure you want to remove {{ playerToRemove?.name }} from the game?</p>
     <div class="mt-4 flex justify-end gap-2">
-    <PrimaryButton @click="confirmRemovePlayer(player)">
+    <PrimaryButton @click="confirmRemovePlayer">
         Yes, remove
     </PrimaryButton>
     <SecondaryButton @click="showRemoveModal = false">
@@ -180,8 +180,8 @@ const confirmRemovePlayer = async () => {
         <div >
 
             <div class="font-bold text-triviyaRegular">👥  Step 1 – Invite players</div>
-            <div class="inline-block mb-2" v-if="players.length <4 ">You’ll need at least {{ 4 - players.length }} more (up to 12) to complete their quiz to start the game.</div>
-            <div class="inline-block mb-2" v-if="players.length >4 &&  players.length < 12 ">You can invite {{ 12 - players.length }} more to start the game.</div>
+            <div class="inline-block mb-2" v-if="players.length <2 ">You’ll need at least {{ 2 - players.length }} more (up to 12) to complete their quiz to start the game.</div>
+            <div class="inline-block mb-2" v-if="players.length >2 &&  players.length < 12 ">You can invite {{ 12 - players.length }} more to start the game.</div>
             <div class="inline-block mb-2" v-if="players.length === 12 ">The game is full, start the game when everybody has taken the quiz!</div>
             <div class="font-bold text-triviyaRegular">🔗 Step 2 – Share the quiz link</div>
             <span class="hidden md:block">Tap Copy Link above, then paste and send it to the players in a text, email, or group chat.</span>

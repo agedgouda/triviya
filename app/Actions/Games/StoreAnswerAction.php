@@ -48,16 +48,6 @@ class StoreAnswerAction
         $gameUser->status = $status;
         $gameUser->save();
 
-        // check to see if there are at least 4 players and they all have completed their quiz
-        /*
-        if (
-            $game->players()->count() >= 4 &&
-            $game->players()->where('status', '!=', 'Completed')->doesntExist()
-        ) {
-            $game->status = 'start';
-            $game->save();
-        }
-        */
         return ['status' => 'success', 'message' => $status];
     }
 }
