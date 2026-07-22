@@ -6,6 +6,7 @@ import LandingPage2 from './LandingPage2.vue';
 import axios from 'axios';
 
 // Import components
+import DialogModal from '@/Components/DialogModal.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -69,6 +70,21 @@ const changeQuestion = (increment) => {
     questionNumber.value += increment;
 }
 
+const showFinalConfirmModal = ref(false);
+
+const handleSubmit = () => {
+    if (isFinalQuestion.value) {
+        showFinalConfirmModal.value = true;
+    } else {
+        submitAnswers();
+    }
+};
+
+const confirmFinalSubmit = () => {
+    showFinalConfirmModal.value = false;
+    submitAnswers();
+};
+
 </script>
 
 <template>
@@ -105,7 +121,7 @@ const changeQuestion = (increment) => {
         </template>
 
         <template #question-buttons>
-            <form @submit.prevent="submitAnswers" class="flex items-center space-x-4">
+            <form @submit.prevent="handleSubmit" class="flex items-center space-x-4">
                 <SecondaryButton
                     type="button"
                     class="mt-2"
@@ -123,4 +139,24 @@ const changeQuestion = (increment) => {
         </template>
 
     </QuestionsLayout>
+
+    <DialogModal :show="showFinalConfirmModal" @close="showFinalConfirmModal = false">
+        <template #title>
+            Submit Your Answers?
+        </template>
+
+        <template #content>
+            Once submitted, your answers will be final and cannot be changed before the game starts.
+        </template>
+
+        <template #footer>
+            <SecondaryButton @click="showFinalConfirmModal = false">
+                Go Back
+            </SecondaryButton>
+
+            <PrimaryButton class="ms-3" @click="confirmFinalSubmit">
+                Submit
+            </PrimaryButton>
+        </template>
+    </DialogModal>
 </template>
