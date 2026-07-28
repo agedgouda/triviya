@@ -87,7 +87,8 @@ class CreateEventQuestionsAction
         }
 
         $playerCount = $players->count();
-        $questionsPerPlayer = intdiv(30, $playerCount);
+        $totalMainQuestions = min($playerCount, 3) * 10;
+        $questionsPerPlayer = intdiv($totalMainQuestions, $playerCount);
 
         $selected = collect();
 
@@ -102,8 +103,8 @@ class CreateEventQuestionsAction
             );
         }
 
-        // Fill remaining if less than 30
-        $remaining = 30 - $selected->count();
+        // Fill remaining if less than the main-round total
+        $remaining = $totalMainQuestions - $selected->count();
         if ($remaining > 0) {
             $additional = GameUserQuestions::where('game_id', $game->id)
                 ->whereNotIn('id', $selected->pluck('id'))

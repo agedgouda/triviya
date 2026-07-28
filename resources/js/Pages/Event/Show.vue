@@ -14,6 +14,8 @@ const props = defineProps({
     questions: Object,
     answers: Object,
     round: Number,
+    totalRounds: Number,
+    hasBonusQuestionsAvailable: Boolean,
     questionNumber:Number,
     routeName: String,
     error: String
@@ -26,12 +28,12 @@ const fadeOut = ref(false);
 
 <template>
     <template v-if="routeName === 'games.startGame' || routeName === 'games.startRound'">
-        <Play :questions="questions" :round="round" :game="game" :questionNumber="questionNumber" />
+        <Play :questions="questions" :round="round" :totalRounds="totalRounds" :game="game" :questionNumber="questionNumber" />
     </template>
     <template v-if="routeName === 'games.endRound'">
-        <End :answers="answers" :round="round" :game="game" :questionNumber="questionNumber" />
+        <End :answers="answers" :round="round" :totalRounds="totalRounds" :game="game" :questionNumber="questionNumber" />
     </template>
     <template v-if="routeName === 'games.endGame'">
-        <EndGame :game="game" />
+        <EndGame :game="game" :hasBonusQuestionsAvailable="hasBonusQuestionsAvailable" />
     </template>
 </template>

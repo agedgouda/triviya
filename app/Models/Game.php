@@ -98,4 +98,25 @@ class Game extends Model
         $this->is_full = $this->players()->count() >= config('game.max_players');
         $this->save();
     }
+
+    public function mainRounds(): int
+    {
+        return min($this->players()->count(), 3);
+    }
+
+    public function totalRounds(): int
+    {
+        $maxQuestionNumber = GameUserQuestions::where('game_id', $this->id)
+            ->where('question_number', '>', 0)
+            ->max('question_number');
+
+        return $maxQuestionNumber ? (int) ceil($maxQuestionNumber / 10) : $this->mainRounds();
+    }
+
+    public function hasBonusQuestionsAvailable(): bool
+    {
+        return GameUserQuestions::where('game_id', $this->id)
+            ->whereNull('question_number')
+            ->exists();
+    }
 }

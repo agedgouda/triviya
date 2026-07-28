@@ -8,6 +8,7 @@ import GameBubble from "@/Components/GameBubble.vue";
 const props = defineProps({
     game: Object,
     flash: Object,
+    hasBonusQuestionsAvailable: Boolean,
 });
 
 
@@ -47,7 +48,7 @@ const startBonusRound = () => {
                 </div>
             </GameBubble>
             <GameBubble>
-                <div class="border border-triviya-red sm:rounded-lg p-4  mb-5"  v-if="game.status.includes('bonus') ">
+                <div class="border border-triviya-red sm:rounded-lg p-4  mb-5"  v-if="game.status.includes('bonus') && hasBonusQuestionsAvailable">
                     <div class="text-xl font-bold ">Keep the Fun Going!</div>
                     <div class="font-bold mt-2">➕ Bonus Round</div>
                     Get 10 extra questions pulled from everyone’s earlier answers.

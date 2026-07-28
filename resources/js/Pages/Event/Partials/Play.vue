@@ -15,6 +15,10 @@ const props = defineProps({
     round: {
         type: Number,
         default: 1
+    },
+    totalRounds: {
+        type: Number,
+        default: 3
     }
 });
 
@@ -139,23 +143,23 @@ const newQuestion = (increment) => {
                             <div v-if="round === 1">
                                 <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">How it works</div>
                                 <ul class="list-disc mx-9 mb-2">
-                                    <li class="mb-2">The game has 3 rounds</li>
+                                    <li class="mb-2">The game has {{ totalRounds }} round<span v-if="totalRounds > 1">s</span></li>
                                     <li class="mb-2">Each round has 10 questions</li>
                                     <li class="mb-2">As host, you’ll read each question out loud</li>
                                     <li class="mb-2">Teams secretly guess who said what</li>
                                     <li class="mb-2">After each round, TriviYa reveals the answers for you to share</li>
                                     <li class="mb-2">Teams keep track of how many they get right</li>
-                                    <li class="mb-2">After Round 3, everyone adds up their scores</li>
+                                    <li class="mb-2">After the final round, everyone adds up their scores</li>
                                     <li class="mb-2">The team with the most points wins!</li>
                                 </ul>
                             </div>
-                            <div v-if="round === 2">
-                                <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here Comes Round 2</div>
-                                New round, same teams, different questions. Grab a [ snack / drink / product plug here], get comfy, and let’s roll.
-                            </div>
-                            <div v-if="round === 3">
-                                <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here Comes Round 3 - The Grand Finale</div>
+                            <div v-else-if="round === totalRounds">
+                                <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here Comes Round {{ round }} - The Grand Finale</div>
                                 It all comes down to this. The team with the highest score after this round takes the win!
+                            </div>
+                            <div v-else>
+                                <div class="mb-2 text-center text-xl font-bold border-b-2 pb-4">Here Comes Round {{ round }}</div>
+                                New round, same teams, different questions. Grab a [ snack / drink / product plug here], get comfy, and let’s roll.
                             </div>
 
                         </div>
