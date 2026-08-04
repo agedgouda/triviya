@@ -36,7 +36,8 @@ const thisPlayer = computed(() =>
 const playersRemainingToAnswer = computed(() => props.players.length - questionsAnsweredCount.value);
 const isHost = computed(() => page.props.auth.user.id === host.id);
 const invitationLink = `${page.props.short_url}/q/${props.game.short_url}`
-const textToCopy = `${props.inviteMessage}\n\n${invitationLink}`;
+const textToCopy = invitationLink;
+//const textToCopy = `${props.inviteMessage}\n\n${invitationLink}`;
 
 const showRemoveModal = ref(false);
 const showManualCopy = ref(false);
