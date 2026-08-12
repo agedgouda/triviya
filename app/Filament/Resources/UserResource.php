@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
@@ -46,8 +45,7 @@ class UserResource extends Resource
                 Fieldset::make('Contact Information')
                     ->schema([
                         TextInput::make('email')->required()->maxLength(255),
-                        TextInput::make('phone_number')->maxLength(255),
-                        DatePicker::make('birthday')->required()->native(false),
+                        TextInput::make('phone_number')->tel()->mask('999-999-9999')->maxLength(255),
                     ])
                     ->columns(3),
 
