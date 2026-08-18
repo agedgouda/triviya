@@ -70,11 +70,7 @@ const goBack = () => {
 const submit = () => {
 
     if(props.user) {
-        form.post(route('register.submit',  [props.game.id, props.user.id]), {
-                onSuccess: () => {
-                    console.log('Registration successful!');
-                },
-            });
+        form.post(route('register.submit',  [props.game.id, props.user.id]));
     }
     else {
         form.post(route('register.submit'), {

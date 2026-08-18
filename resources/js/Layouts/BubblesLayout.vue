@@ -1,6 +1,7 @@
 <script setup>
 
 import Banner from "@/Components/Banner.vue";
+import Flash from "@/Components/Flash.vue";
 import {Head} from "@inertiajs/vue3";
 </script>
 
@@ -8,6 +9,7 @@ import {Head} from "@inertiajs/vue3";
     <div class="min-h-screen flex flex-col">
 <!--        <Head :title="title" />-->
 <!--        <Banner />-->
+        <Flash />
 
         <!-- Header section with its own background image -->
         <div class="w-full bg-cover bg-center bg-no-repeat text-black" style="background-image: url('/images/triviya-bg-cover.png');">
@@ -33,7 +35,7 @@ import {Head} from "@inertiajs/vue3";
         </div>
 
         <!-- Bottom button bar (fixed to bottom on mobile) -->
-        <div class="fixed bottom-0 left-0 right-0 z-50 bg-triviya-darkPurple p-6 flex justify-center"
+        <div v-if="$slots['question-buttons']" class="fixed bottom-0 left-0 right-0 z-50 bg-triviya-darkPurple p-6 flex justify-center"
             style="background-image: linear-gradient(to bottom, #A93390 3px, transparent 3px);">
             <slot name="question-buttons" />
         </div>

@@ -15,21 +15,6 @@ class GamePurchaseController extends Controller
         return 'Feature is active for this user!';
     }
 
-    public function index2(?string $product = null)
-    {
-        $user = auth()->user();
-        dd(! Feature::for($user)->active('game_purchase_enabled'));
-        // Gate feature with Pennant
-        if (! Feature::for($user)->active('game_purchase_enabled')) {
-            abort(403, 'Game purchasing is currently disabled.');
-        }
-
-        return Inertia::render('Purchase/GamePurchasePage', [
-            'canPurchase' => true,
-            'gameOptions' => [1, 3, 10], // purchase quantities
-        ]);
-    }
-
     public function store(Request $request)
     {
         // Handle purchase logic (1, 3, or 10 games)

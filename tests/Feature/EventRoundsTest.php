@@ -112,5 +112,32 @@ class EventRoundsTest extends TestCase
             ->component('Event/Show')
             ->where('hasBonusQuestionsAvailable', false)
         );
+        $this->assertSame('done', $game->fresh()->status);
+    }
+
+    public function test_end_game_goes_straight_to_done_when_no_bonus_available(): void
+    {
+        $game = $this->createGameWithPlayers(3);
+        $host = $game->host()->first();
+
+        (new CreateEventQuestionsAction)->handle($game);
+        $game->update(['status' => 'in progress']);
+
+        $this->actingAs($host)->get(route('games.endGame', ['game' => $game->id]));
+
+        $this->assertSame('done', $game->fresh()->status);
+    }
+
+    public function test_end_game_goes_to_done_bonus_when_bonus_available(): void
+    {
+        $game = $this->createGameWithPlayers(4);
+        $host = $game->host()->first();
+
+        (new CreateEventQuestionsAction)->handle($game);
+        $game->update(['status' => 'in progress']);
+
+        $this->actingAs($host)->get(route('games.endGame', ['game' => $game->id]));
+
+        $this->assertSame('done-bonus', $game->fresh()->status);
     }
 }

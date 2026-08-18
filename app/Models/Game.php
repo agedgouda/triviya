@@ -82,7 +82,7 @@ class Game extends Model
     {
 
         if (
-            $this->players()->count() >= 2 &&
+            $this->players()->count() >= config('game.min_players') &&
             $this->players()->where('status', '!=', 'Completed')->doesntExist()
         ) {
             $this->status = 'ready';

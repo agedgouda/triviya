@@ -32,8 +32,7 @@ const editQuestion = (index, question) => {
 
 const saveEdit = async (question) => {
     try {
-        const response = await axios.put(route('questions.update', question.id), question);
-        console.log(response);
+        await axios.put(route('questions.update', question.id), question);
     } catch (error) {
         console.error(`Failed to save changes for row ${question.id}:`, error.response?.data || error.message);
     }

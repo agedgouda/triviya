@@ -57,7 +57,7 @@ class GameEventController extends Controller
     public function endGame(Game $game)
     {
         if ($game->status === 'in progress') {
-            $game->status = 'done-bonus';
+            $game->status = $game->hasBonusQuestionsAvailable() ? 'done-bonus' : 'done';
         }
 
         if ($game->status === 'bonus') {

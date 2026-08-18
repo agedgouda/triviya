@@ -32,11 +32,11 @@ class GameReadyStatusTest extends TestCase
         ]);
     }
 
-    public function test_game_becomes_ready_once_two_players_have_completed_their_quiz(): void
+    public function test_game_becomes_ready_once_three_players_have_completed_their_quiz(): void
     {
         $game = $this->createGame();
 
-        foreach (range(1, 2) as $i) {
+        foreach (range(1, 3) as $i) {
             GameUser::create([
                 'game_id' => $game->id,
                 'user_id' => User::factory()->create()->id,
@@ -62,16 +62,34 @@ class GameReadyStatusTest extends TestCase
         $this->assertSame('new', $game->fresh()->status);
     }
 
+    public function test_game_is_not_ready_with_only_two_completed_players(): void
+    {
+        $game = $this->createGame();
+
+        foreach (range(1, 2) as $i) {
+            GameUser::create([
+                'game_id' => $game->id,
+                'user_id' => User::factory()->create()->id,
+                'status' => 'Completed',
+                'is_host' => false,
+            ]);
+        }
+
+        $this->assertSame('new', $game->fresh()->status);
+    }
+
     public function test_game_is_not_ready_if_a_player_has_not_completed_their_quiz(): void
     {
         $game = $this->createGame();
 
-        GameUser::create([
-            'game_id' => $game->id,
-            'user_id' => User::factory()->create()->id,
-            'status' => 'Completed',
-            'is_host' => false,
-        ]);
+        foreach (range(1, 2) as $i) {
+            GameUser::create([
+                'game_id' => $game->id,
+                'user_id' => User::factory()->create()->id,
+                'status' => 'Completed',
+                'is_host' => false,
+            ]);
+        }
 
         GameUser::create([
             'game_id' => $game->id,

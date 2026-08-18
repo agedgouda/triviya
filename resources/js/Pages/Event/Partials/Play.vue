@@ -23,14 +23,9 @@ const props = defineProps({
 });
 
 
-const initialTime = 1200;
 const page = ref("landing");
 
-const timer = ref(initialTime);
-let intervalId = null;
-const isPaused = ref(false);
 const questionNumber = ref(props.questionNumber ?? 0);
-const isRunning = ref(false);
 
 const countdown = useTemplateRef('countdown');
 
@@ -60,49 +55,8 @@ watch(showBubbles, (value, old) => {
 });
 
 
-const startCountdown = (onComplete) => {
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
-  isPaused.value = false;
-  isRunning.value = true;
-  intervalId = setInterval(() => {
-    if (!isPaused.value) {
-      timer.value--;
-      if (timer.value <= 0) {
-        clearInterval(intervalId);
-        intervalId = null;
-        if (typeof onComplete === 'function') {
-          onComplete();
-        }
-      }
-    }
-  }, 100);
-};
-
-const togglePauseResume = () => {
-  if (intervalId) {
-    isPaused.value = !isPaused.value;
-    isRunning.value = !isRunning.value;
-  }
-};
-
-
 const resetCountdown = () => {
-
-countdown.value.resetTimer();
-  if (intervalId) {
-    clearInterval(intervalId);
-    isPaused.value = false;
-    isRunning.value = false;
-    intervalId = null;
-  }
-  timer.value = initialTime;
-  isPaused.value = true;
-};
-
-const onComplete = () => {
-  alert('Countdown completed!');
+  countdown.value.resetTimer();
 };
 
 const newQuestion = (increment) => {
@@ -116,7 +70,6 @@ const newQuestion = (increment) => {
             router.visit(route('games.endRound', { game: props.game.id, round: round , back:true }));
         }
         else {
-            //timer.value = 1200
             nextPrevActive.value = false;
             resetCountdown();
             questionNumber.value += increment

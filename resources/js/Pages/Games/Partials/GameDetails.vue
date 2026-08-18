@@ -65,7 +65,7 @@ const copyText = async (text, successMessage) => {
     }
     setFlash(successMessage);
   } catch {
-    setFlash('Failed to copy.');
+    showManualCopy.value = true;
   }
 };
 
@@ -109,7 +109,7 @@ const confirmRemovePlayer = async () => {
 <Modal
     :show="showManualCopy"
     title="Invite Player"
-    @close="showRemoveModal = false"
+    @close="showManualCopy = false"
 >
   <div class="text-sm mb-2">Tap and hold to copy this text:</div>
   <textarea readonly class="w-full p-2 text-sm bg-gray-100">{{ textToCopy }}</textarea>
@@ -137,7 +137,7 @@ const confirmRemovePlayer = async () => {
     <!-- Left Column: Game Info -->
     <div class="flex flex-col justify-center space-y-1 flex-1 min-w-0">
         <!-- Game Name -->
-        <div class="font-bold text-lg sm:text-sm md:text-2xl text-triviyaRegular break-words">
+        <div class="font-bold text-lg sm:text-xl md:text-2xl text-triviyaRegular break-words">
         {{ game.name }}
         </div>
 
@@ -154,8 +154,8 @@ const confirmRemovePlayer = async () => {
                 {{ invitationLink }}
             </span>
 
-        <!-- Copy Button (desktop only) -->
-            <div class="hidden md:inline-block text-sm ml-2" v-if="['new', 'ready','sequel'].includes(game.status)">
+        <!-- Copy Button -->
+            <div class="inline-block text-sm ml-2 mt-1 md:mt-0" v-if="['new', 'ready','sequel'].includes(game.status)">
                 <PrimaryButton @click="copyInvite(game)" class="w-sm">
                 Copy Link
                 </PrimaryButton>
@@ -181,8 +181,8 @@ const confirmRemovePlayer = async () => {
         <div >
 
             <div class="font-bold text-triviyaRegular">👥  Step 1 – Invite players</div>
-            <div class="inline-block mb-2" v-if="players.length <2 ">You’ll need at least {{ 2 - players.length }} more (up to 12) to complete their quiz to start the game.</div>
-            <div class="inline-block mb-2" v-if="players.length >2 &&  players.length < 12 ">You can invite {{ 12 - players.length }} more to start the game.</div>
+            <div class="inline-block mb-2" v-if="players.length < 3 ">You’ll need at least {{ 3 - players.length }} more (up to 12) to complete their quiz to start the game.</div>
+            <div class="inline-block mb-2" v-if="players.length >= 3 &&  players.length < 12 ">You can invite {{ 12 - players.length }} more to start the game.</div>
             <div class="inline-block mb-2" v-if="players.length === 12 ">The game is full, start the game when everybody has taken the quiz!</div>
             <div class="font-bold text-triviyaRegular">🔗 Step 2 – Share the quiz link</div>
             <span class="hidden md:block">Tap Copy Link above, then paste and send it to the players in a text, email, or group chat.</span>
