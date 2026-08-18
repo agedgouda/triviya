@@ -17,7 +17,6 @@ class GameRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'mode_id' => 'required|exists:modes,id',
-            'location' => 'required|string|max:255',
         ];
     }
 }

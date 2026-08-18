@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\GameActions;
 use App\Http\Requests\GameRequest;
+use App\Http\Requests\GenerateTestGameRequest;
 use App\Models\Game;
 use App\Models\Mode;
 use App\Models\User;
@@ -25,7 +26,21 @@ class GameController extends Controller
         return Inertia::render('Games/Index', [
             'games' => $games,
             'routeName' => request()->route()->getName(),
+            'flashMessage' => session('flashMessage'),
+            'testGameId' => session('testGameId'),
         ]);
+    }
+
+    /**
+     * Generate a fully-populated test game (admin only) with a given number
+     * of players, each with their questions already answered, so the phases
+     * of the event flow can be jumped to directly for manual testing.
+     */
+    public function generateTestGame(GenerateTestGameRequest $request)
+    {
+        $game = GameActions::GenerateTestGameAction($request->validated('player_count'));
+
+        return redirect()->route('games')->with('testGameId', $game->id);
     }
 
     /**

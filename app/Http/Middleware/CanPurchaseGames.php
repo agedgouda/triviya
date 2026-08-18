@@ -9,9 +9,7 @@ class CanPurchaseGames
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = $request->user();
-
-        if (! $user || (! $user->is_admin /* for testing now */ /* || !$user->is_free */)) {
+        if (! $request->user()) {
             abort(403, 'Game purchasing is currently disabled.');
         }
 

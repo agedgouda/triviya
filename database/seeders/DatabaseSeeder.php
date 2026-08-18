@@ -5,8 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Setting;
-
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +21,7 @@ class DatabaseSeeder extends Seeder
         //     QuestionSeeder::class,
         //     ModeQuestionSeeder::class,
         //     GameSeeder::class,
+        //     GameProductSeeder::class,
 
         // ]);
         $this->call(SettingsTableSeeder::class);

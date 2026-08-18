@@ -46,11 +46,17 @@ class UserResource extends Resource
                     ->schema([
                         TextInput::make('email')->required()->maxLength(255),
                         TextInput::make('phone_number')->tel()->mask('999-999-9999')->maxLength(255),
+                        TextInput::make('games_available')->numeric()->minValue(0)->label('Games Available'),
                     ])
                     ->columns(3),
 
-                View::make('filament.users.fields.games')
-                    ->label('Games'),
+                Grid::make(2)
+                    ->schema([
+                        View::make('filament.users.fields.games')
+                            ->label('Games'),
+                        View::make('filament.users.fields.game-product-purchases')
+                            ->label('Game Products Purchased'),
+                    ]),
             ]);
     }
 
@@ -73,6 +79,10 @@ class UserResource extends Resource
                                 ->orWhere('last_name', 'like', "%{$search}%");
                         });
                     }),
+                TextColumn::make('games_available')
+                    ->label('Games Available')
+                    ->sortable()
+                    ->alignCenter(),
             ])
             ->filters([
                 //

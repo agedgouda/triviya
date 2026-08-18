@@ -21,7 +21,8 @@ const props = defineProps({
     modes: Array,
     inviteMessage: String,
     flashMessage: String,
-    error: String
+    error: String,
+    testGameId: String,
 });
 
 // Flash handling
@@ -31,7 +32,7 @@ const { setFlash } = useFlash();
 const currentProps = computed(() => {
     switch (props.routeName) {
         case 'games':
-            return { games: props.games };
+            return { games: props.games, testGameId: props.testGameId };
         case 'games.show':
             return { game: props.game, players: props.players , inviteMessage: props.inviteMessage };
         case 'games.create':

@@ -27,7 +27,6 @@ const goBack = () => {
 
 const form = useForm({
     name: props.game?.name || '',
-    location: props.game?.location || '',
     date_time: props.game?.date_time || '',
     mode_id: props.game?.mode_id || 1,
 });
@@ -74,18 +73,6 @@ const submit = async () => {
                         autocomplete="name"
                     />
                     <InputError class="mt-2" :message="form.errors.name" />
-                </div>
-
-                <div class="mr-0 md:mr-3">
-                    <InputLabel for="location" value="Location" />
-                    <TextInput
-                        id="location"
-                        v-model="form.location"
-                        type="text"
-                        class="mt-1 block w-full sm:w-96"
-                        required
-                    />
-                    <InputError class="mt-2" :message="form.errors.location" />
                 </div>
             </div>
             <div class="flex flex-col sm:flex-row">

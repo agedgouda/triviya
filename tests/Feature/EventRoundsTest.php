@@ -140,4 +140,34 @@ class EventRoundsTest extends TestCase
 
         $this->assertSame('done-bonus', $game->fresh()->status);
     }
+
+    public function test_jumping_straight_to_a_round_without_starting_the_game_still_shows_questions(): void
+    {
+        $game = $this->createGameWithPlayers(4);
+        $host = $game->host()->first();
+
+        // Note: CreateEventQuestionsAction is deliberately never called here —
+        // this simulates clicking a "jump to round" shortcut before "Start Game".
+        $response = $this->actingAs($host)->get(route('games.startRound', ['game' => $game->id, 'round' => 3]));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Event/Show')
+            ->has('questions', 10)
+        );
+    }
+
+    public function test_jumping_straight_to_end_round_without_starting_the_game_still_shows_answers(): void
+    {
+        $game = $this->createGameWithPlayers(4);
+        $host = $game->host()->first();
+
+        $response = $this->actingAs($host)->get(route('games.endRound', ['game' => $game->id, 'round' => 2]));
+
+        $response->assertOk();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Event/Show')
+            ->has('answers', 10)
+        );
+    }
 }

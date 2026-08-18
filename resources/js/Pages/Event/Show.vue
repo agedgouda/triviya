@@ -16,6 +16,7 @@ const props = defineProps({
     round: Number,
     totalRounds: Number,
     hasBonusQuestionsAvailable: Boolean,
+    bonusLockedForPurchase: Boolean,
     questionNumber:Number,
     routeName: String,
     error: String
@@ -34,6 +35,6 @@ const fadeOut = ref(false);
         <End :answers="answers" :round="round" :totalRounds="totalRounds" :game="game" :questionNumber="questionNumber" />
     </template>
     <template v-if="routeName === 'games.endGame'">
-        <EndGame :game="game" :hasBonusQuestionsAvailable="hasBonusQuestionsAvailable" />
+        <EndGame :game="game" :hasBonusQuestionsAvailable="hasBonusQuestionsAvailable" :bonusLockedForPurchase="bonusLockedForPurchase" />
     </template>
 </template>

@@ -141,12 +141,6 @@ const confirmRemovePlayer = async () => {
         {{ game.name }}
         </div>
 
-        <!-- Location -->
-        <div class="text-triviyaRegular break-words">
-            <span class="font-bold">Location: </span>
-            <span class="text-black">{{ game.location }}</span>
-        </div>
-
         <!-- Quiz Link -->
         <div class="break-words" v-if="isHost" >
             <span class="text-black">

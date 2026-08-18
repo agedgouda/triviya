@@ -2,27 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\PurchaseGameProductRequest;
+use App\Models\GameProduct;
+use App\Models\GameProductPurchase;
 use Inertia\Inertia;
 
 class GamePurchaseController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
-
-        // This is where the closure runs
-        return 'Feature is active for this user!';
+        return Inertia::render('Purchase/GamePurchasePage', [
+            'products' => GameProduct::where('is_active', true)->get(),
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(PurchaseGameProductRequest $request)
     {
-        // Handle purchase logic (1, 3, or 10 games)
-    }
+        $product = GameProduct::findOrFail($request->validated('game_product_id'));
 
-    public function success()
-    {
-        // Optional: show confirmation
-        return Inertia::render('Purchase/GamePurchaseSuccessPage');
+        GameProductPurchase::create([
+            'user_id' => $request->user()->id,
+            'game_product_id' => $product->id,
+        ]);
+
+        $request->user()->increment('games_available', $product->game_count);
+
+        return redirect()->route('games')->with(
+            'flashMessage',
+            "You now have {$request->user()->fresh()->games_available} games available!"
+        );
     }
 }

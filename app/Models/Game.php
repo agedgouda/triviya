@@ -15,7 +15,6 @@ class Game extends Model
         'name',
         'date_time',
         'mode_id',
-        'location',
         'status',
         'is_full',
         'short_url',
@@ -118,5 +117,10 @@ class Game extends Model
         return GameUserQuestions::where('game_id', $this->id)
             ->whereNull('question_number')
             ->exists();
+    }
+
+    public function isHostsFirstGame(User $user): bool
+    {
+        return $user->hostedGames()->oldest('games.created_at')->value('games.id') === $this->id;
     }
 }

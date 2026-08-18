@@ -59,9 +59,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
 
 Route::middleware(['can.purchase'])->group(function () {
-    Route::get('/buy-games/{product?}', [GamePurchaseController::class, 'index'])->name('games.purchase');
+    Route::get('/buy-games', [GamePurchaseController::class, 'index'])->name('games.purchase');
     Route::post('/buy-games', [GamePurchaseController::class, 'store'])->name('games.purchase.store');
-    Route::get('/buy-games/success', [GamePurchaseController::class, 'success'])->name('games.purchase.success');
 });
 
 Route::get('/q/{short_url}', function ($short_url) {
@@ -99,6 +98,9 @@ Route::middleware([
         Route::put('/{game}', [GameController::class, 'update'])->name('games.update');
         Route::get('/{game}', [GameController::class, 'show'])->name('games.show');
         Route::post('/', [GameController::class, 'store'])->name('games.store');
+        Route::post('/generate-test', [GameController::class, 'generateTestGame'])
+            ->name('games.generateTest')
+            ->middleware(EnsureIsAdmin::class);
         Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
         // Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
         Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');

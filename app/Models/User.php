@@ -29,6 +29,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'is_admin',
         'is_guest',
+        'games_available',
     ];
 
     protected $hidden = [
@@ -84,8 +85,23 @@ class User extends Authenticatable implements FilamentUser
             ->withPivot('is_host');
     }
 
+    public function gameProductPurchases()
+    {
+        return $this->hasMany(GameProductPurchase::class);
+    }
+
     public function defaultProfilePhotoUrl()
     {
         return 'https://ui-avatars.com/api/?name='.$this->name.'&color=FFFFFF&background=A93390';
+    }
+
+    public function hasGamesAvailable(): bool
+    {
+        return $this->games_available > 0;
+    }
+
+    public function useGameCredit(): void
+    {
+        $this->decrement('games_available');
     }
 }

@@ -9,10 +9,21 @@ import Table from '@/Components/Table.vue';
 
 const props = defineProps({
     games: Object,
+    testGameId: {
+        type: String,
+        default: null,
+    },
 });
 
-const gamesList = props.games;
+const gamesList = computed(() => props.games);
 const showDone = ref(false);
+const testPlayerCount = ref(6);
+
+const generateTestGame = () => {
+    router.post(route('games.generateTest'), { player_count: testPlayerCount.value }, {
+        preserveScroll: true,
+    });
+};
 
 // Pagination state
 const currentPage = ref(1);
@@ -23,7 +34,7 @@ const goToGame = (gameId) => {
 };
 
 const filteredGames = computed(() => {
-    return gamesList.filter(game => {
+    return gamesList.value.filter(game => {
         const hasDone = game.status.includes('done');
         return showDone.value ? hasDone : !hasDone;
     })
@@ -60,6 +71,13 @@ const goToPage = (page) => {
 
         <div class="mb-3">
             <PrimaryButton @click="router.visit(route('games.create'))">Host A New Game</PrimaryButton>
+        </div>
+
+        <div class="mb-3 text-triviyaRegular">
+            <span class="font-bold">Games available:</span> {{ $page.props.auth.user.games_available }}
+            <SecondaryButton v-if="$page.props.auth.user.games_available === 0" @click="router.visit(route('games.purchase'))" class="ml-2">
+                Buy More Games
+            </SecondaryButton>
         </div>
 
         <div class="sm:mb-2 md:hidden">Tap a game for details</div>
@@ -138,6 +156,37 @@ const goToPage = (page) => {
             >
                 {{ showDone ? 'Show Active Games' : 'Show Completed Games' }}
             </SecondaryButton>
+        </div>
+
+        <div class="mb-5 border-t pt-4" v-if="$page.props.auth.user.is_admin">
+            <div class="font-bold mb-2">Admin: Generate Test Game</div>
+            <div class="flex items-center gap-2 mb-3">
+                <input
+                    type="number"
+                    v-model.number="testPlayerCount"
+                    min="3"
+                    max="12"
+                    class="border rounded px-2 py-1 w-20"
+                />
+                <PrimaryButton type="button" @click="generateTestGame">Generate Test Game</PrimaryButton>
+            </div>
+
+            <div v-if="props.testGameId" class="flex flex-wrap gap-2">
+                <SecondaryButton type="button" @click="router.visit(route('games.startGame', { game: props.testGameId }))">
+                    Start Game
+                </SecondaryButton>
+                <template v-for="round in 3" :key="round">
+                    <SecondaryButton type="button" @click="router.visit(route('games.startRound', { game: props.testGameId, round }))">
+                        Round {{ round }}
+                    </SecondaryButton>
+                    <SecondaryButton type="button" @click="router.visit(route('games.endRound', { game: props.testGameId, round }))">
+                        End Round {{ round }}
+                    </SecondaryButton>
+                </template>
+                <SecondaryButton type="button" @click="router.visit(route('games.endGame', { game: props.testGameId }))">
+                    End Game
+                </SecondaryButton>
+            </div>
         </div>
 </template>
 

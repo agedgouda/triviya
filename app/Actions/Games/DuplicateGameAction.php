@@ -4,7 +4,6 @@ namespace App\Actions\Games;
 
 use App\Facades\GameActions;
 use App\Models\Game;
-use Carbon\Carbon;
 
 class DuplicateGameAction
 {
@@ -14,9 +13,9 @@ class DuplicateGameAction
     public function handle(Game $game): Game
     {
         // Copy the game attributes
-        $gameData = $game->only(['name', 'date_time', 'mode_id', 'location']);
+        $gameData = $game->only(['name', 'date_time', 'mode_id']);
         $gameData['name'] .= ' The Sequel ';
-        //$gameData['status'] = 'new';
+        // $gameData['status'] = 'new';
         $gameData['status'] = 'sequel';
 
         // Create the new game (host is added automatically via StoreGameAction)
@@ -42,4 +41,3 @@ class DuplicateGameAction
         return $newGame;
     }
 }
-
