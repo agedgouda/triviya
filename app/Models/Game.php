@@ -18,6 +18,7 @@ class Game extends Model
         'status',
         'is_full',
         'short_url',
+        'is_test',
     ];
 
     public function players()

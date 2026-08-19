@@ -4,14 +4,15 @@ import { router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
 import Table from '@/Components/Table.vue';
 
 
 const props = defineProps({
     games: Object,
-    testGameId: {
-        type: String,
-        default: null,
+    testGames: {
+        type: Array,
+        default: () => [],
     },
 });
 
@@ -23,6 +24,10 @@ const generateTestGame = () => {
     router.post(route('games.generateTest'), { player_count: testPlayerCount.value }, {
         preserveScroll: true,
     });
+};
+
+const deleteTestGame = (gameId) => {
+    router.delete(route('games.destroy', gameId), { preserveScroll: true });
 };
 
 // Pagination state
@@ -171,21 +176,30 @@ const goToPage = (page) => {
                 <PrimaryButton type="button" @click="generateTestGame">Generate Test Game</PrimaryButton>
             </div>
 
-            <div v-if="props.testGameId" class="flex flex-wrap gap-2">
-                <SecondaryButton type="button" @click="router.visit(route('games.startGame', { game: props.testGameId }))">
-                    Start Game
-                </SecondaryButton>
-                <template v-for="round in 3" :key="round">
-                    <SecondaryButton type="button" @click="router.visit(route('games.startRound', { game: props.testGameId, round }))">
-                        Round {{ round }}
+            <div v-for="testGame in props.testGames" :key="testGame.id" class="mb-4">
+                <div class="font-bold mb-1">
+                    {{ testGame.name }}
+                    <span class="font-normal text-sm text-triviyaRegular">({{ testGame.status }})</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <SecondaryButton type="button" @click="router.visit(route('games.startGame', { game: testGame.id }))">
+                        Start Game
                     </SecondaryButton>
-                    <SecondaryButton type="button" @click="router.visit(route('games.endRound', { game: props.testGameId, round }))">
-                        End Round {{ round }}
+                    <template v-for="round in 3" :key="round">
+                        <SecondaryButton type="button" @click="router.visit(route('games.startRound', { game: testGame.id, round }))">
+                            Round {{ round }}
+                        </SecondaryButton>
+                        <SecondaryButton type="button" @click="router.visit(route('games.endRound', { game: testGame.id, round }))">
+                            End Round {{ round }}
+                        </SecondaryButton>
+                    </template>
+                    <SecondaryButton type="button" @click="router.visit(route('games.endGame', { game: testGame.id }))">
+                        End Game
                     </SecondaryButton>
-                </template>
-                <SecondaryButton type="button" @click="router.visit(route('games.endGame', { game: props.testGameId }))">
-                    End Game
-                </SecondaryButton>
+                    <DangerButton type="button" @click="deleteTestGame(testGame.id)">
+                        Delete
+                    </DangerButton>
+                </div>
             </div>
         </div>
 </template>

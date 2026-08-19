@@ -41,6 +41,7 @@ class GenerateTestGameAction
         $response = GameActions::StoreGameAction([
             'name' => 'Test Game '.now()->format('M j, g:ia'),
             'mode_id' => $mode->id,
+            'is_test' => true,
         ]);
 
         $game = $response['game'];

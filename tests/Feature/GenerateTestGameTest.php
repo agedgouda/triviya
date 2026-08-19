@@ -51,10 +51,66 @@ class GenerateTestGameTest extends TestCase
         $game = Game::firstOrFail();
         $this->assertSame(5, $game->players()->count());
         $this->assertSame('ready', $game->status);
+        $this->assertTrue((bool) $game->is_test);
 
         foreach ($game->players()->withPivot('status')->get() as $player) {
             $this->assertSame('Completed', $player->pivot->status);
         }
+    }
+
+    public function test_generated_test_games_appear_in_the_admins_test_games_list(): void
+    {
+        $this->seedMode();
+        $admin = User::factory()->create(['is_admin' => 1]);
+
+        $this->actingAs($admin)->post(route('games.generateTest'), ['player_count' => 4]);
+        $this->actingAs($admin)->post(route('games.generateTest'), ['player_count' => 6]);
+
+        $response = $this->actingAs($admin)->get(route('games'));
+
+        $response->assertInertia(fn ($page) => $page
+            ->component('Games/Index')
+            ->has('testGames', 2)
+        );
+    }
+
+    public function test_admin_can_delete_a_test_game(): void
+    {
+        $this->seedMode();
+        $admin = User::factory()->create(['is_admin' => 1]);
+        $this->actingAs($admin)->post(route('games.generateTest'), ['player_count' => 4]);
+        $game = Game::firstOrFail();
+
+        $response = $this->actingAs($admin)->delete(route('games.destroy', $game->id));
+
+        $response->assertRedirect(route('games'));
+        $this->assertModelMissing($game);
+    }
+
+    public function test_deleting_a_non_test_game_is_refused(): void
+    {
+        $mode = $this->seedMode();
+        $admin = User::factory()->create(['is_admin' => 1]);
+        $game = Game::factory()->create(['mode_id' => $mode->id]);
+
+        $response = $this->actingAs($admin)->delete(route('games.destroy', $game->id));
+
+        $response->assertNotFound();
+        $this->assertModelExists($game);
+    }
+
+    public function test_non_admin_cannot_delete_a_test_game(): void
+    {
+        $this->seedMode();
+        $admin = User::factory()->create(['is_admin' => 1]);
+        $this->actingAs($admin)->post(route('games.generateTest'), ['player_count' => 4]);
+        $game = Game::firstOrFail();
+
+        $user = User::factory()->create(['is_admin' => 0]);
+        $response = $this->actingAs($user)->delete(route('games.destroy', $game->id));
+
+        $response->assertNotFound();
+        $this->assertModelExists($game);
     }
 
     public function test_player_count_must_be_within_allowed_range(): void

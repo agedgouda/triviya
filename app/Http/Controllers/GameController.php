@@ -23,11 +23,15 @@ class GameController extends Controller
 
         $games = GameActions::fetchGames();
 
+        $testGames = auth()->user()->hostedGames()
+            ->where('is_test', true)
+            ->get(['games.id', 'games.name', 'games.status']);
+
         return Inertia::render('Games/Index', [
             'games' => $games,
             'routeName' => request()->route()->getName(),
             'flashMessage' => session('flashMessage'),
-            'testGameId' => session('testGameId'),
+            'testGames' => $testGames,
         ]);
     }
 
@@ -38,9 +42,9 @@ class GameController extends Controller
      */
     public function generateTestGame(GenerateTestGameRequest $request)
     {
-        $game = GameActions::GenerateTestGameAction($request->validated('player_count'));
+        GameActions::GenerateTestGameAction($request->validated('player_count'));
 
-        return redirect()->route('games')->with('testGameId', $game->id);
+        return redirect()->route('games');
     }
 
     /**
@@ -125,11 +129,14 @@ class GameController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage. Restricted to admin-generated
+     * test games — DeleteTestGameAction aborts if the game isn't one.
      */
     public function destroy(Game $game)
     {
-        // Implement game deletion logic if needed
+        GameActions::DeleteTestGameAction($game);
+
+        return redirect()->route('games');
     }
 
     /**
