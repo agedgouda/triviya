@@ -19,7 +19,7 @@ function closePage() {
         <div class="pt-4 bg-gray-100 min-h-screen">
 
             <div
-                class="fixed top-4 right-4 text-sm cursor-pointer inline-flex items-center space-x-1 p-2 bg-white rounded shadow-md hover:bg-gray-100 z-50"
+                class="fixed top-4 right-4 text-sm cursor-pointer inline-flex items-center space-x-1 p-2 bg-white rounded-sm shadow-md hover:bg-gray-100 z-50"
                 @click="closePage"
             >
                 <span>Close</span>

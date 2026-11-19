@@ -22,7 +22,7 @@ const goBack = () => {
         <template #raw-header>
             <div class="raw-header mt-8 mb-8">
                 <div class="extended-logo">
-                    <ApplicationLogo class="flex justify-center block !h-32 mx-auto w-auto" />
+                    <ApplicationLogo class="flex justify-center block h-32! mx-auto w-auto" />
                     <div class="extended-logo-text text-center text-white text-xl font-bold">the game where you<br />are the trivia!</div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
     <MaskInput
       v-bind="$attrs"
       v-on="eventListeners"
-      :class="['border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-gray-800', customClass]"
+      :class="['border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-xs text-gray-800', customClass]"
     />
   </template>
 

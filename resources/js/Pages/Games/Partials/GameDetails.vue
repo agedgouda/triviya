@@ -137,12 +137,12 @@ const confirmRemovePlayer = async () => {
     <!-- Left Column: Game Info -->
     <div class="flex flex-col justify-center space-y-1 flex-1 min-w-0">
         <!-- Game Name -->
-        <div class="font-bold text-lg sm:text-xl md:text-2xl text-triviyaRegular break-words">
+        <div class="font-bold text-lg sm:text-xl md:text-2xl text-triviyaRegular wrap-break-word">
         {{ game.name }}
         </div>
 
         <!-- Quiz Link -->
-        <div class="break-words" v-if="isHost" >
+        <div class="wrap-break-word" v-if="isHost" >
             <span class="text-black">
                 <span class="font-bold text-triviyaRegular">Quiz Link:</span>
                 {{ invitationLink }}
@@ -159,7 +159,7 @@ const confirmRemovePlayer = async () => {
 
 
     <!-- Right Column: Start/Continue Button -->
-    <div class="flex justify-end mt-2 md:mt-0 flex-shrink-0" v-if="isHost && ['in progress', 'ready'].includes(game.status)">
+    <div class="flex justify-end mt-2 md:mt-0 shrink-0" v-if="isHost && ['in progress', 'ready'].includes(game.status)">
         <PrimaryButton @click="startGame">
         <StartGameIcon class="hidden md:inline-block h-4 w-4" />
         &nbsp;<span>{{ game.status === 'in progress' ? 'Continue Playing' : 'Start Game' }}</span>

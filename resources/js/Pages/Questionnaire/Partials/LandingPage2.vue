@@ -31,7 +31,7 @@ const goBack = () => {
                 <h3 class="game-author text-center text-white font-bold text-xl" v-text="game.host[0].name"></h3>
                 <h4 class="text-center text-white text-lg">has invited you to play</h4>
                 <div class="extended-logo">
-                    <ApplicationLogo class="flex justify-center block !h-32 mx-auto w-auto" />
+                    <ApplicationLogo class="flex justify-center block h-32! mx-auto w-auto" />
                     <div class="extended-logo-text text-center text-white text-xl font-bold">the game where you<br />are the trivia!</div>
                 </div>
             </div>

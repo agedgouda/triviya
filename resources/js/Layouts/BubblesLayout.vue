@@ -20,7 +20,7 @@ import {Head} from "@inertiajs/vue3";
             </header>
         </div>
         <!-- Main section with a separate background image -->
-        <div class="flex-grow w-full bg-cover bg-center bg-no-repeat text-black relative" style="background-image: url('/images/triviya-bg-cover.png');">
+        <div class="grow w-full bg-cover bg-center bg-no-repeat text-black relative" style="background-image: url('/images/triviya-bg-cover.png');">
             <!-- Gradient overlay at the top using the image (rotated 180 degrees) -->
             <div class="absolute top-0 left-0 right-0 h-[51px] bg-no-repeat bg-top bg-cover pointer-events-none" style="background-image: url('/images/gradient.png'); transform: rotate(180deg);"></div>
 

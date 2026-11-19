@@ -20,8 +20,8 @@ const isHovered = ref(false)
 
 const classes = computed(() => {
   return props.active
-    ? 'inline-flex items-center px-1 pt-1 text-sm font-bold leading-5 text-white focus:outline-none transition duration-150 ease-in-out'
-    : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-triviya-lightRed text-sm font-bold leading-5 text-blue-50 hover:text-triviya-red hover:border-triviya-red focus:outline-none transition duration-150 ease-in-out'
+    ? 'inline-flex items-center px-1 pt-1 text-sm font-bold leading-5 text-white focus:outline-hidden transition duration-150 ease-in-out'
+    : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-triviya-lightRed text-sm font-bold leading-5 text-blue-50 hover:text-triviya-red hover:border-triviya-red focus:outline-hidden transition duration-150 ease-in-out'
 })
 
 const isInternal = computed(() => props.href && !/^https?:\/\//.test(props.href))

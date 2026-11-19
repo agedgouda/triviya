@@ -109,9 +109,9 @@ const maxWidthClass = computed(() => {
                 >
 
                     <!-- Title bar -->
-                    <div v-if="title" class="flex justify-between items-center px-4 py-2 bg-[#651A72] text-white font-bold text-lg">
+                    <div v-if="title" class="flex justify-between items-center px-4 py-2 bg-triviya-purple text-white font-bold text-lg">
                         <span>{{ title }}</span>
-                        <button v-if="closeable" @click="close" class="ml-4 text-white hover:text-[#EC6ABA]">
+                        <button v-if="closeable" @click="close" class="ml-4 text-white hover:text-triviya-redHover">
                             &times;
                         </button>
                     </div>

@@ -18,7 +18,7 @@ defineProps({
         hover:bg-triviya-darkGray hover:text-white
         focus:bg-triviya-darkGray focus:text-white
         active:bg-white active:text-black
-        focus:outline-none focus:ring-2 focus:ring-triviya-red focus:ring-offset-2
+        focus:outline-hidden focus:ring-2 focus:ring-triviya-red focus:ring-offset-2
         transition ease-in-out duration-150
       "
     >

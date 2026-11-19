@@ -12,8 +12,8 @@ const attrs = useAttrs();
 
 const classes = computed(() => {
     return props.active
-        ? 'inline-flex items-center px-1 pt-1 border-b-2 border-triviya-red text-sm font-medium leading-5 text-triviya-red focus:outline-none focus:border-triviya-lightRed transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-triviya-red hover:text-triviya-red hover:border-triviya-red focus:outline-none focus:text-triviya-lightRed focus:border-gray-300 transition duration-150 ease-in-out';
+        ? 'inline-flex items-center px-1 pt-1 border-b-2 border-triviya-red text-sm font-medium leading-5 text-triviya-red focus:outline-hidden focus:border-triviya-lightRed transition duration-150 ease-in-out'
+        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-triviya-red hover:text-triviya-red hover:border-triviya-red focus:outline-hidden focus:text-triviya-lightRed focus:border-gray-300 transition duration-150 ease-in-out';
 });
 </script>
 

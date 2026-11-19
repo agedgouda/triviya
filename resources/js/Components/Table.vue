@@ -1,5 +1,5 @@
 <template>
-  <table class="min-w-full max-w-full table-fixed border-collapse text-xs sm:text-sm md:text-base break-words">
+  <table class="min-w-full max-w-full table-fixed border-collapse text-xs sm:text-sm md:text-base wrap-break-word">
     <thead class="bg-triviyaRegular text-white border border-triviyaRegular">
       <tr>
         <!-- Slot for headers. Recommended to set widths per column -->

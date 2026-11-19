@@ -36,11 +36,11 @@ const widthClass = computed(() => {
 
 const alignmentClasses = computed(() => {
     if (props.align === 'left') {
-        return 'ltr:origin-top-left rtl:origin-top-right start-0';
+        return 'ltr:origin-top-left rtl:origin-top-right inset-s-0';
     }
 
     if (props.align === 'right') {
-        return 'ltr:origin-top-right rtl:origin-top-left end-0';
+        return 'ltr:origin-top-right rtl:origin-top-left inset-e-0';
     }
 
     return 'origin-top';
@@ -48,8 +48,8 @@ const alignmentClasses = computed(() => {
 
 const classes = computed(() => {
     return props.active
-       ? 'inline-flex items-center px-1 pt-1 text-sm font-bold leading-5 text-white  focus:outline-none focus:border-triviyaRegular transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-triviya-lightRed text-sm font-bold leading-5 text-blue-50 hover:text-triviya-red hover:border-triviya-red focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
+       ? 'inline-flex items-center px-1 pt-1 text-sm font-bold leading-5 text-white  focus:outline-hidden focus:border-triviyaRegular transition duration-150 ease-in-out'
+        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-triviya-lightRed text-sm font-bold leading-5 text-blue-50 hover:text-triviya-red hover:border-triviya-red focus:outline-hidden focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
 });
 
 

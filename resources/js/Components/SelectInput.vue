@@ -34,7 +34,7 @@ const proxySelected = computed({
 <template>
   <select
     v-model="proxySelected"
-    class="rounded border-gray-300 text-gray-800 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+    class="rounded-sm border-gray-300 text-gray-800 shadow-xs focus:ring-indigo-500 focus:border-indigo-500"
   >
     <!-- Optional placeholder -->
     <option value="" disabled>{{ props.placeholder }}</option>

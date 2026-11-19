@@ -125,7 +125,7 @@ const goToPage = (page) => {
             <button
             @click="goToPage(currentPage - 1)"
             :disabled="currentPage === 1"
-            class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
+            class="px-3 py-1 border rounded-sm bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
             >
             Prev
             </button>
@@ -135,7 +135,7 @@ const goToPage = (page) => {
             :key="page"
             @click="goToPage(page)"
             :class="[
-                'px-3 py-1 border rounded',
+                'px-3 py-1 border rounded-sm',
                 page === currentPage
                 ? 'bg-triviya-red text-white'
                 : 'bg-white text-triviya-red hover:bg-triviya-red hover:text-white'
@@ -147,7 +147,7 @@ const goToPage = (page) => {
             <button
             @click="goToPage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="px-3 py-1 border rounded bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
+            class="px-3 py-1 border rounded-sm bg-white text-triviya-red hover:bg-triviya-red hover:text-white"
             >
             Next
             </button>
@@ -171,7 +171,7 @@ const goToPage = (page) => {
                     v-model.number="testPlayerCount"
                     min="3"
                     max="12"
-                    class="border rounded px-2 py-1 w-20"
+                    class="border rounded-sm px-2 py-1 w-20"
                 />
                 <PrimaryButton type="button" @click="generateTestGame">Generate Test Game</PrimaryButton>
             </div>
