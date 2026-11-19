@@ -10,7 +10,7 @@ class GameObserver
     /**
      * Handle the Game "creating" event.
      *
-     * @param  \App\Models\Game  $game
+     * @param  Game  $game
      * @return void
      */
     public function creating(Game $game)
@@ -28,7 +28,7 @@ class GameObserver
     {
         do {
             $slug = Str::random($length);
-        } while (\App\Models\Game::where('short_url', $slug)->exists());
+        } while (Game::where('short_url', $slug)->exists());
 
         return $slug;
     }

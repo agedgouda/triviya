@@ -2,13 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\GameProductResource\Pages;
+use App\Filament\Resources\GameProductResource\Pages\CreateGameProduct;
+use App\Filament\Resources\GameProductResource\Pages\EditGameProduct;
+use App\Filament\Resources\GameProductResource\Pages\ListGameProducts;
 use App\Models\GameProduct;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -17,12 +21,12 @@ class GameProductResource extends Resource
 {
     protected static ?string $model = GameProduct::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255)
@@ -63,12 +67,12 @@ class GameProductResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -83,9 +87,9 @@ class GameProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGameProducts::route('/'),
-            'create' => Pages\CreateGameProduct::route('/create'),
-            'edit' => Pages\EditGameProduct::route('/{record}/edit'),
+            'index' => ListGameProducts::route('/'),
+            'create' => CreateGameProduct::route('/create'),
+            'edit' => EditGameProduct::route('/{record}/edit'),
         ];
     }
 }

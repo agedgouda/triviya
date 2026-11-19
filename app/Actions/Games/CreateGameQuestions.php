@@ -2,6 +2,8 @@
 
 namespace App\Actions\Games;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
 use App\Models\Answer;
 use App\Models\Game;
 use App\Models\Question;
@@ -70,7 +72,7 @@ class CreateGameQuestions
             if ($question && $question->question_type === 'date') {
                 try {
                     $answer->answer = Carbon::createFromFormat('Y-m-d', $answer->answer)->format('M jS, Y');
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     // If invalid date, leave original answer
                 }
             }
@@ -108,12 +110,12 @@ class CreateGameQuestions
                 ->first();
 
             for ($i = 0; $i < $numPlayerQuestions; $i++) {
-                \Log::info("Player {$player->name} (GameUserID: $gameUserId) needs event question #$i");
+                Log::info("Player {$player->name} (GameUserID: $gameUserId) needs event question #$i");
                 // TODO: Insert event question assignment if needed
             }
         }
 
-        \Log::info("Target questions per player: $questionsToAdd");
+        Log::info("Target questions per player: $questionsToAdd");
 
         return DB::table('game_user_question')->where('game_id', $game->id)->get();
     }

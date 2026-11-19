@@ -2,16 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\Pages\CreateUser;
+use App\Filament\Resources\UserResource\Pages\EditUser;
+use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\View;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -20,12 +24,12 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-group';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
                     ->schema([
                         Checkbox::make('is_admin')
@@ -33,14 +37,16 @@ class UserResource extends Resource
                             ->inline(),
                     ])
                     ->columns(1)
-                    ->extraAttributes(['class' => 'justify-end flex']),
+                    ->extraAttributes(['class' => 'justify-end flex'])
+                    ->columnSpanFull(),
 
                 Fieldset::make('Name')
                     ->schema([
                         TextInput::make('first_name')->required()->maxLength(255),
                         TextInput::make('last_name')->required()->maxLength(255),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
 
                 Fieldset::make('Contact Information')
                     ->schema([
@@ -48,15 +54,15 @@ class UserResource extends Resource
                         TextInput::make('phone_number')->tel()->mask('999-999-9999')->maxLength(255),
                         TextInput::make('games_available')->numeric()->minValue(0)->label('Games Available'),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->columnSpanFull(),
 
                 Grid::make(2)
                     ->schema([
-                        View::make('filament.users.fields.games')
-                            ->label('Games'),
-                        View::make('filament.users.fields.game-product-purchases')
-                            ->label('Game Products Purchased'),
-                    ]),
+                        View::make('filament.users.fields.games'),
+                        View::make('filament.users.fields.game-product-purchases'),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -87,12 +93,12 @@ class UserResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -107,9 +113,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Mailchimp;
 
+use Exception;
 use App\Services\MailchimpService;
 use Illuminate\Support\Facades\Log;
 
@@ -17,7 +18,7 @@ class DeleteUserFromMailchimp
             if (! $success) {
                 Log::error("Mailchimp deletion FAILED for {$email}");
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error("Mailchimp deletion ERROR for {$email}: " . $e->getMessage());
         }
     }

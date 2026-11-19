@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -11,7 +12,7 @@ class EnsureIsAdmin
     /**
      * Handle an incoming request.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function handle(Request $request, Closure $next)
     {

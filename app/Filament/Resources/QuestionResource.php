@@ -2,14 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\QuestionResource\Pages;
+use App\Filament\Resources\QuestionResource\Pages\CreateQuestion;
+use App\Filament\Resources\QuestionResource\Pages\EditQuestion;
+use App\Filament\Resources\QuestionResource\Pages\ListQuestions;
 use App\Models\Mode;
 use App\Models\Question;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,12 +22,12 @@ class QuestionResource extends Resource
 {
     protected static ?string $model = Question::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-question-mark-circle';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('question_text')->required()->maxLength(255)->label('Question'),
                 CheckboxList::make('modes')
                     ->label('Modes')
@@ -50,15 +54,15 @@ class QuestionResource extends Resource
             ])
             ->searchPlaceholder('Search Questions')
             ->filters([
-                    //
+                //
             ])
-            ->actions([
-                    Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                    Tables\Actions\BulkActionGroup::make([
-                        Tables\Actions\DeleteBulkAction::make(),
-                    ]),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
@@ -78,9 +82,9 @@ class QuestionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListQuestions::route('/'),
-            'create' => Pages\CreateQuestion::route('/create'),
-            'edit' => Pages\EditQuestion::route('/{record}/edit'),
+            'index' => ListQuestions::route('/'),
+            'create' => CreateQuestion::route('/create'),
+            'edit' => EditQuestion::route('/{record}/edit'),
         ];
     }
 }

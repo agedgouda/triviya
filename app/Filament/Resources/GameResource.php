@@ -2,15 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\GameResource\Pages;
+use App\Filament\Resources\GameResource\Pages\CreateGame;
+use App\Filament\Resources\GameResource\Pages\EditGame;
+use App\Filament\Resources\GameResource\Pages\ListGames;
 use App\Models\Game;
-use Filament\Forms\Components\Grid;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\View;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
@@ -20,12 +24,12 @@ class GameResource extends Resource
 {
     protected static ?string $model = Game::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-trophy';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-trophy';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
                     ->schema([
                         TextInput::make('name')
@@ -37,9 +41,10 @@ class GameResource extends Resource
                     ->columns([
                         'sm' => 1,
                         'lg' => 2,
-                    ]),
+                    ])
+                    ->columnSpanFull(),
                 View::make('filament.games.fields.players')
-                    ->label('Games'),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -74,12 +79,12 @@ class GameResource extends Resource
             ])
             ->searchPlaceholder('Search by Host Name')
             ->filtersLayout(FiltersLayout::AboveContent)
-            ->actions([
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                EditAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -94,9 +99,9 @@ class GameResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListGames::route('/'),
-            'create' => Pages\CreateGame::route('/create'),
-            'edit' => Pages\EditGame::route('/{record}/edit'),
+            'index' => ListGames::route('/'),
+            'create' => CreateGame::route('/create'),
+            'edit' => EditGame::route('/{record}/edit'),
         ];
     }
 }

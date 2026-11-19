@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Exception;
+
 class GameActions
 {
     public function __call($method, $parameters)
@@ -13,6 +15,6 @@ class GameActions
             return (new $actionClass)->handle(...$parameters);
         }
 
-        throw new \Exception("Action {$method} does not exist.");
+        throw new Exception("Action {$method} does not exist.");
     }
 }
