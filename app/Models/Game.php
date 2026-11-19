@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Game extends Model
 {
@@ -21,13 +23,19 @@ class Game extends Model
         'is_test',
     ];
 
-    public function players()
+    /**
+     * @return BelongsToMany<User, $this>
+     */
+    public function players(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'game_user')
             ->withPivot('id', 'status', 'is_host');
     }
 
-    public function host()
+    /**
+     * @return BelongsToMany<User, $this>
+     */
+    public function host(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'game_user')
             ->wherePivot('is_host', true)
@@ -68,12 +76,18 @@ class Game extends Model
         return $this->host()->first();
     }
 
-    public function mode()
+    /**
+     * @return BelongsTo<Mode, $this>
+     */
+    public function mode(): BelongsTo
     {
         return $this->belongsTo(Mode::class);
     }
 
-    public function questions()
+    /**
+     * @return BelongsToMany<Question, $this>
+     */
+    public function questions(): BelongsToMany
     {
         return $this->belongsToMany(Question::class);
     }

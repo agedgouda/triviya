@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class GameUser extends Model
 {
@@ -19,19 +21,28 @@ class GameUser extends Model
     ];
 
     // A GameUser can have many answers
-    public function answers()
+    /**
+     * @return HasMany<Answer, $this>
+     */
+    public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
     }
 
     // Optionally, a GameUser belongs to a specific user
-    public function user()
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
     // Optionally, a GameUser belongs to a specific game
-    public function game()
+    /**
+     * @return BelongsTo<Game, $this>
+     */
+    public function game(): BelongsTo
     {
         return $this->belongsTo(Game::class);
     }

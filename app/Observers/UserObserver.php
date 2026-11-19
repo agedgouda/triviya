@@ -60,10 +60,7 @@ class UserObserver
                 $game->delete();
             });
 
-            // Delete the user's profile photo (if your model has that method)
-            if (method_exists($user, 'deleteProfilePhoto')) {
-                $user->deleteProfilePhoto();
-            }
+            $user->deleteProfilePhoto();
 
         });
 

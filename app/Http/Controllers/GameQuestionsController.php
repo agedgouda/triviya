@@ -112,7 +112,7 @@ class GameQuestionsController extends Controller
     {
         $this->ensureIsCurrentPlayer($request, $game, $user);
 
-        return GameActions::storeAnswerAction($game, $user, $request->question);
+        return GameActions::StoreAnswerAction($game, $user, $request->question);
     }
 
     public function storeAnswers(Request $request, Game $game, User $user)
@@ -123,7 +123,7 @@ class GameQuestionsController extends Controller
             'answers' => 'required|array',
         ]);
 
-        $response = GameActions::storeAnswersAction($game, $user, $validated);
+        $response = GameActions::StoreAnswersAction($game, $user, $validated);
 
         if ($response['status'] === 'error') {
             return redirect()->back()->withErrors([

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Mode extends Model
 {
@@ -11,7 +12,10 @@ class Mode extends Model
 
     protected $fillable = ['name'];
 
-    public function questions()
+    /**
+     * @return BelongsToMany<Question, $this>
+     */
+    public function questions(): BelongsToMany
     {
         return $this->belongsToMany(Question::class, 'mode_question');
     }

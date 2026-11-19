@@ -1,0 +1,15 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    # Known issues in the unused Jetstream Teams scaffolding (Teams is disabled).
+    - phpstan-baseline.neon
+
+parameters:
+    paths:
+        - app
+        - routes
+
+    # 0 (loosest) to 10 (strictest). 5 catches calls to missing methods,
+    # wrong argument types and undefined properties without much noise.
+    level: 5
+
+    tmpDir: storage/framework/cache/phpstan

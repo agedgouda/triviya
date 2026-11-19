@@ -22,7 +22,7 @@ class GameController extends Controller
     {
         $maxPlayers = config('game.max_players');
 
-        $games = GameActions::fetchGames();
+        $games = GameActions::FetchGames();
 
         $testGames = auth()->user()->hostedGames()
             ->where('is_test', true)
@@ -152,7 +152,7 @@ class GameController extends Controller
     {
         Gate::authorize('manage', $game);
 
-        $newGame = GameActions::DuplicateGameAction($game, $request->input('timeZone', 'UTC'));
+        $newGame = GameActions::DuplicateGameAction($game);
 
         return redirect()->route('games.show', $newGame->id)
             ->with('flash', ['message' => 'Game duplicated successfully!']);
@@ -176,7 +176,7 @@ class GameController extends Controller
     {
         Gate::authorize('manage', $game);
 
-        $response = GameActions::createGameQuestions($game);
+        $response = GameActions::CreateGameQuestions($game);
 
         return ['status' => 'success', 'message' => $response];
     }

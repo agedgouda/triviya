@@ -1,0 +1,49 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to an undefined method App\\Models\\User\:\:ownedTeams\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Actions/Jetstream/CreateTeam.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\User\:\:switchTeam\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Actions/Jetstream/CreateTeam.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$ownedTeams\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/Jetstream/DeleteUser.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\User\:\:teams\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Actions/Jetstream/DeleteUser.php
+
+		-
+			message: '#^Parameter \#1 \$invitation of class Laravel\\Jetstream\\Mail\\TeamInvitation constructor expects Laravel\\Jetstream\\TeamInvitation, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Actions/Jetstream/InviteTeamMember.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/Jetstream/RemoveTeamMember.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\User\:\:belongsToTeam\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Policies/TeamPolicy.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\User\:\:ownsTeam\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: app/Policies/TeamPolicy.php

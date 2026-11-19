@@ -6,6 +6,8 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -71,19 +73,28 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-    public function hostedGames()
+    /**
+     * @return BelongsToMany<Game, $this>
+     */
+    public function hostedGames(): BelongsToMany
     {
         return $this->belongsToMany(Game::class, 'game_user')
             ->wherePivot('is_host', true);
     }
 
-    public function games()
+    /**
+     * @return BelongsToMany<Game, $this>
+     */
+    public function games(): BelongsToMany
     {
         return $this->belongsToMany(Game::class, 'game_user')
             ->withPivot('is_host');
     }
 
-    public function gameProductPurchases()
+    /**
+     * @return HasMany<GameProductPurchase, $this>
+     */
+    public function gameProductPurchases(): HasMany
     {
         return $this->hasMany(GameProductPurchase::class);
     }
