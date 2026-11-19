@@ -14,7 +14,7 @@
         "laravel/jetstream": "^5.3",
         "laravel/pennant": "^1.18",
         "laravel/sanctum": "^4.0",
-        "stripe/stripe-php": "^17.5",
+        "stripe/stripe-php": "^23.0",
         "symfony/http-client": "^7.3",
         "symfony/mailgun-mailer": "^7.3",
         "tightenco/ziggy": "^2.0"
