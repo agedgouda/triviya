@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Game;
 use App\Models\User;
+use App\Services\SafeRedirect;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -17,7 +18,10 @@ class RegisterController extends Controller
     public function show(Request $request, ?Game $game = null)
     {
 
-        $redirectTo = request()->input('redirect_to', route('questions.showQuestions', ['game' => $game->id]));
+        $redirectTo = SafeRedirect::to(
+            request()->input('redirect_to'),
+            $game ? route('questions.showQuestions', ['game' => $game->id]) : route('games')
+        );
 
         // Pass an empty object if no user is found
         return Inertia::render('Auth/Register', [
@@ -51,7 +55,7 @@ class RegisterController extends Controller
         // Log the user in
         auth()->login($user);
 
-        $redirectTo = request()->input('redirect_to') ?: route('games');
+        $redirectTo = SafeRedirect::to(request()->input('redirect_to'), route('games'));
 
         return redirect()->intended($redirectTo)->with('flashMessage', 'Congratulations! You have registered with TriviYa.');
     }

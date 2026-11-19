@@ -9,6 +9,7 @@ use App\Models\Game;
 use App\Models\Mode;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -87,6 +88,7 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
+        Gate::authorize('view', $game);
 
         $gameDetails = GameActions::FetchGameDetails($game, auth()->id());
 
@@ -105,6 +107,8 @@ class GameController extends Controller
      */
     public function edit(Game $game)
     {
+        Gate::authorize('manage', $game);
+
         $game->load(['players', 'mode']);
         $modes = Mode::all();
 
@@ -121,6 +125,8 @@ class GameController extends Controller
      */
     public function update(GameRequest $request, Game $game)
     {
+        Gate::authorize('manage', $game);
+
         $game->update($request->validated());
 
         return Redirect::route('games.show', $game->id)->with('flash', [
@@ -144,6 +150,8 @@ class GameController extends Controller
      */
     public function duplicate(Game $game, Request $request)
     {
+        Gate::authorize('manage', $game);
+
         $newGame = GameActions::DuplicateGameAction($game, $request->input('timeZone', 'UTC'));
 
         return redirect()->route('games.show', $newGame->id)
@@ -152,6 +160,7 @@ class GameController extends Controller
 
     public function removePlayer(Game $game, User $user)
     {
+        Gate::authorize('manage', $game);
 
         $response = GameActions::RemoveUserAndResetQuestions($game, $user);
 
@@ -165,6 +174,8 @@ class GameController extends Controller
 
     public function createGameQuestions(Game $game)
     {
+        Gate::authorize('manage', $game);
+
         $response = GameActions::createGameQuestions($game);
 
         return ['status' => 'success', 'message' => $response];

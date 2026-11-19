@@ -19,6 +19,7 @@ const props = defineProps({
     answers: Array,
     routeName: String,
     flashMessage: String,
+    playerToken: String,
 });
 
 const currentLandingComponent = computed(() => {
@@ -36,25 +37,43 @@ onMounted(() => {
   }
 })
 
-// Remember this player on this device so they can resume without re-entering
-// their name, and resume automatically if we already know who they are.
+// Remember this guest player on this device (id plus the server-issued token)
+// so they can resume without re-entering their name.
 const storageKey = computed(() => `game_${props.game.id}`);
 let attemptedResume = false;
 
+const readSavedPlayer = () => {
+    try {
+        const saved = JSON.parse(localStorage.getItem(storageKey.value));
+        if (saved && saved.id && saved.token) return saved;
+    } catch (e) {
+        // Older entries stored only the id; they can no longer be used to resume.
+    }
+    localStorage.removeItem(storageKey.value);
+    return null;
+};
+
 watch(
-    () => [props.user, props.routeName],
-    ([user, routeName]) => {
-        if (user) {
-            localStorage.setItem(storageKey.value, user.id);
+    () => [props.user, props.playerToken, props.routeName],
+    ([user, playerToken, routeName]) => {
+        if (user && playerToken) {
+            localStorage.setItem(storageKey.value, JSON.stringify({ id: user.id, token: playerToken }));
             return;
         }
 
-        if (routeName === 'questions.showQuestionLanding' && !attemptedResume) {
-            const savedPlayerId = localStorage.getItem(storageKey.value);
+        if (!user && routeName === 'questions.showQuestionLanding' && !attemptedResume) {
+            if (new URLSearchParams(window.location.search).has('player')) {
+                // A resume was already tried and the server rejected it.
+                localStorage.removeItem(storageKey.value);
+                return;
+            }
 
-            if (savedPlayerId) {
+            const saved = readSavedPlayer();
+
+            if (saved) {
                 attemptedResume = true;
-                router.visit(`${window.location.pathname}?player=${savedPlayerId}`, {
+                const params = new URLSearchParams({ player: saved.id, token: saved.token });
+                router.visit(`${window.location.pathname}?${params}`, {
                     replace: true,
                     preserveState: false,
                 });

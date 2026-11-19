@@ -8,6 +8,7 @@ use App\Models\GameUserQuestions;
 use App\Models\Mode;
 use App\Models\Question;
 use App\Models\User;
+use App\Services\GuestPlayerToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -61,7 +62,11 @@ class GuestJoinGameTest extends TestCase
 
         $guest = User::where('first_name', 'Mike')->where('is_guest', true)->firstOrFail();
 
-        $response->assertRedirect(route('questions.showQuestions', ['game' => $game->id, 'player' => $guest->id]));
+        $response->assertRedirect(route('questions.showQuestions', [
+            'game' => $game->id,
+            'player' => $guest->id,
+            'token' => GuestPlayerToken::for($game, $guest->id),
+        ]));
 
         $this->assertNull($guest->email);
         $this->assertTrue(
@@ -124,20 +129,24 @@ class GuestJoinGameTest extends TestCase
         $thankYouResponse->assertOk();
     }
 
-    public function test_returning_guest_is_resolved_via_player_query_parameter(): void
+    public function test_returning_guest_is_resolved_via_player_and_token_query_parameters(): void
     {
         $game = $this->createGameWithQuestions();
 
         $this->post(route('questions.join', $game), ['name' => 'Mike']);
         $guest = User::where('first_name', 'Mike')->firstOrFail();
+        $token = GuestPlayerToken::for($game, $guest->id);
 
-        $response = $this->get(route('questions.showQuestionLanding', $game).'?player='.$guest->id);
+        $this->flushSession();
+
+        $response = $this->get(route('questions.showQuestionLanding', ['game' => $game, 'player' => $guest->id, 'token' => $token]));
 
         $response->assertOk();
         $response->assertInertia(fn (Assert $page) => $page
             ->component('Questionnaire/Show')
             ->where('routeName', 'questions.showQuestions')
             ->where('user.id', $guest->id)
+            ->where('playerToken', $token)
         );
     }
 }

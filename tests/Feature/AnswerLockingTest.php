@@ -118,6 +118,54 @@ class AnswerLockingTest extends TestCase
         );
     }
 
+    public function test_bulk_answers_cannot_overwrite_another_players_answers(): void
+    {
+        $game = $this->createGameWithQuestions();
+        $ann = $this->joinAsGuest($game, 'Ann');
+
+        $annQuestion = GameUserQuestions::where('game_id', $game->id)->where('user_id', $ann->id)->first();
+        $annQuestion->update(['answer' => 'Ann original']);
+
+        $otherGame = $this->createGameWithQuestions();
+        $otherGuest = $this->joinAsGuest($otherGame, 'Zed');
+        $otherGameQuestion = GameUserQuestions::where('game_id', $otherGame->id)->where('user_id', $otherGuest->id)->first();
+        $otherGameQuestion->update(['answer' => 'Other game original']);
+
+        $mike = $this->joinAsGuest($game, 'Mike');
+        $mikeQuestion = GameUserQuestions::where('game_id', $game->id)->where('user_id', $mike->id)->first();
+
+        $this->post(route('questions.playerAnswers', ['game' => $game->id, 'user' => $mike->id]), [
+            'answers' => [
+                $mikeQuestion->id => 'Mike answer',
+                $annQuestion->id => 'Hijacked',
+                $otherGameQuestion->id => 'Hijacked',
+            ],
+        ]);
+
+        $this->assertSame('Mike answer', $mikeQuestion->fresh()->answer);
+        $this->assertSame('Ann original', $annQuestion->fresh()->answer);
+        $this->assertSame('Other game original', $otherGameQuestion->fresh()->answer);
+    }
+
+    public function test_bulk_answers_cannot_change_a_completed_quiz(): void
+    {
+        $game = $this->createGameWithQuestions();
+        $guest = $this->joinAsGuest($game);
+
+        GameUserQuestions::where('game_id', $game->id)
+            ->where('user_id', $guest->id)
+            ->update(['answer' => 'An answer']);
+
+        $question = GameUserQuestions::where('game_id', $game->id)->where('user_id', $guest->id)->first();
+
+        $response = $this->post(route('questions.playerAnswers', ['game' => $game->id, 'user' => $guest->id]), [
+            'answers' => [$question->id => 'Too late'],
+        ]);
+
+        $response->assertSessionHasErrors('message');
+        $this->assertSame('An answer', $question->fresh()->answer);
+    }
+
     public function test_player_with_partial_progress_still_reaches_the_questions_page(): void
     {
         $game = $this->createGameWithQuestions();

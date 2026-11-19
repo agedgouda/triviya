@@ -3,6 +3,7 @@
 namespace App\Actions\Games;
 
 use App\Models\Game;
+use Illuminate\Support\Facades\Gate;
 
 class FetchGameDetails
 {
@@ -18,11 +19,18 @@ class FetchGameDetails
             'mode',
         ]);
 
-        $players = $game->players->map(function ($player) use ($userId) {
-            return $this->transformUser($player, $userId);
+        $canSeeEmails = Gate::allows('manage', $game);
+
+        $players = $game->players->map(function ($player) use ($userId, $canSeeEmails) {
+            return $this->transformUser($player, $userId, $canSeeEmails);
         });
 
-        $host = $this->transformUser($game->host, $userId);
+        $host = $this->transformUser($game->host, $userId, $canSeeEmails);
+
+        if (! $canSeeEmails) {
+            $game->players->each->makeHidden('email');
+            $game->getRelation('host')->each->makeHidden('email');
+        }
 
         // Add hasSpace flag to the game
         $gameArray = $game->toArray();
@@ -38,7 +46,7 @@ class FetchGameDetails
     /**
      * Transform a user model into a JSON-friendly array
      */
-    private function transformUser($user, string $currentUserId): array
+    private function transformUser($user, string $currentUserId, bool $canSeeEmails): array
     {
         $isSelf = $user->id === $currentUserId;
 
@@ -53,7 +61,7 @@ class FetchGameDetails
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'name' => $user->name,
-            'email' => $user->email,
+            'email' => ($canSeeEmails || $isSelf) ? $user->email : null,
             'profile_photo_url' => $profilePhotoUrl,
             'status' => $user->pivot->status ?? null,
             'message' => session('message'),

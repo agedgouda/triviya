@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Facades\GameActions;
 use App\Http\Requests\JoinGameRequest;
 use App\Models\Game;
+use App\Models\GameUser;
 use App\Models\User;
+use App\Services\GuestPlayerToken;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,8 +15,9 @@ class GameQuestionsController extends Controller
 {
     public function showQuestionLanding(Game $game, Request $request)
     {
+        $playerId = $this->resolvePlayerId($request, $game);
 
-        $data = GameActions::FetchQuestionLandingAction($game, $this->resolvePlayerId($request));
+        $data = GameActions::FetchQuestionLandingAction($game, $playerId);
 
         $routeName = $request->route()->getName();
 
@@ -28,6 +31,7 @@ class GameQuestionsController extends Controller
             'game' => $data['game'],
             'questions' => $data['questions'],
             'user' => $data['user'],
+            'playerToken' => $this->playerTokenFor($game, $data['user']),
             'routeName' => $routeName,
             'error' => session('error'),
         ]);
@@ -47,9 +51,12 @@ class GameQuestionsController extends Controller
             return back()->withErrors(['name' => $response['message']]);
         }
 
+        $request->session()->put(GuestPlayerToken::sessionKey($game), $response['user']->id);
+
         return redirect()->route('questions.showQuestions', [
             'game' => $game->id,
             'player' => $response['user']->id,
+            'token' => GuestPlayerToken::for($game, $response['user']->id),
         ]);
     }
 
@@ -71,7 +78,7 @@ class GameQuestionsController extends Controller
                 ->with('flashMessage', "You can't change your answers once the game starts.");
         }
 
-        $user = User::find($this->resolvePlayerId($request));
+        $user = User::find($this->resolvePlayerId($request, $game));
 
         if (! $user) {
             return redirect()->route('questions.showQuestionLanding', $game->id);
@@ -84,46 +91,39 @@ class GameQuestionsController extends Controller
         $data = GameActions::HandleUserShowQuestionsAction($game, $user);
 
         return Inertia::render('Questionnaire/Show', array_merge($data, [
+            'playerToken' => $this->playerTokenFor($game, $user),
             'routeName' => $request->route()->getName(),
             'error' => session('error'),
         ]));
     }
 
-    /**
-     * Resolve the current player: an authenticated host/user session takes
-     * priority, otherwise fall back to the guest id supplied by the client
-     * (sourced from localStorage on the frontend).
-     */
-    private function resolvePlayerId(Request $request): ?string
+    public function showThankYou(Request $request, Game $game, User $user)
     {
-        return auth()->id() ?? $request->query('player');
-    }
+        $this->ensureIsCurrentPlayer($request, $game, $user);
 
-    public function showThankYou(Game $game, User $user)
-    {
         return Inertia::render('Questionnaire/Show', [
             'game' => $game->load(['host']),
-            'user' => $user,
-            'routeName' => request()->route()->getName(),
+            'user' => $user->only(['id', 'first_name', 'last_name', 'name', 'is_guest']),
+            'routeName' => $request->route()->getName(),
         ]);
     }
 
     public function storeAnswer(Request $request, Game $game, User $user)
     {
-        $response = GameActions::storeAnswerAction($game, $user, $request->question);
+        $this->ensureIsCurrentPlayer($request, $game, $user);
 
-        return $response;
+        return GameActions::storeAnswerAction($game, $user, $request->question);
     }
 
     public function storeAnswers(Request $request, Game $game, User $user)
     {
+        $this->ensureIsCurrentPlayer($request, $game, $user);
+
         $validated = $request->validate([
             'answers' => 'required|array',
         ]);
 
         $response = GameActions::storeAnswersAction($game, $user, $validated);
-
-        // $response = array('status' => 'test');
 
         if ($response['status'] === 'error') {
             return redirect()->back()->withErrors([
@@ -135,5 +135,54 @@ class GameQuestionsController extends Controller
             'game' => $game->id,
             'user' => $user->id,
         ]);
+    }
+
+    /**
+     * Resolve the current player: a logged-in user takes priority, then a guest
+     * who joined this game in the current session, then a returning guest
+     * whose ?player= id is backed by a valid ?token= from their device.
+     */
+    private function resolvePlayerId(Request $request, Game $game): ?string
+    {
+        if (auth()->check()) {
+            return auth()->id();
+        }
+
+        $sessionKey = GuestPlayerToken::sessionKey($game);
+        $sessionPlayerId = $request->session()->get($sessionKey);
+
+        if ($sessionPlayerId && $this->isPlayerInGame($game, $sessionPlayerId)) {
+            return $sessionPlayerId;
+        }
+
+        $playerId = $request->query('player');
+
+        if (GuestPlayerToken::verify($game, $playerId, $request->query('token'))
+            && $this->isPlayerInGame($game, $playerId)) {
+            $request->session()->put($sessionKey, $playerId);
+
+            return $playerId;
+        }
+
+        return null;
+    }
+
+    private function ensureIsCurrentPlayer(Request $request, Game $game, User $user): void
+    {
+        abort_unless($this->resolvePlayerId($request, $game) === $user->id, 403);
+    }
+
+    private function isPlayerInGame(Game $game, string $userId): bool
+    {
+        return GameUser::where('game_id', $game->id)->where('user_id', $userId)->exists();
+    }
+
+    private function playerTokenFor(Game $game, ?User $user): ?string
+    {
+        if (! $user || auth()->check()) {
+            return null;
+        }
+
+        return GuestPlayerToken::for($game, $user->id);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Games;
 
+use App\Facades\GameActions;
 use App\Models\Game;
 use App\Models\GameUser;
 use App\Models\GameUserQuestions;
@@ -21,9 +22,15 @@ class StoreAnswersAction
             return ['status' => 'error', 'message' => 'User not found for this game'];
         }
 
-        // Loop through the answers and create records in the database
+        if (GameActions::HasPlayerCompletedQuestionsAction($game, $user)) {
+            return ['status' => 'error', 'message' => 'Your answers have already been submitted and cannot be changed.'];
+        }
+
         foreach ($data['answers'] as $id => $answerValue) {
-            GameUserQuestions::where('id', $id)->update(['answer' => $answerValue]);
+            GameUserQuestions::where('id', $id)
+                ->where('user_id', $user->id)
+                ->where('game_id', $game->id)
+                ->update(['answer' => $answerValue]);
         }
 
         $status = $gameUser->status;

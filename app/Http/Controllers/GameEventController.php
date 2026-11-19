@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Facades\GameActions;
 use App\Models\Game;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class GameEventController extends Controller
 {
     public function startGame(Game $game, ?int $reset = null)
     {
+        Gate::authorize('manage', $game);
+
         $user = auth()->user();
 
         if ($reset === -1 && $game->isHostsFirstGame($user) && ! $user->hasGamesAvailable()) {
@@ -33,6 +36,8 @@ class GameEventController extends Controller
 
     public function startRound(Game $game, int $round, ?bool $back = false)
     {
+        Gate::authorize('manage', $game);
+
         GameActions::CreateEventQuestionsAction($game);
 
         $questions = GameActions::GetRoundQuestionsAction($game, $round);
@@ -51,6 +56,8 @@ class GameEventController extends Controller
 
     public function endRound(Game $game, int $round, ?bool $back = false)
     {
+        Gate::authorize('manage', $game);
+
         GameActions::CreateEventQuestionsAction($game);
 
         $answers = GameActions::CreateEventAnswerListAction($game, $round);
@@ -69,6 +76,8 @@ class GameEventController extends Controller
 
     public function endGame(Game $game)
     {
+        Gate::authorize('manage', $game);
+
         GameActions::CreateEventQuestionsAction($game);
 
         if ($game->status === 'in progress') {

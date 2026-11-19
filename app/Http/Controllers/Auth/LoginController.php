@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
+use App\Services\SafeRedirect;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,10 @@ class LoginController extends Controller
      */
     public function show(Game $game)
     {
-        $redirectTo = request()->input('redirect_to', route('questions.showQuestions', ['game' => $game->id]));
+        $redirectTo = SafeRedirect::to(
+            request()->input('redirect_to'),
+            route('questions.showQuestions', ['game' => $game->id])
+        );
 
         return inertia('Auth/Login', [
             'game' => $game,
@@ -41,8 +45,8 @@ class LoginController extends Controller
             }
 
             // Otherwise, let them continue where intended
-            $redirectTo = $request->input(
-                'redirect_to',
+            $redirectTo = SafeRedirect::to(
+                $request->input('redirect_to'),
                 route('questions.showQuestions', ['game' => $game->id])
             );
 

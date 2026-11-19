@@ -51,12 +51,12 @@ Route::get('/home', function () {
 });
 
 Route::get('/register/{game?}', [RegisterController::class, 'show'])->name('register.prepopulated');
-Route::post('/register', [RegisterController::class, 'store'])->name('register.submit');
-Route::post('register/{game?}', [RegisterController::class, 'store'])->name('register.submit');
+Route::post('/register', [RegisterController::class, 'store'])->middleware('throttle:6,1')->name('register.submit');
+Route::post('register/{game?}', [RegisterController::class, 'store'])->middleware('throttle:6,1')->name('register.submit');
 Route::get('/login/{game?}', [LoginController::class, 'show'])->name('login.prepopulated');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->name('login.submit');
+Route::post('/playerlogin/{game}', [LoginController::class, 'login'])->middleware('throttle:login')->name('login.submit');
 
 Route::middleware(['can.purchase'])->group(function () {
     Route::get('/buy-games', [GamePurchaseController::class, 'index'])->name('games.purchase');
@@ -71,7 +71,7 @@ Route::get('/q/{short_url}', function ($short_url) {
 
 Route::prefix('questions/{game}')->group(function () {
     Route::get('/', [GameQuestionsController::class, 'showQuestionLanding'])->name('questions.showQuestionLanding');
-    Route::post('/join', [GameQuestionsController::class, 'joinGame'])->name('questions.join');
+    Route::post('/join', [GameQuestionsController::class, 'joinGame'])->middleware('throttle:10,1')->name('questions.join');
     Route::get('/show', [GameQuestionsController::class, 'showQuestions'])->name('questions.showQuestions');
     Route::get('/{user}/complete', [GameQuestionsController::class, 'showThankYou'])->name('questions.showThankYou');
     Route::post('/answer/{user}', [GameQuestionsController::class, 'storeAnswer'])->name('questions.playerAnswer');
