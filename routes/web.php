@@ -8,6 +8,7 @@ use App\Http\Controllers\GamePurchaseController;
 use App\Http\Controllers\GameQuestionsController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Middleware\EnsureIsAdmin;
+use App\Models\Game;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -64,7 +65,7 @@ Route::middleware(['can.purchase'])->group(function () {
 });
 
 Route::get('/q/{short_url}', function ($short_url) {
-    $game = \App\Models\Game::where('short_url', $short_url)->firstOrFail();
+    $game = Game::where('short_url', $short_url)->firstOrFail();
 
     return redirect()->to("/questions/{$game->id}");
 });
@@ -90,10 +91,8 @@ Route::middleware([
     // Games Routes Group
     Route::prefix('games')->group(function () {
         Route::get('/', [GameController::class, 'index'])->name('games');
-        Route::get('/{game}/answers', [GameController::class, 'showAnswers'])->name('games.showAnswers');
         Route::get('/create', [GameController::class, 'create'])->name('games.create');
         Route::get('/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
-        Route::get('/{game}/{user}/questions', [GameController::class, 'showQuestions'])->name('games.showQuestions');
         Route::delete('/{game}/{user}/', [GameController::class, 'removePlayer'])->name('games.removePlayer');
         Route::delete('/{game}', [GameController::class, 'destroy'])
             ->name('games.destroy')
@@ -105,8 +104,6 @@ Route::middleware([
             ->name('games.generateTest')
             ->middleware(EnsureIsAdmin::class);
         Route::post('/duplicate/{game}', [GameController::class, 'duplicate'])->name('games.duplicate');
-        // Route::post('/{game}/answers', [GameController::class, 'storeAnswers'])->name('games.answers');
-        Route::put('/{game}/{user}/{attendance}', [GameController::class, 'updateAttendance'])->name('games.updateAttendance');
         Route::post('/createquestions/{game}', [GameController::class, 'createGameQuestions'])->name('games.createquestions');
     });
 

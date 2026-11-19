@@ -5,8 +5,6 @@ import { router } from '@inertiajs/vue3';
 import GamesList from './Partials/GamesList.vue';
 import GameDetails from './Partials/GameDetails.vue';
 import GameEdit from './Partials/GameEdit.vue';
-import PlayerQuestions from '@/Pages/Questionnaire/Partials/PlayerQuestions.vue';
-import AllPlayerAnswers from './Partials/AllPlayerAnswers.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formatDate } from '@/utils';
 import { useFlash } from '@/Composables/useFlash';
@@ -39,10 +37,6 @@ const currentProps = computed(() => {
             return { modes: props.modes, routeName: props.routeName };
         case 'games.edit':
             return { modes: props.modes, game: props.game, routeName: props.routeName };
-        case 'games.showQuestions':
-            return { questions: props.questions, game: props.game, user: $page.props.auth.user };
-        case 'games.showAnswers':
-            return { questions: props.questions };
         default:
             return {};
     }
@@ -54,8 +48,6 @@ const routeComponents = {
     'games.show': GameDetails,
     'games.create': GameEdit,
     'games.edit': GameEdit,
-    'games.showQuestions': PlayerQuestions,
-    'games.showAnswers': AllPlayerAnswers
 };
 
 const CurrentComponent = computed(() => routeComponents[props.routeName] || null);
