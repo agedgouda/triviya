@@ -153,6 +153,8 @@ class BonusRoundPurchaseTest extends TestCase
 
     public function test_purchasing_a_product_increments_games_available(): void
     {
+        config(['game.purchasing_enabled' => true]);
+
         $user = User::factory()->create(['games_available' => 0]);
         $product = GameProduct::create([
             'name' => 'Test Pack',
@@ -167,5 +169,25 @@ class BonusRoundPurchaseTest extends TestCase
 
         $response->assertRedirect(route('games'));
         $this->assertSame(3, $user->fresh()->games_available);
+    }
+
+    public function test_purchasing_is_unavailable_when_disabled(): void
+    {
+        config(['game.purchasing_enabled' => false]);
+
+        $user = User::factory()->create(['games_available' => 0]);
+        $product = GameProduct::create([
+            'name' => 'Test Pack',
+            'game_count' => 3,
+            'price' => 9.99,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)->get(route('games.purchase'))->assertNotFound();
+        $this->actingAs($user)->post(route('games.purchase.store'), [
+            'game_product_id' => $product->id,
+        ])->assertNotFound();
+
+        $this->assertSame(0, $user->fresh()->games_available);
     }
 }

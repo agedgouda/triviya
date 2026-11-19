@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message'),
             ],
+            'purchasingEnabled' => (bool) config('game.purchasing_enabled'),
         ]);
     }
 }

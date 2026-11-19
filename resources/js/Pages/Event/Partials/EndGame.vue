@@ -61,8 +61,9 @@ const goToPurchase = () => {
                     <div class="text-xl font-bold ">Keep the Fun Going!</div>
                     <div class="font-bold mt-2">➕ Bonus Round</div>
                     <template v-if="bonusLockedForPurchase">
-                        Buy games to unlock your bonus round.
-                        <div class="mt-2">
+                        <template v-if="page.props.purchasingEnabled">Buy games to unlock your bonus round.</template>
+                        <template v-else>You have no games available for a bonus round.</template>
+                        <div v-if="page.props.purchasingEnabled" class="mt-2">
                             <PrimaryButton @click="goToPurchase()">
                                 Buy Games
                             </PrimaryButton>
@@ -80,7 +81,7 @@ const goToPurchase = () => {
             </GameBubble>
             <GameBubble color="white">
                 <span class="font-bold">Games available:</span> {{ page.props.auth.user.games_available }}
-                <PrimaryButton v-if="page.props.auth.user.games_available === 0" @click="goToPurchase()" class="ml-2">
+                <PrimaryButton v-if="page.props.purchasingEnabled && page.props.auth.user.games_available === 0" @click="goToPurchase()" class="ml-2">
                     Buy More Games
                 </PrimaryButton>
             </GameBubble>

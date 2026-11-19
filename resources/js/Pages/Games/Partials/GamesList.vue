@@ -80,7 +80,7 @@ const goToPage = (page) => {
 
         <div class="mb-3 text-triviyaRegular">
             <span class="font-bold">Games available:</span> {{ $page.props.auth.user.games_available }}
-            <SecondaryButton v-if="$page.props.auth.user.games_available === 0" @click="router.visit(route('games.purchase'))" class="ml-2">
+            <SecondaryButton v-if="$page.props.purchasingEnabled && $page.props.auth.user.games_available === 0" @click="router.visit(route('games.purchase'))" class="ml-2">
                 Buy More Games
             </SecondaryButton>
         </div>
