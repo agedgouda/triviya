@@ -17,7 +17,7 @@
         "postcss": "^8.4.32",
         "tailwindcss": "^4.3.5",
         "vite": "^8.3.8",
-        "vue": "^3.5.45"
+        "vue": "^3.5.46"
     },
     "dependencies": {
         "@stripe/stripe-js": "^10.3.0",
